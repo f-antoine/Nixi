@@ -1,0 +1,10 @@
+﻿namespace Nixi.Containers.ContainerElements
+{
+    /// <summary>
+    /// Represent a container element, this aims to associate in a one way direction a KeyType with a ValueType
+    /// This suit a transient approach, a new instance is created at each call
+    /// </summary>
+    internal class TransientContainerElement : ContainerElement
+    {
+    }
+}
