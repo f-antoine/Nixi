@@ -62,4 +62,8 @@ crashlytics-build.properties
 /CodeCoverage/
 
 # Nixi DLL
-/DLL/
+/DLL/*Nixi*
+/DLL/DLLUpdater/bin
+/DLL/DLLUpdater/obj
+/DLL/ScriptExample
+/DLL/Tests/

@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
 using ScriptExample.Game;
@@ -17,16 +16,16 @@ namespace ScriptExample.GameHost
         [NixInjectComponentFromMethod("SecondPlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
         public SecondPlayer SecondPlayer;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public ISettings Settings;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public IBrokenTestInterface FirstBrokenInterfaceGameHost;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public IBrokenTestInterface SecondBrokenInterfaceGameHost;
 
-        [NixInject(NixInjectType.DoesNotFillButExposeForTesting)]
+        [NixInjectTestMock]
         [SerializeField]
         private SO_GameHost soGameHostInfos;
         public SO_GameHost SOGameHostInfos => soGameHostInfos;

@@ -11,7 +11,7 @@ namespace Nixi.Injections.Injecters
         internal NixInjecterException() { }
 
         internal NixInjecterException(string reason, MonoBehaviourInjectable monoBehaviourInjectable)
-            : base($"Error during nixi injection resolution on {monoBehaviourInjectable.name}. Reason : {reason}")
+            : base($"Error during nixi injection resolution on {monoBehaviourInjectable.name} (type {monoBehaviourInjectable.GetType().Name}). Reason : {reason}")
         {
         }
     }

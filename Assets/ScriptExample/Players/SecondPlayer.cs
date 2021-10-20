@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using ScriptExample.Characters.Broken;
 using ScriptExample.Containers.Broken;
 
@@ -8,10 +7,10 @@ namespace ScriptExample.Players
 {
     public sealed class SecondPlayer : MonoBehaviourInjectable
     {
-        [NixInject]
+        [NixInjectFromContainer]
         public IBrokenTestInterface FirstBrokenInterfacePlayer;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public IBrokenTestInterface SecondBrokenInterfacePlayer;
 
         [NixInjectComponent]

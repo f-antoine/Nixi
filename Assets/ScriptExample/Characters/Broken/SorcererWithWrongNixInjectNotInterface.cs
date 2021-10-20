@@ -1,5 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
+using Nixi.Injections.Attributes;
 
 namespace Assets.ScriptExample.Characters.Broken
 {
@@ -8,7 +8,7 @@ namespace Assets.ScriptExample.Characters.Broken
     /// </summary>
     public class SorcererWithWrongNixInjectNotInterface : MonoBehaviourInjectable
     {
-        [NixInject]
+        [NixInjectFromContainer]
         public string WrongAttributeNotInterface;
     }
 }

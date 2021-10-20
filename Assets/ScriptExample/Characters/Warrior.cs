@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Attributes.Fields;
+﻿using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ namespace Assets.ScriptExample.Characters
     public sealed class Warrior : Character
     {
         [SerializeField]
-        [NixInject(NixInjectType.DoesNotFillButExposeForTesting)]
+        [NixInjectTestMock]
         public Parasite Parasite;
     }
 }

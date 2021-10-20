@@ -1,7 +1,7 @@
 ﻿using Assets.ScriptExample.Controllers;
 using UnityEngine;
 
-namespace Assets.Tests.Builders
+namespace Tests.Builders
 {
     internal sealed class ControllersBuilder
     {

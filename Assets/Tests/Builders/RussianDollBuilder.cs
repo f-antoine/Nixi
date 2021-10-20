@@ -1,7 +1,7 @@
 ﻿using Assets.ScriptExample.Characters.SameNamings;
 using UnityEngine;
 
-namespace Assets.Tests.Builders
+namespace Tests.Builders
 {
     public sealed class RussianDollBuilder
     {
@@ -16,17 +16,17 @@ namespace Assets.Tests.Builders
 
         internal RussianDoll Build()
         {
-            return new GameObject("RussianDoll").AddComponent<RussianDoll>(); ;
+            return new GameObject("RussianDollName").AddComponent<RussianDoll>(); ;
         }
 
         internal RussianDollSameLevel BuildSameLevel()
         {
-            return new GameObject("RussianDollSameLevel").AddComponent<RussianDollSameLevel>(); ;
+            return new GameObject("RussianDollSameLevelName").AddComponent<RussianDollSameLevel>(); ;
         }
 
         internal RussianDollSameLevelParent BuildSameLevelParent()
         {
-            return new GameObject("RussianDollSameLevelParent").AddComponent<RussianDollSameLevelParent>(); ;
+            return new GameObject("RussianDollSameLevelParentName").AddComponent<RussianDollSameLevelParent>(); ;
         }
     }
 }

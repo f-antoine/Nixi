@@ -4,7 +4,7 @@ using NixiTestTools;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.Injections
+namespace Tests.Injections
 {
     internal sealed class WrongNixiAttributesTests
     {
@@ -15,7 +15,7 @@ namespace Assets.Tests.Injections
 
             TestInjecter injecter = new TestInjecter(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<TestInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Assets.Tests.Injections
 
             TestInjecter injecter = new TestInjecter(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<TestInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
         }
 
         [Test]

@@ -10,7 +10,7 @@ namespace NixiTestTools
     public sealed class TestInjecterException : Exception
     {
         internal TestInjecterException(string reason, MonoBehaviourInjectable monoBehaviourInjectable)
-            : base($"Error during nixi test injection resolution on {monoBehaviourInjectable.name}. Reason : {reason}")
+            : base($"Error during nixi test injection resolution on {monoBehaviourInjectable.name} (type {monoBehaviourInjectable.GetType().Name}). Reason : {reason}")
         {
         }
     }

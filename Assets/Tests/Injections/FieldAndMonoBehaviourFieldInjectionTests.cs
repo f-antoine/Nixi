@@ -5,7 +5,7 @@ using ScriptExample.Characters;
 using ScriptExample.Containers;
 using ScriptExample.FieldTests;
 
-namespace Assets.Tests.Injections
+namespace Tests.Injections
 {
     internal sealed class FieldAndcomponentFieldInjectionTests : InjectableTestTemplate<ChildFields>
     {
@@ -38,7 +38,7 @@ namespace Assets.Tests.Injections
         [TestCase("privateChildSkill")]
         [TestCase("protectedChildSkill")]
         [TestCase("publicChildSkill")]
-        public void componentFieldInjection_ShouldBeFilledAndAccessible_WhatEverVisibilityLevel(string fieldName)
+        public void ComponentFieldInjection_ShouldBeFilledAndAccessible_WhatEverVisibilityLevel(string fieldName)
         {
             Skill skillToFind = MainInjecter.GetComponent<Skill>(fieldName);
             Assert.That(skillToFind, Is.Not.Null);

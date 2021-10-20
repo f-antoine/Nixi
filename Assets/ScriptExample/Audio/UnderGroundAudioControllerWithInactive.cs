@@ -1,5 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using UnityEngine.UI;
 
 namespace Assets.ScriptExample.Audio

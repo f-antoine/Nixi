@@ -1,5 +1,5 @@
-﻿using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+﻿using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +31,22 @@ namespace Nixi.Injections.Injecters
         /// <summary>
         /// Predicate to find all attributes derived from NixInjectComponentBaseAttribute on a Component field in a MonoBehaviourInjectable
         /// </summary>
-        protected Func<FieldInfo, bool> NixiComponentFieldPredicate => x => x.CustomAttributes.Any(ComponentFieldsPredicate);
+        protected Func<FieldInfo, bool> NixiComponentFieldPredicate => x => x.CustomAttributes.Any(componentFieldsPredicate);
 
         /// <summary>
         /// Predicate to identify a NixInjectAttribute on a CustomAttributeData
         /// </summary>
-        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => y.AttributeType == typeof(NixInjectAttribute);
+        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
         /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribut on a CustomAttributeData
         /// </summary>
-        private Func<CustomAttributeData, bool> ComponentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
+        private Func<CustomAttributeData, bool> componentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
         /// Combination of nonComponentFieldsPredicate and componentFieldsPredicate
         /// </summary>
-        protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => y.AttributeType == typeof(NixInjectAttribute)
+        protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType)
                                                                             || typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
@@ -99,26 +99,6 @@ namespace Nixi.Injections.Injecters
             }
 
             return fieldsToReturn;
-        }
-
-        /// <summary>
-        /// Check if a FieldInfo type is not a Component
-        /// </summary>
-        /// <param name="nonComponentField">Field to check</param>
-        protected void CheckIsNotComponent(FieldInfo nonComponentField)
-        {
-            if (typeof(Component).IsAssignableFrom(nonComponentField.FieldType))
-                throw new NixInjecterException($"Cannot register field with name {nonComponentField.Name} with a NixInjectAttribute because it is a Component field, you must use NixInjectComponentAttribute instead", objectToLink);
-        }
-
-        /// <summary>
-        /// Check if a FieldInfo type is a Component
-        /// </summary>
-        /// <param name="componentField">Field to check</param>
-        protected void CheckIsComponent(FieldInfo componentField)
-        {
-            if (!typeof(Component).IsAssignableFrom(componentField.FieldType))
-                throw new NixInjecterException($"Cannot inject field with name {componentField.Name} with a NixInjectComponentAttribute because it is not a Component field, you must use NixInjectAttribute instead", objectToLink);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Assets.Tests.Builders
+namespace Tests.Builders
 {
     internal sealed class SceneBuilder
     {

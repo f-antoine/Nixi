@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 using System.Collections.Generic;
@@ -31,13 +30,13 @@ namespace ScriptExample.FieldTests
             throw new KeyNotFoundException($"Test cannot be performed because you try to get field with name {fieldName} and it does not exist");
         }
 
-        [NixInject]
+        [NixInjectFromContainer]
         private ITestInterface privateParentTestInterface;
 
-        [NixInject]
+        [NixInjectFromContainer]
         protected ITestInterface protectedParentTestInterface;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public ITestInterface publicParentTestInterface;
 
         [NixInjectComponentFromMethod("privateParentSkill", GameObjectMethod.GetComponentsInChildren)]

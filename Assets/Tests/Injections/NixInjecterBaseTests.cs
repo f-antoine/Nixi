@@ -8,7 +8,7 @@ using System;
 using Tests.Builders;
 using UnityEngine;
 
-namespace Assets.Tests.Injections
+namespace Tests.Injections
 {
     internal sealed class NixInjecterBaseTests
     {
@@ -29,13 +29,16 @@ namespace Assets.Tests.Injections
             Assert.Throws<NixInjecterException>(() => nixInjecter.CheckAndInjectAll());
         }
 
-        [TestCase(typeof(FieldWithMono))]
-        [TestCase(typeof(FieldWithMonoFromMethod))]
-        [TestCase(typeof(FieldWithMonoFromMethodRoot))]
-        [TestCase(typeof(MonoFromMethodWithMonoFromMethodRoot))]
-        [TestCase(typeof(MonoWithMonoFromMethod))]
-        [TestCase(typeof(MonoWithMonoFromMethodRoot))]
-        [TestCase(typeof(AllMonoAttributes))]
+        [TestCase(typeof(FieldContainerWithCompo))]
+        [TestCase(typeof(FieldWithCompoFromMethod))]
+        [TestCase(typeof(FieldWithCompoFromMethodRoot))]
+        [TestCase(typeof(CompoFromMethodWithCompoFromMethodRoot))]
+        [TestCase(typeof(CompoWithCompoFromMethod))]
+        [TestCase(typeof(CompoWithCompoFromMethodRoot))]
+        [TestCase(typeof(AllCompoAttributes))]
+        [TestCase(typeof(FieldContainerWithFieldTestMock))]
+        [TestCase(typeof(FieldTestMockWithCompo))]
+        [TestCase(typeof(CompoWithCompoList))]
         public void InjectFieldWithMultiple_ShouldThrowException(Type type)
         {
             GameObject gameObject = new GameObject("any", type);

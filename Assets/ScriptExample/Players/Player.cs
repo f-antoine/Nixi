@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 using ScriptExample.Containers.Player;
 using UnityEngine;
@@ -12,11 +11,11 @@ namespace ScriptExample.Players
         [NixInjectComponentFromMethod("SorcererGameObjectName", GameObjectMethod.GetComponentsInChildren)]
         public Sorcerer Sorcerer;
 
-        [NixInject]
+        [NixInjectFromContainer]
         public ILifeBar LifeBar;
 
-        [NixInject(NixInjectType.DoesNotFillButExposeForTesting)]
         [SerializeField]
+        [NixInjectTestMock]
         private SO_Player soPlayerInfos;
         public SO_Player SOPlayerInfos => soPlayerInfos;
     }

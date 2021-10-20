@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.ComponentFields;
+using Nixi.Injections.Attributes;
 using ScriptExample.Containers;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace ScriptExample.Characters
         private Skill attackSkill;
         public Skill AttackSkill => attackSkill;
 
-        [NixInject]
+        [NixInjectFromContainer]
         private ITestInterface testInterface;
         public ITestInterface TestInterface => testInterface;
     }

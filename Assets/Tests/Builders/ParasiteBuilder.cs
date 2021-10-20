@@ -4,7 +4,7 @@ using NixiTestTools;
 using ScriptExample.Characters;
 using UnityEngine;
 
-namespace Assets.Tests.Builders
+namespace Tests.Builders
 {
     internal sealed class ParasiteBuilder
     {

@@ -1,6 +1,6 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields;
-using ScriptExample.Containers.Broken;
+using Nixi.Injections.Attributes;
+using UnityEngine;
 
 namespace Assets.ScriptExample.Characters.Broken
 {
@@ -10,6 +10,6 @@ namespace Assets.ScriptExample.Characters.Broken
     public class SorcererWithWrongNixInjectComponent : MonoBehaviourInjectable
     {
         [NixInjectComponent]
-        public IBrokenTestInterface brokenTestInterfaceSecond;
+        public ScriptableObject brokenTestSecond;
     }
 }

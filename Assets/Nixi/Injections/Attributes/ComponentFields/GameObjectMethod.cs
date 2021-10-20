@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Attributes.ComponentFields
+﻿namespace Nixi.Injections.Attributes
 {
     /// <summary>
     /// Method to use from a Component instance to get a GameObject

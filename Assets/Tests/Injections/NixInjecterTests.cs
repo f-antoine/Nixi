@@ -1,15 +1,20 @@
 ﻿using Assets.ScriptExample.Audio;
 using Assets.ScriptExample.Characters;
+using Assets.ScriptExample.ComponentsWithEnumerable;
+using Assets.ScriptExample.ComponentsWithInterface;
+using Assets.ScriptExample.ComponentsWithInterface.BadDucks;
 using Assets.ScriptExample.Menu;
-using Assets.Tests.Builders;
 using Nixi.Containers;
+using Nixi.Injections;
 using Nixi.Injections.Injecters;
 using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
+using System;
+using System.Linq;
 using Tests.Builders;
+using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Tests.Injections
 {
@@ -515,5 +520,135 @@ namespace Tests.Injections
         }
         #endregion Inactive versus Active
         #endregion GameObjectInjection From GameObject root
+
+        #region Component Interface
+        [Test]
+        public void Duck_ShouldBeFilledFromInterfaceInjection()
+        {
+            Duck duck = DuckBuilder.Create().BuildFullDuck();
+
+            Assert.That(duck.Wings, Is.Null);
+            Assert.That(duck.Pocket, Is.Null);
+            Assert.That(duck.DuckCompanyBackPack, Is.Null);
+            Assert.That(duck.FirstLake, Is.Null);
+            Assert.That(duck.SecondLake, Is.Null);
+
+            NixInjecter injecter = new NixInjecter(duck);
+            injecter.CheckAndInjectAll();
+
+            Assert.That(duck.Wings, Is.Not.Null);
+            Assert.That(duck.Pocket, Is.Not.Null);
+            Assert.That(duck.DuckCompanyBackPack, Is.Not.Null);
+            Assert.That(duck.FirstLake, Is.Not.Null);
+            Assert.That(duck.SecondLake, Is.Not.Null);
+        }
+
+        [TestCase(typeof(BadDuckCompo))]
+        [TestCase(typeof(BadDuckCompoInChildren))]
+        [TestCase(typeof(BadDuckCompoInParents))]
+        public void Duck_ShouldThrowExceptionWhenNotGettableFromGetComponent(Type type)
+        {
+            GameObject gameObject = new GameObject("any", type);
+            MonoBehaviourInjectable monoBehaviourInjectable = gameObject.GetComponent(type) as MonoBehaviourInjectable;
+
+            NixInjecter injecter = new NixInjecter(monoBehaviourInjectable);
+
+            Exception exception = Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+
+            StringAssert.Contains("No component with type IList was found", exception.Message);
+        }
+
+        [TestCase(typeof(BadDuckRootCompo))]
+        [TestCase(typeof(BadDuckRootCompoWithChildGameObject))]
+        public void Duck_ShouldThrowExceptionWhenNotGettableFromGetRootComponent(Type type)
+        {
+            // New Scene for each test iteration, because if build many rootObject with same name
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+            // Add root component for tests
+            new GameObject("anyRootName", type);
+
+            GameObject gameObject = new GameObject("any", type);
+            MonoBehaviourInjectable monoBehaviourInjectable = gameObject.GetComponent(type) as MonoBehaviourInjectable;
+
+            NixInjecter injecter = new NixInjecter(monoBehaviourInjectable);
+
+            Exception exception = Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+
+            StringAssert.Contains("No component with type IList was found", exception.Message);
+        }
+        #endregion Component Interface
+
+        #region Enumerable Injections
+        [Test]
+        public void InjectComponentList_OnEnumerable_ShouldFill()
+        {
+            // Arrange
+            Basket basket = BasketBuilder.Create().WithChildFruit("apple", 3).WithChildFruit("lemon", 2).Build();
+
+            Assert.IsNull(basket.FruitsList);
+            Assert.IsNull(basket.FruitsEnumerable);
+            Assert.IsNull(basket.IFruitsList);
+            Assert.IsNull(basket.IFruitsEnumerable);
+            
+            // Act
+            NixInjecter injecter = new NixInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            // FruitsList
+            Assert.NotNull(basket.FruitsList);
+            Assert.That(basket.FruitsList.Count, Is.EqualTo(2));
+            Assert.That(basket.FruitsList.Any(x => x.name == "apple" && x.Weight == 3));
+            Assert.That(basket.FruitsList.Any(x => x.name == "lemon" && x.Weight == 2));
+
+            // FruitsEnumerable
+            Assert.NotNull(basket.FruitsEnumerable);
+            Assert.That(basket.FruitsEnumerable.Count, Is.EqualTo(2));
+            Assert.That(basket.FruitsEnumerable.Any(x => x.name == "apple" && x.Weight == 3));
+            Assert.That(basket.FruitsEnumerable.Any(x => x.name == "lemon" && x.Weight == 2));
+
+            // IFruitsList
+            Assert.NotNull(basket.IFruitsList);
+            Assert.That(basket.IFruitsList.Count, Is.EqualTo(2));
+            Assert.That(basket.IFruitsList.Any(x => x.Name == "apple" && x.Weight == 3));
+            Assert.That(basket.IFruitsList.Any(x => x.Name == "lemon" && x.Weight == 2));
+
+            // IFruitsEnumerable
+            Assert.NotNull(basket.IFruitsEnumerable);
+            Assert.That(basket.IFruitsEnumerable.Count, Is.EqualTo(2));
+            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == "apple" && x.Weight == 3));
+            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == "lemon" && x.Weight == 2));
+        }
+
+        [Test]
+        public void InjectComponentList_OnNotEnumerable_ShouldThrowException()
+        {
+            var wrongBasket = BasketBuilder.Create().BuildNotEnumerable();
+
+            NixInjecter injecter = new NixInjecter(wrongBasket);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void InjectComponentList_OnEnumerableNotInterfaceNorComponent_ShouldThrowException()
+        {
+            var wrongBasket = BasketBuilder.Create().BuildEnumerableNotInterfaceNorComponent();
+
+            NixInjecter injecter = new NixInjecter(wrongBasket);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void InjectComponentList_OnListNotInterfaceNorComponent_ShouldThrowException()
+        {
+            var wrongBasket = BasketBuilder.Create().BuildListNotInterfaceNorComponent();
+
+            NixInjecter injecter = new NixInjecter(wrongBasket);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+        #endregion Enumerable Injections
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Attributes.ComponentFields
+﻿namespace Nixi.Injections.Attributes
 {
     /// <summary>
     /// Method to use on root GameObjects from the current scene to find a GameObject that match GameObjectName
