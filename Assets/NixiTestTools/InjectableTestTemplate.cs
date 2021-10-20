@@ -9,7 +9,7 @@ namespace NixiTestTools
     /// </summary>
     /// <seealso cref="TestInjecter"/>
     /// <typeparam name="T">MonoBehaviourInjectable</typeparam>
-    public abstract class InjectionTestTemplate<T>
+    public abstract class InjectableTestTemplate<T>
         where T : MonoBehaviourInjectable
     {
         /// <summary>

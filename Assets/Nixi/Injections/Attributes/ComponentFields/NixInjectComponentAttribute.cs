@@ -1,25 +1,25 @@
-﻿using Nixi.Injections.Attributes.MonoBehaviours.Abstractions;
+﻿using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Injecters;
 using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.MonoBehaviours
+namespace Nixi.Injections.Attributes.ComponentFields
 {
     /// <summary>
-    /// Attribute used to define a dependency injection in a MonoBehaviour field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
+    /// Attribute used to define a dependency injection in a Component field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
     /// with Unity dependency injection approach
-    /// <para/>This one use GetComponent(gameObjectTypeToFind) from the instance of the class derived from MonoBehaviourInjectable and fill the MonoBehaviour field
+    /// <para/>This one use GetComponent(gameObjectTypeToFind) from the instance of the class derived from MonoBehaviourInjectable and fill the Component field
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class NixInjectMonoBehaviourAttribute : NixInjectMonoBehaviourBaseAttribute
+    public sealed class NixInjectComponentAttribute : NixInjectComponentBaseAttribute
     {
         /// <summary>
-        /// Find the unique component which exactly matches criteria of a derived attribute from NixInjectMonoBehaviourAttribute using the Unity dependency injection method
+        /// Find the unique component which exactly matches criteria of a derived attribute from NixInjectComponentAttribute using the Unity dependency injection method
         /// </summary>
         /// <param name="monoBehaviourInjectable">Instance of the MonoBehaviourInjectable</param>
         /// <param name="gameObjectTypeToFind">GameObject type to find</param>
-        /// <returns>Unique component which exactly matches criteria of a NixInjectMonoBehaviour injection using the Unity dependency injection method</returns>
+        /// <returns>Unique component which exactly matches criteria of a NixInjectComponent injection using the Unity dependency injection method</returns>
         public override Component GetSingleComponent(MonoBehaviourInjectable monoBehaviourInjectable, Type gameObjectTypeToFind)
         {
             Component[] componentsFound = monoBehaviourInjectable.GetComponents(gameObjectTypeToFind);

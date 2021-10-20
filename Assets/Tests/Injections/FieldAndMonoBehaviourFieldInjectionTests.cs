@@ -7,7 +7,7 @@ using ScriptExample.FieldTests;
 
 namespace Assets.Tests.Injections
 {
-    internal sealed class FieldAndMonoBehaviourFieldInjectionTests : InjectionTestTemplate<ChildFields>
+    internal sealed class FieldAndcomponentFieldInjectionTests : InjectableTestTemplate<ChildFields>
     {
         [TestCase("privateParentTestInterface")]
         [TestCase("protectedParentTestInterface")]
@@ -38,7 +38,7 @@ namespace Assets.Tests.Injections
         [TestCase("privateChildSkill")]
         [TestCase("protectedChildSkill")]
         [TestCase("publicChildSkill")]
-        public void MonoBehaviourFieldInjection_ShouldBeFilledAndAccessible_WhatEverVisibilityLevel(string fieldName)
+        public void componentFieldInjection_ShouldBeFilledAndAccessible_WhatEverVisibilityLevel(string fieldName)
         {
             Skill skillToFind = MainInjecter.GetComponent<Skill>(fieldName);
             Assert.That(skillToFind, Is.Not.Null);

@@ -1,13 +1,13 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 using ScriptExample.Characters;
 
 namespace Assets.ScriptExample.ErrorMultiAttributes
 {
     public sealed class MonoWithMonoFromMethodRoot : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviour]
-        [NixInjectMonoBehaviourFromMethodRoot("anyRoot")]
+        [NixInjectComponent]
+        [NixInjectRootComponent("anyRoot")]
         public Sorcerer Sorcerer;
     }
 }

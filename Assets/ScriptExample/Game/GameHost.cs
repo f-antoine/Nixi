@@ -1,6 +1,6 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
 using ScriptExample.Game;
@@ -11,10 +11,10 @@ namespace ScriptExample.GameHost
 {
     public class GameHost : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviourFromMethod("PlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromMethod("PlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
         public Player Player;
 
-        [NixInjectMonoBehaviourFromMethod("SecondPlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromMethod("SecondPlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
         public SecondPlayer SecondPlayer;
 
         [NixInject]

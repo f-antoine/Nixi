@@ -9,9 +9,9 @@ namespace Assets.Tests.Injections
     internal sealed class WrongNixiAttributesTests
     {
         [Test]
-        public void TestInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectMonoBehaviourAttribute()
+        public void TestInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
         {
-            SorcererWithWrongNixInjectMonoBehaviour wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectMonoBehaviour>();
+            SorcererWithWrongNixInjectComponent wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectComponent>();
 
             TestInjecter injecter = new TestInjecter(wrongSorcerer);
 
@@ -29,9 +29,9 @@ namespace Assets.Tests.Injections
         }
 
         [Test]
-        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectMonoBehaviourAttribute()
+        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
         {
-            SorcererWithWrongNixInjectMonoBehaviour wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectMonoBehaviour>();
+            SorcererWithWrongNixInjectComponent wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectComponent>();
 
             NixInjecter injecter = new NixInjecter(wrongSorcerer);
 
@@ -39,7 +39,7 @@ namespace Assets.Tests.Injections
         }
 
         [Test]
-        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnMonoBehaviour()
+        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnComponent()
         {
             SorcererWithWrongNixInject wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInject>();
 

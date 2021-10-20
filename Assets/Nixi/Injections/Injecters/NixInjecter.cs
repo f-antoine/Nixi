@@ -1,6 +1,6 @@
 ﻿using Nixi.Containers;
 using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.MonoBehaviours.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,11 +12,11 @@ namespace Nixi.Injections.Injecters
     /// Default way to handle all injections of fields decorated with Nixi inject attributes of a class derived from MonoBehaviourInjectable during play mode
     /// <list type="bullet">
     ///     <item>
-    ///         <term>MonoBehaviour fields</term>
-    ///         <description>Marked with NixInjectMonoBehaviourAttribute will be populated with Unity dependency injection</description>
+    ///         <term>Component fields</term>
+    ///         <description>Marked with NixInjectComponentAttribute will be populated with Unity dependency injection</description>
     ///     </item>
     ///     <item>
-    ///         <term>Non-MonoBehaviour fields</term>
+    ///         <term>Non-Component fields</term>
     ///         <description>Marked with NixInjectAttribute will be populated with NixiContainer</description>
     ///     </item>
     /// </list>
@@ -33,7 +33,7 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Inject all the fields decorated by NixInjectAttribute or NixInjectMonoBehaviourAttribute in objectToLink
+        /// Inject all the fields decorated by NixInjectAttribute or NixInjectComponentAttribute in objectToLink
         /// </summary>
         /// <exception cref="NixInjecterException">Thrown if this method has already been called</exception>
         protected override void InjectAll()
@@ -41,17 +41,17 @@ namespace Nixi.Injections.Injecters
             List<FieldInfo> fields = GetAllFields(objectToLink.GetType());
 
             InjectFields(fields.Where(NixiFieldPredicate));
-            InjectMonoBehaviourFields(fields.Where(NixiMonoBehaviourFieldPredicate));
+            InjectcomponentFields(fields.Where(NixiComponentFieldPredicate));
         }
 
-        #region Non-Monobehaviour Injections
+        #region Non-Component Injections
         /// <summary>
-        /// Fill all fields decorated with NixInjectAttribute (non-MonoBehaviour fields) and with NixInjectType set to FillWithContainer 
+        /// Fill all fields decorated with NixInjectAttribute (Non-Component fields) and with NixInjectType set to FillWithContainer 
         /// </summary>
-        /// <param name="nonMonoBehaviourFields">Non-MonoBehaviour fields</param>
-        private void InjectFields(IEnumerable<FieldInfo> nonMonoBehaviourFields)
+        /// <param name="nonComponentFields">Non-Component fields</param>
+        private void InjectFields(IEnumerable<FieldInfo> nonComponentFields)
         {
-            foreach (FieldInfo field in nonMonoBehaviourFields)
+            foreach (FieldInfo field in nonComponentFields)
             {
                 NixInjectAttribute injectAttribute = field.GetCustomAttribute<NixInjectAttribute>();
 
@@ -61,49 +61,49 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Fill a non-MonoBehaviour field in the objectToLink with the mapping resolve from the NixiContainer
+        /// Fill a Non-Component field in the objectToLink with the mapping resolve from the NixiContainer
         /// </summary>
-        /// <param name="nonMonoBehaviourField">Non-MonoBehaviour field</param>
-        private void InjectField(FieldInfo nonMonoBehaviourField)
+        /// <param name="nonComponentField">Non-Component field</param>
+        private void InjectField(FieldInfo nonComponentField)
         {
-            CheckIsNotMonoBehaviour(nonMonoBehaviourField);
+            CheckIsNotComponent(nonComponentField);
 
-            if (!nonMonoBehaviourField.FieldType.IsInterface)
-                throw new NixInjecterException($"The field with the name {nonMonoBehaviourField.Name} with a NixInjectAttribute must be an interface " +
+            if (!nonComponentField.FieldType.IsInterface)
+                throw new NixInjecterException($"The field with the name {nonComponentField.Name} with a NixInjectAttribute must be an interface " +
                     $"because the container works with only interfaces as a key for injection, " +
                     $"if you don't want to use the container and only expose for the tests from template, " +
                     $"you can use DoesNotFillButExposeForTesting option on the attribute constructor", objectToLink);
 
-            object resolved = NixiContainer.Resolve(nonMonoBehaviourField.FieldType);
-            nonMonoBehaviourField.SetValue(objectToLink, resolved);
+            object resolved = NixiContainer.Resolve(nonComponentField.FieldType);
+            nonComponentField.SetValue(objectToLink, resolved);
         }
-        #endregion Non-Monobehaviour Injections
+        #endregion Non-Component Injections
 
-        #region Monobehaviour Injections
+        #region Component Injections
         /// <summary>
-        /// Fill all fields decorated with NixInjectMonoBehaviourAttribute (MonoBehaviour fields)
+        /// Fill all fields decorated with NixInjectComponentAttribute (Component fields)
         /// </summary>
-        /// <param name="monoBehaviourFields">MonoBehaviour fields</param>
-        private void InjectMonoBehaviourFields(IEnumerable<FieldInfo> monoBehaviourFields)
+        /// <param name="componentFields">Component fields</param>
+        private void InjectcomponentFields(IEnumerable<FieldInfo> componentFields)
         {
-            foreach (FieldInfo monoBehaviourField in monoBehaviourFields)
+            foreach (FieldInfo componentField in componentFields)
             {
-                InjectGameObject(monoBehaviourField);
+                InjectcomponentField(componentField);
             }
         }
 
         /// <summary>
-        /// Fill a MonoBehaviour field in the objectToLink with the Unity dependency injection method which corresponds to the value of NixInjectMonoBehaviourAttribute.GameObjectMethod in GameObjectMethodBindings
+        /// Fill a Component field in the objectToLink with the Unity dependency injection method which corresponds to the value of NixInjectComponentAttribute.GameObjectMethod in GameObjectMethodBindings
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
-        private void InjectGameObject(FieldInfo monoBehaviourField)
+        /// <param name="componentField">Component field</param>
+        private void InjectcomponentField(FieldInfo componentField)
         {
-            CheckIsMonoBehaviour(monoBehaviourField);
+            CheckIsComponent(componentField);
 
-            NixInjectMonoBehaviourBaseAttribute injectAttribute = monoBehaviourField.GetCustomAttribute<NixInjectMonoBehaviourBaseAttribute>();
-            Component componentToTranspose = injectAttribute.GetSingleComponent(objectToLink, monoBehaviourField.FieldType);
-            monoBehaviourField.SetValue(objectToLink, componentToTranspose);
+            NixInjectComponentBaseAttribute injectAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
+            Component componentToTranspose = injectAttribute.GetSingleComponent(objectToLink, componentField.FieldType);
+            componentField.SetValue(objectToLink, componentToTranspose);
         }
-        #endregion Monobehaviour Injections
+        #endregion Component Injections
     }
 }

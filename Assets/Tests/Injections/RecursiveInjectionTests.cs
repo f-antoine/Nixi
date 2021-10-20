@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace Tests.Injections
 {
-    internal sealed class RecursiveInjectionTests : InjectionTestTemplate<GameHost>
+    internal sealed class RecursiveInjectionTests : InjectableTestTemplate<GameHost>
     {
         [Test]
         public void RecursiveInjectionTests_ShouldGetGameObjectAtTwoLevels()

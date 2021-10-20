@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Tests.Injections
 {
-    internal sealed class SimpleInjectionTests : InjectionTestTemplate<Sorcerer>
+    internal sealed class SimpleInjectionTests : InjectableTestTemplate<Sorcerer>
     {
         [Test]
         public void GameObjectInjection_ShouldRetrieveGameObjectElements()

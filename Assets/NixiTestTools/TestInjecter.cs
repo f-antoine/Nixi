@@ -1,5 +1,6 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours.Abstractions;
+using Nixi.Injections.Attributes.Fields;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements;
 using System;
@@ -14,12 +15,12 @@ namespace NixiTestTools
     /// Test way to handle all injections of fields decorated with Nixi inject attributes of a class derived from MonoBehaviourInjectable during test execution
     /// <list type="bullet">
     ///     <item>
-    ///         <term>MonoBehaviour fields</term>
-    ///         <description>Marked with NixInjectMonoBehaviourAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
+    ///         <term>Component fields</term>
+    ///         <description>Marked with NixInjectComponentAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
     ///     </item>
     ///     <item>
-    ///         <term>Non-MonoBehaviour fields</term>
-    ///         <description>Marked with NixInjectAttribute will be mockable, you can manually inject mock in it (values are null if not populated by a manual non-MonoBehaviour field injection)</description>
+    ///         <term>Non-Component fields</term>
+    ///         <description>Marked with NixInjectAttribute will be mockable, you can manually inject mock in it (values are null if not populated by a manual Non-Component field injection)</description>
     ///     </item>
     /// </list>
     /// <para/>If a field is of type MonoBehaviourInjectable, this will fill it in the same way as for this TestInjecter but will be stored as the childInjecter of this main TestInjecter
@@ -41,12 +42,12 @@ namespace NixiTestTools
         /// Test way to handle all injections of fields decorated with Nixi inject attributes of a class derived from MonoBehaviourInjectable during test execution
         /// <list type="bullet">
         ///     <item>
-        ///         <term>MonoBehaviour fields</term>
-        ///         <description>Marked with NixInjectMonoBehaviourAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
+        ///         <term>Component fields</term>
+        ///         <description>Marked with NixInjectComponentAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
         ///     </item>
         ///     <item>
-        ///         <term>Non-MonoBehaviour fields</term>
-        ///         <description>Marked with NixInjectAttribute will be mockable, you can manually inject mock in it (values are null if not populated by a manual non-MonoBehaviour field injection)</description>
+        ///         <term>Non-Component fields</term>
+        ///         <description>Marked with NixInjectAttribute will be mockable, you can manually inject mock in it (values are null if not populated by a manual Non-Component field injection)</description>
         ///     </item>
         /// </list>
         /// <para/>If a field is of type MonoBehaviourInjectable, this will fill it in the same way as for this TestInjecter but will be stored as the childInjecter of this main TestInjecter
@@ -61,7 +62,7 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Inject all the fields decorated by NixInjectAttribute or NixInjectMonoBehaviourAttribute in objectToLink
+        /// Inject all the fields decorated by NixInjectAttribute or NixInjectComponentAttribute in objectToLink
         /// </summary>
         /// <exception cref="TestInjecterException">Thrown if this method has already been called</exception>
         protected override void InjectAll()
@@ -80,7 +81,7 @@ namespace NixiTestTools
 
             List<FieldInfo> fields = GetAllFields(monoBehaviourInjectable.GetType());
             InjectFields(fields.Where(NixiFieldPredicate), newInjectableData);
-            InjectMonoBehaviourFields(fields.Where(NixiMonoBehaviourFieldPredicate), newInjectableData);
+            InjectComponentFields(fields.Where(NixiComponentFieldPredicate), newInjectableData);
         }
 
         /// <summary>
@@ -96,106 +97,112 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Register all non-MonoBehaviour fields (decorated with NixInjectAttribute) into fieldInjectionHandler to expose them as mockable
-        /// <para/> These fields values are null if not populated by a manual non-MonoBehaviour field injection
+        /// Register all Non-Component fields (decorated with NixInjectAttribute) into fieldInjectionHandler to expose them as mockable
+        /// <para/> These fields values are null if not populated by a manual Non-Component field injection
         /// </summary>
-        /// <param name="nonMonoBehaviourFields">Non-MonoBehaviour fields</param>
-        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading non-MonoBehaviour fields (newInjectableData.nonMonoBehaviourFields)</param>
-        private void InjectFields(IEnumerable<FieldInfo> nonMonoBehaviourFields, MonoBehaviourInjectableData newInjectableData)
+        /// <param name="nonComponentFields">Non-Component fields</param>
+        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading Non-Component fields (newInjectableData.nonComponentFields)</param>
+        private void InjectFields(IEnumerable<FieldInfo> nonComponentFields, MonoBehaviourInjectableData newInjectableData)
         {
-            foreach (FieldInfo nonMonoBehaviourField in nonMonoBehaviourFields)
+            foreach (FieldInfo nonComponentField in nonComponentFields)
             {
-                CheckIsNotMonoBehaviour(nonMonoBehaviourField);
-                newInjectableData.nonMonoBehaviourFields.Add(nonMonoBehaviourField);
+                NixInjectAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectAttribute>();
+
+                if (injectAttribute.NixInjectType != NixInjectType.DoesNotFillButExposeForTesting)
+                {
+                    CheckIsNotComponent(nonComponentField);
+                }
+                
+                newInjectableData.nonComponentFields.Add(nonComponentField);
             }
         }
 
-        #region MonoBehaviour fields
+        #region Component fields
         /// <summary>
-        /// Create, populate and register all MonoBehaviour fields (decorated with class dervied from NixInjectMonoBehaviourBaseAttribute) into testInjecter.monoBehaviourFieldInjectionHandler
+        /// Create, populate and register all Component fields (decorated with class dervied from NixInjectComponentBaseAttribute) into testInjecter.componentFieldInjectionHandler
         /// <para/>If a field is of type MonoBehaviourInjectable, this will fill it in the same way as for this TestInjecter and register in tiContainer
         /// <para/>This is done recursively but all are stored in tiContainer
         /// </summary>
-        /// <param name="monoBehaviourFields">MonoBehaviour fields</param>
-        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading MonoBehaviour fields (newInjectableData.MonoBehaviourFields)</param>
-        private void InjectMonoBehaviourFields(IEnumerable<FieldInfo> monoBehaviourFields, MonoBehaviourInjectableData newInjectableData)
+        /// <param name="componentFields">Component fields</param>
+        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading Component fields (newInjectableData.componentFields)</param>
+        private void InjectComponentFields(IEnumerable<FieldInfo> componentFields, MonoBehaviourInjectableData newInjectableData)
         {
-            foreach (FieldInfo monoBehaviourField in monoBehaviourFields)
+            foreach (FieldInfo componentField in componentFields)
             {
-                MonoBehaviourInjectable injectableFromName = GetInjectableFromNameToFind(monoBehaviourField);
+                MonoBehaviourInjectable injectableFromName = GetInjectableFromNameToFind(componentField);
 
                 if (injectableFromName != null)
                 {
-                    FillFieldWithAlreadRegisteredGameObjectAndStoreInNewInjectableData(newInjectableData, monoBehaviourField, injectableFromName);
+                    FillFieldWithAlreadRegisteredGameObjectAndStoreInNewInjectableData(newInjectableData, componentField, injectableFromName);
                 }
                 else
                 {
-                    PopulateAndRegisterMonoBehaviourField(monoBehaviourField, newInjectableData);
-                    InjectAndStoreIfIsMonoBehaviourInjectable(monoBehaviourField, newInjectableData);
+                    PopulateAndRegistercomponentField(componentField, newInjectableData);
+                    InjectAndStoreIfIsMonoBehaviourInjectable(componentField, newInjectableData);
                 }
             }
         }
 
         /// <summary>
-        /// Fill the MonoBehaviour field with root MonoBehaviourInjectable found and store is in new InjectableData
+        /// Fill the Component field with root MonoBehaviourInjectable found and store is in new InjectableData
         /// </summary>
-        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading MonoBehaviour fields</param>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
-        /// <param name="registeredInjectable">Root GameObject used to fill monoBehaviourField</param>
-        private static void FillFieldWithAlreadRegisteredGameObjectAndStoreInNewInjectableData(MonoBehaviourInjectableData newInjectableData, FieldInfo monoBehaviourField, MonoBehaviourInjectable registeredInjectable)
+        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading Component fields</param>
+        /// <param name="componentField">Component field</param>
+        /// <param name="registeredInjectable">Root GameObject used to fill componentField</param>
+        private static void FillFieldWithAlreadRegisteredGameObjectAndStoreInNewInjectableData(MonoBehaviourInjectableData newInjectableData, FieldInfo componentField, MonoBehaviourInjectable registeredInjectable)
         {
-            monoBehaviourField.SetValue(newInjectableData.Instance, registeredInjectable);
-            newInjectableData.monoBehaviourWithFieldInstantiated.Add(new GameObjectWithFieldInfo
+            componentField.SetValue(newInjectableData.Instance, registeredInjectable);
+            newInjectableData.componentWithFieldInstantiated.Add(new GameObjectWithFieldInfo
             {
                 GameObject = registeredInjectable.gameObject,
-                FieldInfo = monoBehaviourField
+                FieldInfo = componentField
             });
         }
 
         /// <summary>
-        /// Return the Root GameObject with instanceName = NixInjectMonoBehaviourFromMethodRootAttribute.RootGameObjectName
+        /// Return the Root GameObject with instanceName = NixInjectComponentFromMethodRootAttribute.RootGameObjectName
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field to analyze</param>
-        /// <returns>Null if not found or if monoBehaviourField is not NixInjectMonoBehaviourFromMethodRootAttribute</returns>
-        private MonoBehaviourInjectable GetInjectableFromNameToFind(FieldInfo monoBehaviourField)
+        /// <param name="componentField">Component field to analyze</param>
+        /// <returns>Null if not found or if componentField is not NixInjectComponentFromMethodRootAttribute</returns>
+        private MonoBehaviourInjectable GetInjectableFromNameToFind(FieldInfo componentField)
         {
-            string gameObjectNameToFind = GetGameObjectNameIfExists(monoBehaviourField);
+            string gameObjectNameToFind = GetGameObjectNameIfExists(componentField);
 
             if (string.IsNullOrEmpty(gameObjectNameToFind))
                 return null;
             
-            MonoBehaviourInjectableData injectableData = injectablesContainer.GetInjectable(gameObjectNameToFind, monoBehaviourField.FieldType);
+            MonoBehaviourInjectableData injectableData = injectablesContainer.GetInjectable(gameObjectNameToFind, componentField.FieldType);
             return injectableData?.Instance;
         }
 
         /// <summary>
-        /// Create, populate and register a MonoBehaviour field (decorated with a class derived from NixInjectMonoBehaviourBaseAttribute) into monoBehaviourFieldInjectionHandler
+        /// Create, populate and register a Component field (decorated with a class derived from NixInjectComponentBaseAttribute) into componentFieldInjectionHandler
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
-        private void PopulateAndRegisterMonoBehaviourField(FieldInfo monoBehaviourField, MonoBehaviourInjectableData injectableData)
+        /// <param name="componentField">Component field</param>
+        private void PopulateAndRegistercomponentField(FieldInfo componentField, MonoBehaviourInjectableData injectableData)
         {
-            CheckIsMonoBehaviour(monoBehaviourField);
+            CheckIsComponent(componentField);
 
-            GameObject gameObjectToAdd = BuildAndInjectGameObject(monoBehaviourField, injectableData);
-            injectableData.monoBehaviourWithFieldInstantiated.Add(new GameObjectWithFieldInfo
+            GameObject gameObjectToAdd = BuildAndInjectGameObject(componentField, injectableData);
+            injectableData.componentWithFieldInstantiated.Add(new GameObjectWithFieldInfo
             {
                 GameObject = gameObjectToAdd,
-                FieldInfo = monoBehaviourField
+                FieldInfo = componentField
             });
         }
 
         /// <summary>
-        /// Build a GameObject of type contained in monoBehaviourField with the data contained in monoBehaviourInjectAttribute, then fill monoBehaviourField with this instance
+        /// Build a GameObject of type contained in componentField with the data contained in monoBehaviourInjectAttribute, then fill componentField with this instance
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
+        /// <param name="componentField">Component field</param>
         /// <returns>GameObject instantiated</returns>
-        private GameObject BuildAndInjectGameObject(FieldInfo monoBehaviourField, MonoBehaviourInjectableData injectableData)
+        private GameObject BuildAndInjectGameObject(FieldInfo componentField, MonoBehaviourInjectableData injectableData)
         {
-            string gameObjectName = GetGameObjectNameIfExists(monoBehaviourField);
+            string gameObjectName = GetGameObjectNameIfExists(componentField);
 
-            GameObject gameObjectToAdd = new GameObject(gameObjectName, monoBehaviourField.FieldType);
-            Component componentToRetrieve = gameObjectToAdd.GetComponent(monoBehaviourField.FieldType);
-            monoBehaviourField.SetValue(injectableData.Instance, componentToRetrieve);
+            GameObject gameObjectToAdd = new GameObject(gameObjectName, componentField.FieldType);
+            Component componentToRetrieve = gameObjectToAdd.GetComponent(componentField.FieldType);
+            componentField.SetValue(injectableData.Instance, componentToRetrieve);
             
             return gameObjectToAdd;
         }
@@ -204,33 +211,33 @@ namespace NixiTestTools
         /// If monoBehaviourInjectAttribute implements IHaveGameObjectNameToFind, it returns the GameObjectNameToFind value, if not it return string.Empty
         /// <para/>This will be treated in TestInjecter which link GameObjectName with TestInjecter.GetComponent to simplify access with GameObject name in tests
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
+        /// <param name="componentField">Component field</param>
         /// <returns>GameObjectNameToFind if available, string.Empty if not</returns>
-        private static string GetGameObjectNameIfExists(FieldInfo monoBehaviourField)
+        private static string GetGameObjectNameIfExists(FieldInfo componentField)
         {
-            NixInjectMonoBehaviourBaseAttribute injectAttribute = monoBehaviourField.GetCustomAttribute<NixInjectMonoBehaviourBaseAttribute>();
+            NixInjectComponentBaseAttribute injectAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
             if (injectAttribute is IHaveGameObjectNameToFind gameObjectNameToFindInstance)
             {
                 return gameObjectNameToFindInstance.GameObjectNameToFind;
             }
             return string.Empty;
         }
-        #endregion MonoBehaviour fields
+        #endregion Component fields
 
         #region Recursion
         /// <summary>
-        /// Checks if the monoBehaviourField is MonoBehaviourInjectable and inject it the same way as for this TestInjecter but will be stored as the childInjecter of this main TestInjecter
+        /// Checks if the componentField is MonoBehaviourInjectable and inject it the same way as for this TestInjecter but will be stored as the childInjecter of this main TestInjecter
         /// <para/>This is done recursively but all are stored in the same list of childInjecters of this main TestInjecter
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field</param>
+        /// <param name="componentField">Component field</param>
         /// <param name="injectableData">MonoBehaviourInjectableData to check if instance is MonoBehaviourInjectable</param>
-        private void InjectAndStoreIfIsMonoBehaviourInjectable(FieldInfo monoBehaviourField, MonoBehaviourInjectableData injectableData)
+        private void InjectAndStoreIfIsMonoBehaviourInjectable(FieldInfo componentField, MonoBehaviourInjectableData injectableData)
         {
-            if (monoBehaviourField.GetValue(injectableData.Instance) is MonoBehaviourInjectable monoBehaviourInjectable)
+            if (componentField.GetValue(injectableData.Instance) is MonoBehaviourInjectable monoBehaviourInjectable)
             {
-                CheckInfiniteRecursion(monoBehaviourField, injectableData);
+                CheckInfiniteRecursion(componentField, injectableData);
 
-                string gameObjectName = GetGameObjectNameIfExists(monoBehaviourField);
+                string gameObjectName = GetGameObjectNameIfExists(componentField);
 
                 InjectMonoBehaviourInjectable(monoBehaviourInjectable, gameObjectName);
             }
@@ -239,16 +246,16 @@ namespace NixiTestTools
         /// <summary>
         /// Checks if injecting a MonoBehaviourInjectable into objectToLink does not cause an infinite injection loop of itself
         /// </summary>
-        /// <param name="monoBehaviourField">MonoBehaviour field to check</param>
-        private void CheckInfiniteRecursion(FieldInfo monoBehaviourField, MonoBehaviourInjectableData testInjecter)
+        /// <param name="componentField">Component field to check</param>
+        private void CheckInfiniteRecursion(FieldInfo componentField, MonoBehaviourInjectableData testInjecter)
         {
-            Type typeToCheck = monoBehaviourField.FieldType.DeclaringType ?? monoBehaviourField.FieldType;
+            Type typeToCheck = componentField.FieldType.DeclaringType ?? componentField.FieldType;
             Type currentType = testInjecter.Instance.GetType();
 
             if (typeToCheck.IsAssignableFrom(currentType))
             {
-                throw new StackOverflowException($"Infinite recursion detected on the field with name {monoBehaviourField.Name}" +
-                    $" and with type {monoBehaviourField.FieldType} which has a type identical or inherited from objectToLink type" +
+                throw new StackOverflowException($"Infinite recursion detected on the field with name {componentField.Name}" +
+                    $" and with type {componentField.FieldType} which has a type identical or inherited from objectToLink type" +
                     $" which has name {objectToLink.name} and type {currentType.Name}");
             }
         }
@@ -256,7 +263,7 @@ namespace NixiTestTools
 
         #region Mocks and GetComponents
         /// <summary>
-        /// Inject manually a mock into the non-MonoBehaviour type T field
+        /// Inject manually a mock into the Non-Component type T field
         /// <para/>If multiple type T fields are found, you must use InjectMock(Mock mockToInject, string fieldName)
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
@@ -275,7 +282,7 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Inject manually a mock into the non-MonoBehaviour type T field and with the fieldName passed as a parameter
+        /// Inject manually a mock into the Non-Component type T field and with the fieldName passed as a parameter
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="fieldName">Name of the field to mock</param>
@@ -294,13 +301,13 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Return the only component with MonoBehaviour type T field
+        /// Return the only component with Component type T field
         /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
+        /// <typeparam name="T">Type of Component searched</typeparam>
         /// <returns>Single component which corresponds to the type T field</returns>
         public T GetComponent<T>()
-            where T : MonoBehaviour
+            where T : Component
         {
             try
             {
@@ -313,13 +320,13 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Return the only component with MonoBehaviour type T field and with the fieldName passed as a parameter
+        /// Return the only component with Component type T field and with the fieldName passed as a parameter
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
+        /// <typeparam name="T">Type of Component searched</typeparam>
         /// <param name="fieldName">Name of the field searched</param>
         /// <returns>Single component which corresponds to the type T field and fieldName passed as a parameter</returns>
         public T GetComponent<T>(string fieldName)
-            where T : MonoBehaviour
+            where T : Component
         {
             try
             {
@@ -335,19 +342,19 @@ namespace NixiTestTools
         #region Mocks and GetComponents ChildInjected
         /// <summary>
         /// From the MonoBehaviourInjectable recursively injected
-        /// <para/>Inject manually a mock into the non-MonoBehaviour type T field
+        /// <para/>Inject manually a mock into the Non-Component type T field
         /// <para/>If multiple type T fields are found, you must use InjectMockIntoChildInjected(Mock mockToInject, string fieldName)
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
-        /// <param name="monoBehaviourRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
-        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourRecursivelyInjected does not contain a field</exception>
-        public void InjectMockIntoChildInjected<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourRecursivelyInjected)
+        /// <param name="monoBehaviourInjectableRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
+        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourInjectableRecursivelyInjected does not contain a field</exception>
+        public void InjectMockIntoChildInjected<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableRecursivelyInjected)
             where T : class
         {
             try
             {
-                injectablesContainer.InjectMockIntoInstance(mockToInject, monoBehaviourRecursivelyInjected);
+                injectablesContainer.InjectMockIntoInstance(mockToInject, monoBehaviourInjectableRecursivelyInjected);
             }
             catch (InjectablesContainerException e)
             {
@@ -357,19 +364,19 @@ namespace NixiTestTools
 
         /// <summary>
         /// From the MonoBehaviourInjectable recursively injected
-        /// <para/>Inject manually a mock into the non-MonoBehaviour type T field and with the fieldName passed as a parameter
+        /// <para/>Inject manually a mock into the Non-Component type T field and with the fieldName passed as a parameter
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="fieldName">Name of the field to mock</param>
-        /// <param name="monoBehaviourRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
-        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourRecursivelyInjected does not contain a field</exception>
-        public void InjectMockIntoChildInjected<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourRecursivelyInjected, string fieldName)
+        /// <param name="monoBehaviourInjectableRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
+        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourInjectableRecursivelyInjected does not contain a field</exception>
+        public void InjectMockIntoChildInjected<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableRecursivelyInjected, string fieldName)
             where T : class
         {
             try
             {
-                injectablesContainer.InjectMockIntoInstance(mockToInject, monoBehaviourRecursivelyInjected, fieldName);
+                injectablesContainer.InjectMockIntoInstance(mockToInject, monoBehaviourInjectableRecursivelyInjected, fieldName);
             }
             catch (InjectablesContainerException e)
             {
@@ -379,19 +386,19 @@ namespace NixiTestTools
 
         /// <summary>
         /// From the MonoBehaviourInjectable recursively injected
-        /// <para/>Return the only component with MonoBehaviour type T field
+        /// <para/>Return the only component with Component type T field
         /// <para/>If multiple type T fields are found, you must use GetComponent(string fieldName) 
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
-        /// <param name="monoBehaviourRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
+        /// <typeparam name="T">Type of Component searched</typeparam>
+        /// <param name="monoBehaviourInjectableRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
         /// <returns>Single component which corresponds to the type T field</returns>
-        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourRecursivelyInjected does not contain a field</exception>
-        public T GetComponentFromChildInjected<T>(MonoBehaviourInjectable monoBehaviourRecursivelyInjected)
-            where T : MonoBehaviour
+        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourInjectableRecursivelyInjected does not contain a field</exception>
+        public T GetComponentFromChildInjected<T>(MonoBehaviourInjectable monoBehaviourInjectableRecursivelyInjected)
+            where T : Component
         {
             try
             {
-                return injectablesContainer.GetComponentFromInstance<T>(monoBehaviourRecursivelyInjected);
+                return injectablesContainer.GetComponentFromInstance<T>(monoBehaviourInjectableRecursivelyInjected);
             }
             catch (InjectablesContainerException e)
             {
@@ -402,19 +409,19 @@ namespace NixiTestTools
 
         /// <summary>
         /// From the MonoBehaviourInjectable recursively injected
-        /// <para/>Return the only component with MonoBehaviour type T field and with the fieldName passed as a parameter
+        /// <para/>Return the only component with Component type T field and with the fieldName passed as a parameter
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
-        /// <param name="monoBehaviourRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
+        /// <typeparam name="T">Type of Component searched</typeparam>
+        /// <param name="monoBehaviourInjectableRecursivelyInjected">MonoBehaviourInjectable recursively injected (contained in childInjecter)</param>
         /// <param name="fieldName">Name of the field searched</param>
         /// <returns>Single component which corresponds to the type T field and fieldName passed as a parameter</returns>
-        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourRecursivelyInjected does not contain a field</exception>
-        public T GetComponentFromChildInjected<T>(MonoBehaviourInjectable monoBehaviourRecursivelyInjected, string fieldName)
-            where T : MonoBehaviour
+        /// <exception cref="TestInjecterException">Thrown if instance not found which means monoBehaviourInjectableRecursivelyInjected does not contain a field</exception>
+        public T GetComponentFromChildInjected<T>(MonoBehaviourInjectable monoBehaviourInjectableRecursivelyInjected, string fieldName)
+            where T : Component
         {
             try
             {
-                return injectablesContainer.GetComponentFromInstance<T>(monoBehaviourRecursivelyInjected, fieldName);
+                return injectablesContainer.GetComponentFromInstance<T>(monoBehaviourInjectableRecursivelyInjected, fieldName);
             }
             catch (InjectablesContainerException e)
             {

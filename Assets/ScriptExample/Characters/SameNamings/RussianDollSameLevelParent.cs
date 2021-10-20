@@ -1,14 +1,14 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 
 namespace Assets.ScriptExample.Characters.SameNamings
 {
     public sealed class RussianDollSameLevelParent : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviourFromMethodRoot("Doll")]
+        [NixInjectRootComponent("Doll")]
         public FirstDoll FirstDoll;
 
-        [NixInjectMonoBehaviourFromMethodRoot("Doll")]
+        [NixInjectRootComponent("Doll")]
         public FirstDoll FirstDollDuplicate;
     }
 }

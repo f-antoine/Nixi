@@ -1,4 +1,6 @@
-﻿using Assets.ScriptExample.Characters;
+﻿using Assets.ScriptExample.Audio;
+using Assets.ScriptExample.Characters;
+using Assets.ScriptExample.Menu;
 using Assets.Tests.Builders;
 using Nixi.Containers;
 using Nixi.Injections.Injecters;
@@ -6,6 +8,8 @@ using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 using Tests.Builders;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tests.Injections
 {
@@ -145,6 +149,144 @@ namespace Tests.Injections
             // Verify GameObjects setted
             Assert.That(parasite.ParentSorcerer, Is.Not.Null);
         }
+
+        #region Inactive versus Active
+        [Test]
+        public void InjectAllFromChildren_ShouldFillFieldsWhenAllActive()
+        {
+            // Init
+            AudioController audioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                             .AddSliderGameObjectLevel("SliderMusic")
+                                                                             .AddEmptyGameObjectLevel()
+                                                                             .AddSliderGameObjectLevel("SliderSpatialisation")
+                                                                             .Build();
+
+            Assert.That(audioController.musicSlider, Is.Null);
+            Assert.That(audioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(audioController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(audioController.musicSlider, Is.Not.Null);
+            Assert.That(audioController.musicSlider.IsActive(), Is.True);
+
+            Assert.That(audioController.spatialisationSlider, Is.Not.Null);
+            Assert.That(audioController.spatialisationSlider.IsActive(), Is.True);
+        }
+
+        [Test]
+        public void InjectAllFromChildren_ShouldFillFieldsWhenBothInactive()
+        {
+            // Init
+            AudioController audioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                             .AddSliderGameObjectLevel("SliderMusic", false)
+                                                                             .AddEmptyGameObjectLevel()
+                                                                             .AddSliderGameObjectLevel("SliderSpatialisation", false)
+                                                                             .Build();
+
+            Assert.That(audioController.musicSlider, Is.Null);
+            Assert.That(audioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(audioController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(audioController.musicSlider, Is.Not.Null);
+            Assert.That(audioController.musicSlider.IsActive(), Is.False);
+
+            Assert.That(audioController.spatialisationSlider, Is.Not.Null);
+            Assert.That(audioController.spatialisationSlider.IsActive(), Is.False);
+        }
+
+        [Test]
+        public void InjectAllFromChildren_ShouldThrowException_WhenBothInactiveWithFalseParameterOnDecorator()
+        {
+            // Init
+            AudioControllerWithInactive audioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                                         .AddSliderGameObjectLevel("SliderMusic", false)
+                                                                                         .AddEmptyGameObjectLevel()
+                                                                                         .AddSliderGameObjectLevel("SliderSpatialisation", false)
+                                                                                         .BuildWithInactive();
+
+            Assert.That(audioController.musicSlider, Is.Null);
+            Assert.That(audioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(audioController);
+            Assert.Throws<NixInjecterException>(() => nixInjecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void InjectAllFromParent_ShouldFillFieldsWhenAllActive()
+        {
+            // Init
+            UnderGroundAudioController ugAudioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                                          .AddSliderGameObjectLevel("SliderMusic")
+                                                                                          .AddEmptyGameObjectLevel()
+                                                                                          .AddSliderGameObjectLevel("SliderSpatialisation")
+                                                                                          .BuildUnderGround();
+
+            Assert.That(ugAudioController.musicSlider, Is.Null);
+            Assert.That(ugAudioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(ugAudioController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(ugAudioController.musicSlider, Is.Not.Null);
+            Assert.That(ugAudioController.musicSlider.IsActive(), Is.True);
+
+            Assert.That(ugAudioController.spatialisationSlider, Is.Not.Null);
+            Assert.That(ugAudioController.spatialisationSlider.IsActive(), Is.True);
+        }
+
+        [Test]
+        public void InjectAllFromParent_ShouldFillFieldsWhenBothInactive()
+        {
+            // Init
+            UnderGroundAudioController ugAudioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                                          .AddSliderGameObjectLevel("SliderMusic", false)
+                                                                                          .AddEmptyGameObjectLevel()
+                                                                                          .AddSliderGameObjectLevel("SliderSpatialisation", false)
+                                                                                          .BuildUnderGround();
+
+            Assert.That(ugAudioController.musicSlider, Is.Null);
+            Assert.That(ugAudioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(ugAudioController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(ugAudioController.musicSlider, Is.Not.Null);
+            Assert.That(ugAudioController.musicSlider.IsActive(), Is.False);
+
+            Assert.That(ugAudioController.spatialisationSlider, Is.Not.Null);
+            Assert.That(ugAudioController.spatialisationSlider.IsActive(), Is.False);
+        }
+
+        [Test]
+        public void InjectAllFromParent_ShouldThrowException_WhenBothInactiveWithFalseParameterOnDecorator()
+        {
+            // Init
+            UnderGroundAudioControllerWithInactive ugAudioController = AudioControllerBuilder.Create().AddEmptyGameObjectLevel()
+                                                                                                      .AddSliderGameObjectLevel("SliderMusic", false)
+                                                                                                      .AddEmptyGameObjectLevel()
+                                                                                                      .AddSliderGameObjectLevel("SliderSpatialisation", false)
+                                                                                                      .BuildUnderGroundWithInactive();
+
+            Assert.That(ugAudioController.musicSlider, Is.Null);
+            Assert.That(ugAudioController.spatialisationSlider, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(ugAudioController);
+            Assert.Throws<NixInjecterException>(() => nixInjecter.CheckAndInjectAll());
+        }
+        #endregion Inactive versus Active
         #endregion GameObjectInjection From MonoBehaviourInjectable
 
         #region GameObjectInjection From GameObject root
@@ -281,6 +423,97 @@ namespace Tests.Injections
             Assert.That(currentSceneProperties.ChildSorcererController.ChildMonsterController.GetInstanceID(), Is.EqualTo(currentSceneProperties.ChildMonsterController.GetInstanceID()));
         }
         #endregion GetComponentsInChildren
+
+        #region Inactive versus Active
+        [Test]
+        public void InjectAllFromRootChildren_ShouldFillFieldsWhenAllActive()
+        {
+            // Init
+            MenuController menuController = MenuControllerBuilder.Create("OptionRoot")
+                                                                 .AddGameObjectLevelOnRoot<OptionsController>("OptionsController", true)
+                                                                 .AddGameObjectLevelOnRoot<ScreenOptions>("ScreenOptions", true)
+                                                                 .Build();
+
+            Assert.That(menuController.OptionsController, Is.Null);
+            Assert.That(menuController.ScreenOptions, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(menuController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(menuController.OptionsController, Is.Not.Null);
+            Assert.That(menuController.OptionsController.gameObject.activeSelf, Is.True);
+
+            Assert.That(menuController.ScreenOptions, Is.Not.Null);
+            Assert.That(menuController.ScreenOptions.gameObject.activeSelf, Is.True);
+        }
+        
+        [Test]
+        public void InjectAllFromRootChildren_ShouldFillFieldsWhenBothInactive()
+        {
+            // Init
+            MenuController menuController = MenuControllerBuilder.Create("OptionRoot")
+                                                                 .AddGameObjectLevelOnRoot<OptionsController>("OptionsController", false)
+                                                                 .AddGameObjectLevelOnRoot<ScreenOptions>("ScreenOptions", false)
+                                                                 .Build();
+
+            Assert.That(menuController.OptionsController, Is.Null);
+            Assert.That(menuController.ScreenOptions, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(menuController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(menuController.OptionsController, Is.Not.Null);
+            Assert.That(menuController.OptionsController.gameObject.activeSelf, Is.False);
+
+            Assert.That(menuController.ScreenOptions, Is.Not.Null);
+            Assert.That(menuController.ScreenOptions.gameObject.activeSelf, Is.False);
+        }
+
+        [Test]
+        public void InjectAllFromRootChildren_ShouldThrowException_WhenBothInactiveWithFalseParameterOnDecorator()
+        {
+            // Init
+            MenuControllerWithInactive menuController = MenuControllerBuilder.Create("OptionRoot")
+                                                                             .AddGameObjectLevelOnRoot<OptionsController>("OptionsController", false)
+                                                                             .AddGameObjectLevelOnRoot<ScreenOptions>("ScreenOptions", false)
+                                                                             .BuildWithInactive();
+
+            Assert.That(menuController.OptionsController, Is.Null);
+            Assert.That(menuController.ScreenOptions, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(menuController);
+            Assert.Throws<NixInjecterException>(() => nixInjecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void InjectAllFromRootChildren_ShouldFillFields_WhenBothActiveWithFalseParameterOnDecorator()
+        {
+            // Init
+            MenuControllerWithInactive menuController = MenuControllerBuilder.Create("OptionRoot")
+                                                                             .AddGameObjectLevelOnRoot<OptionsController>("OptionsController", true)
+                                                                             .AddGameObjectLevelOnRoot<ScreenOptions>("ScreenOptions", true)
+                                                                             .BuildWithInactive();
+
+            Assert.That(menuController.OptionsController, Is.Null);
+            Assert.That(menuController.ScreenOptions, Is.Null);
+
+            // Inject
+            NixInjecter nixInjecter = new NixInjecter(menuController);
+            nixInjecter.CheckAndInjectAll();
+
+            // Verify GameObjects setted
+            Assert.That(menuController.OptionsController, Is.Not.Null);
+            Assert.That(menuController.OptionsController.gameObject.activeSelf, Is.True);
+
+            Assert.That(menuController.ScreenOptions, Is.Not.Null);
+            Assert.That(menuController.ScreenOptions.gameObject.activeSelf, Is.True);
+        }
+        #endregion Inactive versus Active
         #endregion GameObjectInjection From GameObject root
     }
 }

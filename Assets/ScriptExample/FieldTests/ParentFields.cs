@@ -1,6 +1,6 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace ScriptExample.FieldTests
         }
 
         /// <summary>
-        /// Easy access to Skill MonoBehaviour fields from name for testing simplification purposes
+        /// Easy access to Skill Component fields from name for testing simplification purposes
         /// </summary>
         public virtual Skill GetSkillFieldFromName(string fieldName)
         {
@@ -40,13 +40,13 @@ namespace ScriptExample.FieldTests
         [NixInject]
         public ITestInterface publicParentTestInterface;
 
-        [NixInjectMonoBehaviourFromMethod("privateParentSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromMethod("privateParentSkill", GameObjectMethod.GetComponentsInChildren)]
         private Skill privateParentSkill;
 
-        [NixInjectMonoBehaviourFromMethod("protectedParentSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromMethod("protectedParentSkill", GameObjectMethod.GetComponentsInChildren)]
         protected Skill protectedParentSkill;
 
-        [NixInjectMonoBehaviourFromMethod("publicParentSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromMethod("publicParentSkill", GameObjectMethod.GetComponentsInChildren)]
         public Skill publicParentSkill;
     }
 }

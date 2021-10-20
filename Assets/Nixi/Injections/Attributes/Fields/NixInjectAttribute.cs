@@ -3,7 +3,7 @@
 namespace Nixi.Injections.Attributes.Fields
 {
     /// <summary>
-    /// Used to trigger the injection in a non-MonoBehaviour field in a class derived from MonoBehaviourInjectable
+    /// Used to trigger the injection in a Non-Component field in a class derived from MonoBehaviourInjectable
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public sealed class NixInjectAttribute : Attribute
@@ -14,7 +14,7 @@ namespace Nixi.Injections.Attributes.Fields
         public NixInjectType NixInjectType { get; private set; }
 
         /// <summary>
-        /// Used to trigger the injection in a non-MonoBehaviour field in a class derived from MonoBehaviourInjectable
+        /// Used to trigger the injection in a Non-Component field in a class derived from MonoBehaviourInjectable
         /// By default this will fill the decorated field with the NixiContainer
         /// <see cref="Fields.NixInjectType"/>
         /// </summary>

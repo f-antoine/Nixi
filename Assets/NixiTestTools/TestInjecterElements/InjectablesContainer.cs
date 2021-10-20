@@ -57,8 +57,8 @@ namespace NixiTestTools.TestInjecterElements
         /// If instance with instanceName has already been registered, return MonoBehaviourInjectableData associated to these parameters
         /// <para/> If not, store a MonoBehaviourInjectable on which operations like InjectMock or GetComponent can be executed
         /// </summary>
-        /// <param name="instance">Instance on which all the fields are fields and usable from monoBehaviourFieldsTypeInstantiated and nonMonoBehaviourFields</param>
-        /// <param name="instanceName">Name of the instance, can help for specials operation like root GameObjects (NixInjectMonoBehaviourFromMethodRootAttribute)</param>
+        /// <param name="instance">Instance on which all the fields are fields and usable from componentFieldsTypeInstantiated and nonComponentFields</param>
+        /// <param name="instanceName">Name of the instance, can help for specials operation like root GameObjects (NixInjectComponentFromMethodRootAttribute)</param>
         /// <returns>Instance of the MonoBehaviourInjectable added</returns>
         internal MonoBehaviourInjectableData Add(MonoBehaviourInjectable instance, string instanceName = "")
         {
@@ -73,7 +73,7 @@ namespace NixiTestTools.TestInjecterElements
         }
 
         /// <summary>
-        /// Inject manually a mock into the non-MonoBehaviour field with T Type in a MonoBehaviourInjectable
+        /// Inject manually a mock into the Non-Component field with T Type in a MonoBehaviourInjectable
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
@@ -85,7 +85,7 @@ namespace NixiTestTools.TestInjecterElements
 
             Type interfaceType = typeof(T);
 
-            IEnumerable<FieldInfo> fieldSelecteds = injectableData.nonMonoBehaviourFields.Where(x => x.FieldType == interfaceType);
+            IEnumerable<FieldInfo> fieldSelecteds = injectableData.nonComponentFields.Where(x => x.FieldType == interfaceType);
 
             if (!fieldSelecteds.Any())
                 throw new InjectablesContainerException($"no field with type {interfaceType.Name} was found");
@@ -97,7 +97,7 @@ namespace NixiTestTools.TestInjecterElements
         }
 
         /// <summary>
-        /// Inject manually a mock into the non-MonoBehaviour field with T Type and with the fieldName passed as a parameter in a MonoBehaviourInjectable
+        /// Inject manually a mock into the Non-Component field with T Type and with the fieldName passed as a parameter in a MonoBehaviourInjectable
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="fieldName">Name of the field to mock</param>
@@ -110,7 +110,7 @@ namespace NixiTestTools.TestInjecterElements
 
             Type interfaceType = typeof(T);
 
-            IEnumerable<FieldInfo> fieldWithType = injectableData.nonMonoBehaviourFields.Where(x => x.FieldType == interfaceType);
+            IEnumerable<FieldInfo> fieldWithType = injectableData.nonComponentFields.Where(x => x.FieldType == interfaceType);
             if (!fieldWithType.Any())
                 throw new InjectablesContainerException($"no field with type {interfaceType.Name}");
 
@@ -122,19 +122,19 @@ namespace NixiTestTools.TestInjecterElements
         }
 
         /// <summary>
-        /// Return the only component with MonoBehaviour type T field from a MonoBehaviourInjectable
+        /// Return the only component with Component type T field from a MonoBehaviourInjectable
         /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
+        /// <typeparam name="T">Type of Component searched</typeparam>
         /// <returns>Single component which corresponds to the type T field</returns>
         internal T GetComponentFromInstance<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
-            where T : MonoBehaviour
+            where T : Component
         {
             MonoBehaviourInjectableData injectableData = GetInjectableData(monoBehaviourInjectableToFind);
 
             Type typeToFind = typeof(T);
 
-            IEnumerable<GameObjectWithFieldInfo> gameObjectWithType = injectableData.monoBehaviourWithFieldInstantiated.Where(x => x.FieldInfo.FieldType == typeToFind);
+            IEnumerable<GameObjectWithFieldInfo> gameObjectWithType = injectableData.componentWithFieldInstantiated.Where(x => x.FieldInfo.FieldType == typeToFind);
 
             if (!gameObjectWithType.Any())
                 throw new InjectablesContainerException($"no GameObject with type {typeToFind.Name} was found");
@@ -146,19 +146,19 @@ namespace NixiTestTools.TestInjecterElements
         }
 
         /// <summary>
-        /// Return the only component with MonoBehaviour type T field and with fieldName passed as parameter from a MonoBehaviourInjectable
+        /// Return the only component with Component type T field and with fieldName passed as parameter from a MonoBehaviourInjectable
         /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
         /// </summary>
-        /// <typeparam name="T">Type of MonoBehaviour searched</typeparam>
+        /// <typeparam name="T">Type of Component searched</typeparam>
         /// <returns>Single component which corresponds to the type T field</returns>
         internal T GetComponentFromInstance<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind, string fieldName)
-            where T : MonoBehaviour
+            where T : Component
         {
             MonoBehaviourInjectableData injectableData = GetInjectableData(monoBehaviourInjectableToFind);
 
             Type typeToFind = typeof(T);
 
-            IEnumerable<GameObjectWithFieldInfo> gameObjectWithFieldType = injectableData.monoBehaviourWithFieldInstantiated.Where(x => x.FieldInfo.FieldType == typeToFind);
+            IEnumerable<GameObjectWithFieldInfo> gameObjectWithFieldType = injectableData.componentWithFieldInstantiated.Where(x => x.FieldInfo.FieldType == typeToFind);
             if (!gameObjectWithFieldType.Any())
                 throw new InjectablesContainerException($"no GameObject with type {typeToFind.Name} was found");
 

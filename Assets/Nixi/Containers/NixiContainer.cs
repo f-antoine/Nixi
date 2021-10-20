@@ -6,7 +6,7 @@ using System.Linq;
 namespace Nixi.Containers
 {
     /// <summary>
-    /// Container used to fill fields decorated with a Non-MonoBehaviour NixInjection
+    /// Container used to fill fields decorated with a Non-Component NixInjection
     /// </summary>
     public static class NixiContainer
     {

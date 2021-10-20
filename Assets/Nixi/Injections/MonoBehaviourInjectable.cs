@@ -14,11 +14,11 @@ namespace Nixi.Injections
     ///     <item>
     ///         <list type="bullet">
     ///             <item>
-    ///                 <term>MonoBehaviour fields</term>
-    ///                 <description>Marked with NixInjectMonoBehaviourAttribute will be populated with Unity dependency injection</description>
+    ///                 <term>Component fields</term>
+    ///                 <description>Marked with NixInjectComponentAttribute will be populated with Unity dependency injection</description>
     ///             </item>
     ///             <item>
-    ///                 <term>Non-MonoBehaviour fields</term>
+    ///                 <term>Non-Component fields</term>
     ///                 <description>Marked with NixInjectAttribute will be populated with NixiContainer</description>
     ///             </item>
     ///         </list>
@@ -31,11 +31,11 @@ namespace Nixi.Injections
     ///     <item>
     ///         <list type="bullet">
     ///             <item>
-    ///                 <term>MonoBehaviour fields</term>
-    ///                 <description>Marked with NixInjectMonoBehaviourAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
+    ///                 <term>Component fields</term>
+    ///                 <description>Marked with NixInjectComponentAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
     ///             </item>
     ///             <item>
-    ///                 <term>Non-MonoBehaviour fields</term>
+    ///                 <term>Non-Component fields</term>
     ///                 <description>Marked with NixInjectAttribute will be mockable, you can inject mock in it</description>
     ///             </item>
     ///         </list>

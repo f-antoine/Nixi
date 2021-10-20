@@ -1,5 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 using ScriptExample.Containers.Broken;
 
 namespace Assets.ScriptExample.Characters.Broken
@@ -7,9 +7,9 @@ namespace Assets.ScriptExample.Characters.Broken
     /// <summary>
     /// Allow to do test on bad designed code for nixi injection
     /// </summary>
-    public class SorcererWithWrongNixInjectMonoBehaviour : MonoBehaviourInjectable
+    public class SorcererWithWrongNixInjectComponent : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviour]
+        [NixInjectComponent]
         public IBrokenTestInterface brokenTestInterfaceSecond;
     }
 }

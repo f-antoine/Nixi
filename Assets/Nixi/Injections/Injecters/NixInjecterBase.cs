@@ -1,5 +1,5 @@
 ﻿using Nixi.Injections.Attributes.Fields;
-using Nixi.Injections.Attributes.MonoBehaviours.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Nixi.Injections.Injecters
 {
     /// <summary>
-    /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviour Injectable
+    /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviourInjectable
     /// </summary>
     public abstract class NixInjecterBase
     {
@@ -24,33 +24,33 @@ namespace Nixi.Injections.Injecters
         public bool IsInjected { get; private set; } = false;
 
         /// <summary>
-        /// Predicate to find all NixInjectAttribute on a non-MonoBehaviour field in a MonoBehaviourInjectable
+        /// Predicate to find all NixInjectAttribute on a Non-Component field in a MonoBehaviourInjectable
         /// </summary>
-        protected Func<FieldInfo, bool> NixiFieldPredicate => x => x.CustomAttributes.Any(NonMonoBehaviourFieldsPredicate);
+        protected Func<FieldInfo, bool> NixiFieldPredicate => x => x.CustomAttributes.Any(nonComponentFieldsPredicate);
 
         /// <summary>
-        /// Predicate to find all attributes derived from NixInjectMonoBehaviourBaseAttribute on a MonoBehaviour field in a MonoBehaviourInjectable
+        /// Predicate to find all attributes derived from NixInjectComponentBaseAttribute on a Component field in a MonoBehaviourInjectable
         /// </summary>
-        protected Func<FieldInfo, bool> NixiMonoBehaviourFieldPredicate => x => x.CustomAttributes.Any(MonoBehaviourFieldsPredicate);
+        protected Func<FieldInfo, bool> NixiComponentFieldPredicate => x => x.CustomAttributes.Any(ComponentFieldsPredicate);
 
         /// <summary>
         /// Predicate to identify a NixInjectAttribute on a CustomAttributeData
         /// </summary>
-        private Func<CustomAttributeData, bool> NonMonoBehaviourFieldsPredicate => y => y.AttributeType == typeof(NixInjectAttribute);
+        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => y.AttributeType == typeof(NixInjectAttribute);
 
         /// <summary>
-        /// Predicate to identify all attributes derived from NixInjectMonoBehaviourBaseAttribut on a CustomAttributeData
+        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribut on a CustomAttributeData
         /// </summary>
-        private Func<CustomAttributeData, bool> MonoBehaviourFieldsPredicate => y => typeof(NixInjectMonoBehaviourBaseAttribute).IsAssignableFrom(y.AttributeType);
+        private Func<CustomAttributeData, bool> ComponentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
-        /// Combination of NonMonoBehaviourFieldsPredicate and MonoBehaviourFieldsPredicate
+        /// Combination of nonComponentFieldsPredicate and componentFieldsPredicate
         /// </summary>
         protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => y.AttributeType == typeof(NixInjectAttribute)
-                                                                            || typeof(NixInjectMonoBehaviourBaseAttribute).IsAssignableFrom(y.AttributeType);
+                                                                            || typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
-        /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviour Injectable
+        /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviourInjectable
         /// </summary>
         /// <param name="objectToLink">Instance of the class derived from MonoBehaviourInjectable on which all injections will be triggered</param>
         public NixInjecterBase(MonoBehaviourInjectable objectToLink)
@@ -59,7 +59,7 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Check if InjectAll has never been get called and inject all the fields decorated by NixInjectAttribute or NixInjectMonoBehaviourAttribute in objectToLink
+        /// Check if InjectAll has never been get called and inject all the fields decorated by NixInjectAttribute or NixInjectComponentAttribute in objectToLink
         /// </summary>
         /// <exception cref="NixInjecterException">Thrown if this method has already been called</exception>
         public virtual void CheckAndInjectAll()
@@ -73,7 +73,7 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Inject all the fields decorated by NixInjectAttribute or NixInjectMonoBehaviourAttribute in objectToLink
+        /// Inject all the fields decorated by NixInjectAttribute or NixInjectComponentAttribute in objectToLink
         /// </summary>
         protected abstract void InjectAll();
 
@@ -102,27 +102,27 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Check if a FieldInfo type is not a MonoBehaviour
+        /// Check if a FieldInfo type is not a Component
         /// </summary>
-        /// <param name="nonMonoBehaviourField">Field to check</param>
-        protected void CheckIsNotMonoBehaviour(FieldInfo nonMonoBehaviourField)
+        /// <param name="nonComponentField">Field to check</param>
+        protected void CheckIsNotComponent(FieldInfo nonComponentField)
         {
-            if (typeof(MonoBehaviour).IsAssignableFrom(nonMonoBehaviourField.FieldType))
-                throw new NixInjecterException($"Cannot register field with name {nonMonoBehaviourField.Name} with a NixInjectAttribute because it is a MonoBehaviour field, you must use NixInjectMonoBehaviourAttribute instead", objectToLink);
+            if (typeof(Component).IsAssignableFrom(nonComponentField.FieldType))
+                throw new NixInjecterException($"Cannot register field with name {nonComponentField.Name} with a NixInjectAttribute because it is a Component field, you must use NixInjectComponentAttribute instead", objectToLink);
         }
 
         /// <summary>
-        /// Check if a FieldInfo type is a MonoBehaviour
+        /// Check if a FieldInfo type is a Component
         /// </summary>
-        /// <param name="monoBehaviourField">Field to check</param>
-        protected void CheckIsMonoBehaviour(FieldInfo monoBehaviourField)
+        /// <param name="componentField">Field to check</param>
+        protected void CheckIsComponent(FieldInfo componentField)
         {
-            if (!typeof(MonoBehaviour).IsAssignableFrom(monoBehaviourField.FieldType))
-                throw new NixInjecterException($"Cannot inject field with name {monoBehaviourField.Name} with a NixInjectMonoBehaviourAttribute because it is not a MonoBehaviour field, you must use NixInjectAttribute instead", objectToLink);
+            if (!typeof(Component).IsAssignableFrom(componentField.FieldType))
+                throw new NixInjecterException($"Cannot inject field with name {componentField.Name} with a NixInjectComponentAttribute because it is not a Component field, you must use NixInjectAttribute instead", objectToLink);
         }
 
         /// <summary>
-        /// Check if a fieldInfo is decorated by only one Nixi attribute (NixInjectAttribute or derived from NixInjectMonoBehaviourBaseAttribute)
+        /// Check if a fieldInfo is decorated by only one Nixi attribute (NixInjectAttribute or derived from NixInjectComponentBaseAttribute)
         /// <para/>If there is more than one attribute, it throws an exception
         /// </summary>
         /// <param name="fieldInfo">Field info to check</param>

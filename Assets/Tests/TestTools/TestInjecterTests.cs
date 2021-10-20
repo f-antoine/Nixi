@@ -1,4 +1,5 @@
-﻿using Assets.ScriptExample.Characters.SameNamings;
+﻿using Assets.ScriptExample.Characters;
+using Assets.ScriptExample.Characters.SameNamings;
 using Assets.ScriptExample.Controllers;
 using Assets.Tests.Builders;
 using Moq;
@@ -56,6 +57,30 @@ namespace Tests.TestTools
             testInjecter.CheckAndInjectAll();
 
             Assert.That(russianDoll.ChildDoll.GetInstanceID(), Is.EqualTo(russianDoll.ChildDoll2.GetInstanceID()));
+        }
+
+        [Test]
+        public void InjectField_WithDoesNotFillButExposeForTesting_ShouldNotFillField_ButExposeIt()
+        {
+            // Init
+            Warrior warrior = WarriorBuilder.Create().Build();
+            Assert.That(warrior.Parasite, Is.Null);
+
+            // Inject
+            TestInjecter testInjecter = new TestInjecter(warrior);
+            testInjecter.CheckAndInjectAll();
+
+            // Verify not injected because marked with DoesNotFillButExposeForTesting
+            Assert.That(warrior.Parasite, Is.Null);
+
+            // Check not a component registered but a field
+            Assert.Throws<TestInjecterException>(() => testInjecter.GetComponent<Warrior>());
+
+            Parasite parasite = ParasiteBuilder.Create().Build();
+            testInjecter.InjectMock(parasite);
+
+            Assert.That(warrior.Parasite, Is.Not.Null);
+            Assert.That(warrior.Parasite.GetInstanceID(), Is.EqualTo(parasite.GetInstanceID()));
         }
 
         #region FieldInjection : InjectMock without field name
@@ -276,7 +301,6 @@ namespace Tests.TestTools
             Assert.That(sorcerer, Is.Not.Null);
 
             Skill skillMock = new GameObject().AddComponent<Skill>();
-            //testInjecter.InjectMockIntoChildInjected(skillMock, sorcerer, "anyName");
             Assert.Throws<TestInjecterException>(() => testInjecter.InjectMockIntoChildInjected(skillMock, sorcerer, "anyName"));
         }
         #endregion FieldInjection : InjectMock with field name
@@ -355,16 +379,16 @@ namespace Tests.TestTools
             // Attack skill checks
             Assert.That(attackSkill, Is.Not.Null);
             Assert.That(sorcerer.AttackSkill, Is.Not.Null);
-            Assert.That(sorcerer.AttackSkill, Is.EqualTo(attackSkill));
+            Assert.That(sorcerer.AttackSkill.GetInstanceID(), Is.EqualTo(attackSkill.GetInstanceID()));
 
             // Magic skill checks
             Assert.That(magicSkill, Is.Not.Null);
             Assert.That(sorcerer.MagicSkill, Is.Not.Null);
-            Assert.That(sorcerer.MagicSkill, Is.EqualTo(magicSkill));
+            Assert.That(sorcerer.MagicSkill.GetInstanceID(), Is.EqualTo(magicSkill.GetInstanceID()));
 
             // Both return are differents
-            Assert.That(sorcerer.MagicSkill, Is.Not.EqualTo(attackSkill));
-            Assert.That(sorcerer.AttackSkill, Is.Not.EqualTo(magicSkill));
+            Assert.That(sorcerer.MagicSkill.GetInstanceID(), Is.Not.EqualTo(attackSkill.GetInstanceID()));
+            Assert.That(sorcerer.AttackSkill.GetInstanceID(), Is.Not.EqualTo(magicSkill.GetInstanceID()));
         }
         #endregion GameObjectInjection with field name
 

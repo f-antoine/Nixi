@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 
 namespace ScriptExample.Characters.Broken
 {
     public class InfiniteRecursionSorcererWithInheritance : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviour]
+        [NixInjectComponent]
         private InfiniteRecursionSorcererWithInheritanceSecondLevel infiniteSorcererWithInheritance;
 
         private class InfiniteRecursionSorcererWithInheritanceSecondLevel : InfiniteRecursionSorcererWithInheritance

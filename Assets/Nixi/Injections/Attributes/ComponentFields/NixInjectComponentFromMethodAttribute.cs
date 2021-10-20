@@ -1,20 +1,20 @@
-﻿using Nixi.Injections.Attributes.MonoBehaviours.Abstractions;
+﻿using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Injecters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.MonoBehaviours
+namespace Nixi.Injections.Attributes.ComponentFields
 {
     /// <summary>
-    /// Attribute used to define a dependency injection in a MonoBehaviour field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
+    /// Attribute used to define a dependency injection in a Component field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
     /// with Unity dependency injection approach
-    /// <para/>This one get the method associated to GameObjectMethod and call it from the instance of the class derived from MonoBehaviourInjectable and fill the MonoBehaviour field
+    /// <para/>This one get the method associated to GameObjectMethod and call it from the instance of the class derived from MonoBehaviourInjectable and fill the Component field
     /// <para/>This is filtered to match GameObjectType and GameObjectNameToFind
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class NixInjectMonoBehaviourFromMethodAttribute : NixInjectMonoBehaviourBaseAttribute, IHaveGameObjectNameToFind
+    public sealed class NixInjectComponentFromMethodAttribute : NixInjectComponentBaseAttribute, IHaveGameObjectNameToFind
     {
         /// <summary>
         /// Method to use to find the GameObject with the name that match GameObjectName
@@ -27,25 +27,32 @@ namespace Nixi.Injections.Attributes.MonoBehaviours
         public string GameObjectNameToFind { get; private set; }
 
         /// <summary>
-        /// Attribute used to define a dependency injection in a MonoBehaviour field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
+        /// Define if method calls with Unity dependency injection way include inactive GameObject in the search or not
+        /// </summary>
+        public bool IncludeInactive { get; private set; }
+
+        /// <summary>
+        /// Attribute used to define a dependency injection in a Component field of a class instance derived from MonoBehaviourInjectable with a Nixi approach
         /// with Unity dependency injection approach
-        /// <para/>This one get the method associated to GameObjectMethod and call it from the instance of the class derived from MonoBehaviourInjectable and fill the MonoBehaviour field
+        /// <para/>This one get the method associated to GameObjectMethod and call it from the instance of the class derived from MonoBehaviourInjectable and fill the Component field
         /// <para/>This is filtered to match GameObjectType and GameObjectNameToFind
         /// </summary>
         /// <param name="gameObjectNameToFind">Name of the GameObject to find</param>
         /// <param name="gameObjectMethod">Method to use to find the GameObject with the name that match GameObjectName</param>
-        public NixInjectMonoBehaviourFromMethodAttribute(string gameObjectNameToFind, GameObjectMethod gameObjectMethod)
+        /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>
+        public NixInjectComponentFromMethodAttribute(string gameObjectNameToFind, GameObjectMethod gameObjectMethod, bool includeInactive = true)
         {
             GameObjectNameToFind = gameObjectNameToFind;
             GameObjectMethod = gameObjectMethod;
+            IncludeInactive = includeInactive;
         }
 
         /// <summary>
-        /// Find the unique component which exactly matches criteria of a derived attribute from NixInjectMonoBehaviourFromMethodAttribute using the Unity dependency injection method
+        /// Find the unique component which exactly matches criteria of a derived attribute from NixInjectComponentFromMethodAttribute using the Unity dependency injection method
         /// </summary>
         /// <param name="monoBehaviourInjectable">Instance of the MonoBehaviourInjectable</param>
         /// <param name="gameObjectTypeToFind">GameObject type to find</param>
-        /// <returns>Unique component which exactly matches criteria of a NixInjectMonoBehaviour injection using the Unity dependency injection method</returns>
+        /// <returns>Unique component which exactly matches criteria of a NixInjectComponent injection using the Unity dependency injection method</returns>
         public override Component GetSingleComponent(MonoBehaviourInjectable monoBehaviourInjectable, Type gameObjectTypeToFind)
         {
             Component[] componentsFound = GetComponentsFromGameObjectMethod(monoBehaviourInjectable, gameObjectTypeToFind);
@@ -62,9 +69,9 @@ namespace Nixi.Injections.Attributes.MonoBehaviours
         {
             if (GameObjectMethod == GameObjectMethod.GetComponentsInChildren)
             {
-                return monoBehaviourInjectable.GetComponentsInChildren(gameObjectTypeToFind);
+                return monoBehaviourInjectable.GetComponentsInChildren(gameObjectTypeToFind, IncludeInactive);
             }
-            return monoBehaviourInjectable.GetComponentsInParent(gameObjectTypeToFind);
+            return monoBehaviourInjectable.GetComponentsInParent(gameObjectTypeToFind, IncludeInactive);
         }
 
         /// <summary>

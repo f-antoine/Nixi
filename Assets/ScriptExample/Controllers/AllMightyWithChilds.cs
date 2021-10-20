@@ -1,14 +1,14 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes.MonoBehaviours;
+using Nixi.Injections.Attributes.ComponentFields;
 
 namespace Assets.ScriptExample.Controllers
 {
     public sealed class AllMightyWithChilds : MonoBehaviourInjectable
     {
-        [NixInjectMonoBehaviourFromMethodRoot("SorcererController", "FirstSorcerer")]
+        [NixInjectRootComponent("SorcererController", "FirstSorcerer")]
         public SorcererController FirstSorcerer;
 
-        [NixInjectMonoBehaviourFromMethodRoot("SorcererController", "SecondSorcerer")]
+        [NixInjectRootComponent("SorcererController", "SecondSorcerer")]
         public SorcererController SecondSorcerer;
     }
 }

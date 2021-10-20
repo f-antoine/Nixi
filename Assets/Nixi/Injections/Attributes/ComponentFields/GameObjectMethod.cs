@@ -1,7 +1,7 @@
-﻿namespace Nixi.Injections.Attributes.MonoBehaviours
+﻿namespace Nixi.Injections.Attributes.ComponentFields
 {
     /// <summary>
-    /// Method to use from a MonoBehaviour instance to get a GameObject
+    /// Method to use from a Component instance to get a GameObject
     /// </summary>
     public enum GameObjectMethod
     {
