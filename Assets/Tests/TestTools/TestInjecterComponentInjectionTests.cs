@@ -263,6 +263,11 @@ namespace Tests.TestTools
         #endregion ComponentInjection from root
 
         #region ComponentInjection From Method
+        //1) Interdire les NixInjectComponentFromMethod (Child) sur le current (pour current passer par NixInjectComponent)
+        //2) Interdire les NixInjectComponentFromMethod (Parent) sur le current (pour current passer par NixInjectComponent)
+        //3) Si même GameObjectMethod avec même nom, on a la même instance, sinon on la crée et enregistre
+        //4) Si on rempli le critère du 3), alors tous les éléments en-dessous sont les mêmes, il s'agit de la même instance
+
         [Test]
         public void InjectComponentFromChildMethod_ShouldNotReturnCurrentLevelComponent()
         {

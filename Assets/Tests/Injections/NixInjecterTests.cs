@@ -3,7 +3,10 @@ using Assets.ScriptExample.Characters;
 using Assets.ScriptExample.ComponentsWithEnumerable;
 using Assets.ScriptExample.ComponentsWithInterface;
 using Assets.ScriptExample.ComponentsWithInterface.BadDucks;
+using Assets.ScriptExample.Fallen.AllComponentAttributes;
+using Assets.ScriptExample.Fallen.List;
 using Assets.ScriptExample.Menu;
+using Assets.Tests.Builders;
 using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
@@ -650,5 +653,50 @@ namespace Tests.Injections
             Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
         #endregion Enumerable Injections
+
+        #region Error decorator
+        [TestCase(typeof(FallenCompoListClass))]
+        [TestCase(typeof(FallenCompoListComponent))]
+        [TestCase(typeof(FallenCompoListInjectable))]
+        [TestCase(typeof(FallenCompoListInterface))]
+        public void NixInjecter_InjectComponentList_OnWrongFieldType_ShouldThrowException(Type injectableTypeToBuild)
+        {
+            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
+
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Exception exception = Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+
+            StringAssert.Contains("using decorator NixInjectComponentListAttribute", exception.Message);
+        }
+
+        [TestCase(typeof(FallenArrayComponent), "NixInjectComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponent), "NixInjectComponentAttribute")]
+        [TestCase(typeof(FallenListComponent), "NixInjectComponentAttribute")]
+        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenArrayComponentRoot), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentRoot), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenListComponentRoot), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenArrayComponentRootChild), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentRootChild), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenListComponentRootChild), "NixInjectRootComponentAttribute")]
+        public void NixInjecter_InjectAnyComponentWhichIsNotListDecorator_OnWrongEnumerableFieldType_ShouldThrowException(Type injectableTypeToBuild, string attributeName)
+        {
+            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
+
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Exception exception = Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+
+            StringAssert.Contains($"using decorator {attributeName}", exception.Message);
+        }
+        #endregion Error decorator
     }
 }

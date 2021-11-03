@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nixi.Injections.Attributes.Abstractions;
+using System;
 
 namespace Nixi.Injections.Attributes
 {

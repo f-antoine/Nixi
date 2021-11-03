@@ -6,7 +6,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Tests.Builders;
-using UnityEngine;
 
 namespace Tests.TestTools
 {
@@ -191,7 +190,7 @@ namespace Tests.TestTools
             Assert.That(farm.CatsEnumerable.First().GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
             Assert.That(farm.CatsEnumerable.Skip(1).First().GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
 
-            // TODO Check same array
+            // Check same array
             Assert.That(farm.AnimalsArray.Length, Is.EqualTo(4));
             Assert.That(farm.AnimalsArray[0].GetInstanceID(), Is.EqualTo(firstAnimal.GetInstanceID()));
             Assert.That(farm.AnimalsArray[1].GetInstanceID(), Is.EqualTo(secondAnimal.GetInstanceID()));

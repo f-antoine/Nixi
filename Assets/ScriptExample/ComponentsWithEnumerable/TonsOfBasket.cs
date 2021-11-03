@@ -11,7 +11,6 @@ namespace Assets.ScriptExample.ComponentsWithEnumerable
         private BasketDualList firstDualList;
         public BasketDualList FirstDualList => firstDualList;
 
-        // TODO : Décorer avec [NixInjectComponentList], car ça marchait alors que c'est interdit
         [SerializeField]
         [NixInjectComponentFromMethod("anotherBasketDualList", GameObjectMethod.GetComponentsInChildren)]
         private BasketDualList secondDualList;

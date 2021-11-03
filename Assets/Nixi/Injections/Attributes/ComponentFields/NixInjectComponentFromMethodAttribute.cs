@@ -42,8 +42,6 @@ namespace Nixi.Injections.Attributes
         /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>
         public NixInjectComponentFromMethodAttribute(string gameObjectNameToFind, GameObjectMethod gameObjectMethod, bool includeInactive = true)
         {
-            // TODO : Ne plus laisser le choix pour le includeInactive
-            // TODO : Jeter celui qui met un nom vide oh god my
             ComponentNameToFind = gameObjectNameToFind;
             GameObjectMethod = gameObjectMethod;
             IncludeInactive = includeInactive;

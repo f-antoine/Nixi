@@ -1,7 +1,6 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.Abstractions;
-using Nixi.Injections.Extensions;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements;
 using NixiTestTools.TestInjecterElements.Relations.Components;
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-// TODO : Reprendre ici
 namespace NixiTestTools
 {
     /// <summary>
@@ -112,12 +110,7 @@ namespace NixiTestTools
             foreach (FieldInfo nonComponentField in nonComponentFields)
             {
                 NixInjectBaseAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectBaseAttribute>();
-
-                if (injectAttribute is NixInjectFromContainerAttribute)
-                {
-                    if (nonComponentField.IsComponent())
-                        throw new TestInjecterException($"Cannot register field with name {nonComponentField.Name} with a NixInjectAttribute because it is a component field, you must use NixInjectComponentAttribute instead", objectToLink);
-                }
+                injectAttribute.CheckIsValidAndBuildDataFromField(nonComponentField);
 
                 newInjectableData.AddField(nonComponentField);
             }
@@ -135,18 +128,18 @@ namespace NixiTestTools
         {
             foreach (FieldInfo componentField in componentFields)
             {
-                CheckIfTypeIsGenericAndValid(newInjectableData, componentField);
-                Type enumerableType = componentField.GetEnumerableUniqueGenericInterfaceOrComponentTypeIfExist();
+                NixInjectComponentBaseAttribute baseAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
+                baseAttribute.CheckIsValidAndBuildDataFromField(componentField);
 
-                if (enumerableType != null)
+                if (baseAttribute is NixInjectComponentListAttribute listAttribute)
                 {
-                    if (enumerableType.IsInterface)
+                    if (listAttribute.EnumerableType.IsInterface)
                     {
                         StoreInterfaceComponentField(newInjectableData, componentField);
                     }
                     else
                     {
-                        StoreEnumerableComponentField(newInjectableData, componentField, enumerableType);
+                        StoreEnumerableComponentField(newInjectableData, componentField, listAttribute.EnumerableType);
                     }
                 }
                 else if (componentField.FieldType.IsInterface)
@@ -158,17 +151,6 @@ namespace NixiTestTools
                     StoreComponentField(newInjectableData, componentField);
                 }
             }
-        }
-
-        /// <summary>
-        /// Check if a FieldInfo.FieldType is a generic type and if so, if it is an IEnumerable and has exactly one generic argument if 
-        /// </summary>
-        /// <param name="newInjectableData">New MonoBehaviourInjectableData on which we are loading Component fields (newInjectableData.componentFields)</param>
-        /// <param name="componentField">Component field checked</param>
-        private void CheckIfTypeIsGenericAndValid(MonoBehaviourInjectableData newInjectableData, FieldInfo componentField)
-        {
-            if (componentField.FieldType.IsGenericType && !componentField.CheckIfGenericEnumerableWithOnlyOneGenericArgument())
-                throw new TestInjecterException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name} on injectable with type {newInjectableData.Instance.GetType().Name} and instanceName {newInjectableData.InstanceName}", objectToLink);
         }
 
         /// <summary>
@@ -350,9 +332,6 @@ namespace NixiTestTools
         /// <param name="injectableData">New MonoBehaviourInjectableData on which we are loading fields</param>
         private void PopulateAndRegisterComponentField(FieldInfo componentField, MonoBehaviourInjectableData injectableData)
         {
-            if (!componentField.IsComponent())
-                throw new TestInjecterException($"Cannot inject field with name {componentField.Name} with a NixInjectComponentAttribute because it is not a component field, you must use NixInjectAttribute instead", objectToLink);
-
             Component componentToAdd = BuildAndInjectComponent(componentField, injectableData);
             injectableData.AddComponentField(new ComponentWithFieldInfo
             {

@@ -1,7 +1,6 @@
 ﻿using Nixi.Containers;
 using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.Abstractions;
-using Nixi.Injections.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -76,14 +75,8 @@ namespace Nixi.Injections.Injecters
         /// <param name="nonComponentField">Non-Component field</param>
         private void InjectField(FieldInfo nonComponentField)
         {
-            if (nonComponentField.IsComponent())
-                throw new NixInjecterException($"Cannot register field with name {nonComponentField.Name} with a NixInjectAttribute because it is a Component field, you must use NixInjectComponentAttribute instead", objectToLink);
-
-            if (!nonComponentField.FieldType.IsInterface)
-                throw new NixInjecterException($"The field with the name {nonComponentField.Name} with a NixInjectAttribute must be an interface " +
-                    $"because the container works only with interfaces as a key for injection, " +
-                    $"if you don't want to use the container and only expose for the tests from template, " +
-                    $"you can use NixInjectTestMockAttribute", objectToLink);
+            NixInjectBaseAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectBaseAttribute>();
+            injectAttribute.CheckIsValidAndBuildDataFromField(nonComponentField);
 
             object resolved = NixiContainer.Resolve(nonComponentField.FieldType);
             nonComponentField.SetValue(objectToLink, resolved);
@@ -100,6 +93,7 @@ namespace Nixi.Injections.Injecters
             foreach (FieldInfo componentField in componentFields)
             {
                 NixInjectComponentBaseAttribute injectAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
+                injectAttribute.CheckIsValidAndBuildDataFromField(componentField);
 
                 if (injectAttribute is NixInjectComponentListAttribute)
                 {
@@ -130,14 +124,9 @@ namespace Nixi.Injections.Injecters
         /// <param name="injectAttribute">Nixi component (or interface) attribute which decorate componentField</param>
         private void InjectComponentField(FieldInfo componentField, NixInjectComponentBaseAttribute injectAttribute)
         {
-            if (!componentField.IsComponent() && !componentField.FieldType.IsInterface)
-                throw new NixInjecterException($"Cannot inject field with name {componentField.Name} with a NixInjectComponentAttribute because it is not a component or an interface field, you must use NixInjectAttribute instead", objectToLink);
-
             object componentResult = injectAttribute.GetComponentResult(objectToLink, componentField);
             componentField.SetValue(objectToLink, componentResult);
         }
         #endregion Component Injections
-    }
-
-    
+    }   
 }

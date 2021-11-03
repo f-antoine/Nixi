@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 namespace Nixi.Injections.Injecters
 {
     public sealed class EnumerableComponentBinder : Binder
     {
+        [ExcludeFromCodeCoverage] // Not reason to override or test
         public override FieldInfo BindToField(BindingFlags bindingAttr, FieldInfo[] match, object value, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
 
+        [ExcludeFromCodeCoverage] // Not reason to override or test
         public override MethodBase BindToMethod(BindingFlags bindingAttr, MethodBase[] match, ref object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] names, out object state)
         {
             throw new NotImplementedException();
@@ -27,7 +29,6 @@ namespace Nixi.Injections.Injecters
                 {
                     var valueEnumerable = value as System.Collections.IEnumerable;
 
-                    // TODO : Voir si optimiser ?
                     List<object> objectsToConvert = new List<object>();
                     foreach (var element in valueEnumerable)
                     {
@@ -40,16 +41,19 @@ namespace Nixi.Injections.Injecters
             return value;
         }
 
+        [ExcludeFromCodeCoverage] // Not reason to override or test
         public override void ReorderArgumentArray(ref object[] args, object state)
         {
             throw new NotImplementedException();
         }
 
+        [ExcludeFromCodeCoverage] // Not reason to override or test
         public override MethodBase SelectMethod(BindingFlags bindingAttr, MethodBase[] match, Type[] types, ParameterModifier[] modifiers)
         {
             throw new NotImplementedException();
         }
 
+        [ExcludeFromCodeCoverage] // Not reason to override or test
         public override PropertyInfo SelectProperty(BindingFlags bindingAttr, PropertyInfo[] match, Type returnType, Type[] indexes, ParameterModifier[] modifiers)
         {
             throw new NotImplementedException();

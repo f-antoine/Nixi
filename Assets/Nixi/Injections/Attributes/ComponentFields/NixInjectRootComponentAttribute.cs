@@ -24,7 +24,7 @@ namespace Nixi.Injections.Attributes
         public string ComponentRootName { get; private set; }
 
         /// <summary>
-        /// Name of the GameObject to find in children of root game object with name ComponentRootName
+        /// Name of the GameObject to find in children of root game object found with name ComponentRootName
         /// </summary>
         public string SubComponentRootName { get; private set; }
 

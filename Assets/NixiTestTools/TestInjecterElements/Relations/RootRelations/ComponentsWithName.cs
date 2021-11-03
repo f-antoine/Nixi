@@ -42,7 +42,6 @@ namespace NixiTestTools.TestInjecterElements.Relations.RootRelations
         /// <param name="componentToAdd">Component to add to the list</param>
         internal void AddComponent(Component componentToAdd)
         {
-            // TODO : Voir si c'est ici le transform parent (serait plus logique ? Soucis du parent ?)
             components.Add(componentToAdd);
         }
     }

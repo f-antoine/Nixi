@@ -2,7 +2,6 @@
 
 namespace NixiTestTools.TestInjecterElements.Relations.Abstractions
 {
-    // TODO : Ne pas donner l'accès autre part que le TestInjecter (partial)
     /// <summary>
     /// Contains all fields of type FieldHandled (fieldInfo derivation)
     /// </summary>
