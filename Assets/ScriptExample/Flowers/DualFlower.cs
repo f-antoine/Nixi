@@ -1,7 +1,7 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Flowers
+namespace ScriptExample.Flowers
 {
     public sealed class DualFlower : MonoBehaviourInjectable
     {

@@ -47,17 +47,7 @@ namespace Nixi.Injections
         [ExcludeFromCodeCoverage] // Cannot be tested, protected Awake
         protected virtual void Awake()
         {
-            BuildInjections();
-        }
-
-        /// <summary>
-        /// Use an IInjecter to inject all fields decorated with Nixi attributes, default injecter is NixInjecter
-        /// </summary>
-        /// <param name="forceInjecter">Used to replace injecter used to populate the fields (e.g : TestInjecter for tests)</param>
-        public void BuildInjections(NixInjecterBase forceInjecter = null)
-        {
-            NixInjecterBase injecter = forceInjecter ?? new NixInjecter(this);
-            injecter.CheckAndInjectAll();
+            new NixInjecter(this).CheckAndInjectAll();
         }
     }
 }

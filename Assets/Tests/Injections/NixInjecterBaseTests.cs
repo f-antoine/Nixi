@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.ErrorMultiAttributes;
+﻿using ScriptExample.ErrorMultiAttributes;
 using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
@@ -33,7 +33,6 @@ namespace Tests.Injections
         [TestCase(typeof(FieldWithCompoFromMethod))]
         [TestCase(typeof(FieldWithCompoFromMethodRoot))]
         [TestCase(typeof(CompoFromMethodWithCompoFromMethodRoot))]
-        [TestCase(typeof(CompoWithCompoFromMethod))]
         [TestCase(typeof(CompoWithCompoFromMethodRoot))]
         [TestCase(typeof(AllCompoAttributes))]
         [TestCase(typeof(FieldContainerWithFieldTestMock))]

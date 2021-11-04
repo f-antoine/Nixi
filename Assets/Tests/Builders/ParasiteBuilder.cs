@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.Characters;
+﻿using ScriptExample.Characters;
 using Nixi.Injections.Injecters;
 using NixiTestTools;
 using ScriptExample.Characters;
@@ -29,11 +29,6 @@ namespace Tests.Builders
         internal NixInjecter BuildDefaultInjecter()
         {
             return new NixInjecter(parasite);
-        }
-
-        internal TestInjecter BuildTestInjecter()
-        {
-            return new TestInjecter(parasite);
         }
 
         internal ParasiteBuilder WithParentSorcerer()

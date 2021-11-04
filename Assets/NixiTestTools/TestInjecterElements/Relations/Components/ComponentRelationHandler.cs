@@ -18,10 +18,8 @@ namespace NixiTestTools.TestInjecterElements.Relations.Components
         /// </summary>
         /// <param name="fieldToAdd">Field to add</param>
         internal override void AddFieldAndLink(ComponentWithFieldInfo fieldToAdd)
-        {
-            NixInjectComponentAttribute injectAttribute = fieldToAdd.FieldInfo.GetCustomAttribute<NixInjectComponentAttribute>();
-
-            if (injectAttribute != null)
+        {            
+            if (fieldToAdd.FieldInfo.GetCustomAttribute<NixInjectComponentAttribute>() != null)
                 AddRelation(fieldToAdd.Component);
 
             base.AddFieldAndLink(fieldToAdd);

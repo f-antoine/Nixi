@@ -47,7 +47,9 @@ namespace NixiTestTools.TestInjecterElements.Relations.RootRelations
         {
             ComponentsWithName parentWithoutComponent = new ComponentsWithName(parentName);
             List<ComponentsWithName> firstChildWithComponent = new List<ComponentsWithName> { new ComponentsWithName(childName, childComponent) };
-            rootRelations.Add(new RootRelation(parentWithoutComponent, firstChildWithComponent));
+
+            RootRelation parentRelation = new RootRelation(parentWithoutComponent, firstChildWithComponent);
+            rootRelations.Add(parentRelation);
         }
 
         /// <summary>

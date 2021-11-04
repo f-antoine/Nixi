@@ -2,14 +2,17 @@
 using Nixi.Injections.Attributes;
 using System.Collections.Generic;
 
-namespace Assets.ScriptExample.AllParentsCases
+namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentWithSameChildListsDifferentsEnumerables : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public List<Child> FirstChildList;
 
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public IEnumerable<Child> SecondChildList;
+
+        [NixInjectComponents]
+        public Child[] ThirdChildArray;
     }
 }

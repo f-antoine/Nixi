@@ -1,6 +1,6 @@
-﻿using Assets.ScriptExample.Characters;
-using Assets.ScriptExample.Characters.SameNamings;
-using Assets.ScriptExample.Controllers;
+﻿using ScriptExample.Characters;
+using ScriptExample.Characters.SameNamings;
+using ScriptExample.Controllers;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
@@ -38,7 +38,7 @@ namespace Tests.TestTools
         [Test]
         public void RetrieveGameObject_ShouldReturnGameObjectWithUniqueSkillOnCharacter()
         {
-            Character character = CharacterBuilder.Create().Build();
+            Character character = InjectableBuilder<Character>.Create().Build();
             TestInjecter testInjecter = new TestInjecter(character);
 
             testInjecter.CheckAndInjectAll();
@@ -53,7 +53,7 @@ namespace Tests.TestTools
         [Test]
         public void InjectTransform_ShouldInjectCorrectly()
         {
-            Weapon weapon = WeaponBuilder.Create().Build();
+            Weapon weapon = InjectableBuilder<Weapon>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(weapon);
             testInjecter.CheckAndInjectAll();
@@ -118,7 +118,7 @@ namespace Tests.TestTools
         [Test]
         public void RetrieveGameObject_ShouldReturnGameObjectFromRoot()
         {
-            MonsterController monsterController = ControllersBuilder.Create().BuildMonsterController();
+            MonsterController monsterController = InjectableBuilder<MonsterController>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(monsterController, "MonsterController");
             testInjecter.CheckAndInjectAll();
@@ -135,7 +135,7 @@ namespace Tests.TestTools
         [Test]
         public void RetrieveGameObjectFromChild_ShouldReturnGameObjectFromRoot()
         {
-            MonsterController monsterController = ControllersBuilder.Create().BuildMonsterController();
+            MonsterController monsterController = InjectableBuilder<MonsterController>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(monsterController, "MonsterController");
             testInjecter.CheckAndInjectAll();
@@ -154,7 +154,7 @@ namespace Tests.TestTools
         [Test]
         public void RetrieveGameObjectOnLevelAbove_ShouldReturnGameObjectsFromRoots()
         {
-            AllMightyController allMighty = ControllersBuilder.Create().BuildAllMightyController();
+            AllMightyController allMighty = InjectableBuilder<AllMightyController>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(allMighty, "AllMightyController");
             testInjecter.CheckAndInjectAll();
@@ -175,7 +175,7 @@ namespace Tests.TestTools
         [Test]
         public void RetrieveGameObjectFromMethod_ShouldReturnGameObjectFromRoot()
         {
-            AllMightyControllerFull allMightyFull = ControllersBuilder.Create().BuildAllMightyControllerFull();
+            AllMightyControllerFull allMightyFull = InjectableBuilder<AllMightyControllerFull>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(allMightyFull, "AllMightyControllerWithChilds");
             testInjecter.CheckAndInjectAll();
@@ -205,7 +205,7 @@ namespace Tests.TestTools
         [Test]
         public void SameRootObjectTargetingDifferentGameObjectName_ShouldLoadAndReturnDifferentGameObjects()
         {
-            AllMightyWithChilds mightyChilds = ControllersBuilder.Create().BuildAllMightyWithChilds();
+            AllMightyWithChilds mightyChilds = InjectableBuilder<AllMightyWithChilds>.Create().Build();
             TestInjecter testInjecter = new TestInjecter(mightyChilds);
             testInjecter.CheckAndInjectAll();
 
@@ -224,7 +224,7 @@ namespace Tests.TestTools
         [Test]
         public void SameRootObjectTargetingSameGameObjectName_ShouldReturnSameInstance()
         {
-            RussianDollSameLevel russianDollSameLevel = RussianDollBuilder.Create().BuildSameLevel();
+            RussianDollSameLevel russianDollSameLevel = InjectableBuilder<RussianDollSameLevel>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(russianDollSameLevel);
 
@@ -236,7 +236,7 @@ namespace Tests.TestTools
         [Test]
         public void SameRootObjectTargeting_ShouldReturnSameInstance()
         {
-            RussianDollSameLevelParent russianDollSameLevelParent = RussianDollBuilder.Create().BuildSameLevelParent();
+            RussianDollSameLevelParent russianDollSameLevelParent = InjectableBuilder<RussianDollSameLevelParent>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(russianDollSameLevelParent);
             testInjecter.CheckAndInjectAll();
@@ -250,7 +250,7 @@ namespace Tests.TestTools
         [Test]
         public void SameRootObjectTargetingSameGameObjectName_ShouldLoadAndReturnSameGameObjects()
         {
-            AllMightyWithSameChilds sameMightyChilds = ControllersBuilder.Create().BuildAllMightyWithSameChilds();
+            AllMightyWithSameChilds sameMightyChilds = InjectableBuilder<AllMightyWithSameChilds>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(sameMightyChilds);
             testInjecter.CheckAndInjectAll();
@@ -261,61 +261,5 @@ namespace Tests.TestTools
             Assert.That(sameMightyChilds.FirstSorcerer.GetInstanceID(), Is.EqualTo(sameMightyChilds.FirstSorcererDuplicate.GetInstanceID()));
         }
         #endregion ComponentInjection from root
-
-        #region ComponentInjection From Method
-        //1) Interdire les NixInjectComponentFromMethod (Child) sur le current (pour current passer par NixInjectComponent)
-        //2) Interdire les NixInjectComponentFromMethod (Parent) sur le current (pour current passer par NixInjectComponent)
-        //3) Si même GameObjectMethod avec même nom, on a la même instance, sinon on la crée et enregistre
-        //4) Si on rempli le critère du 3), alors tous les éléments en-dessous sont les mêmes, il s'agit de la même instance
-
-        [Test]
-        public void InjectComponentFromChildMethod_ShouldNotReturnCurrentLevelComponent()
-        {
-            // CurrentLevel = MyName, si on le trouve, on le renvoi pas, on en crée un, on doit vérifier que le local est différent
-        }
-
-        [Test]
-        public void InjectComponentFromParentMethod_ShouldNotReturnCurrentLevelComponent()
-        {
-            // CurrentLevel = MyName, si on le trouve, on le renvoi pas, on en crée un, on doit vérifier que le local est différent
-        }
-
-        [Test]
-        public void InjectComponentFromChildMethod_WithSameNameAndSameType_AtSameLevelShouldReturn_SameInstances()
-        {
-            // Title say it
-            // + Check if subInstance are same
-        }
-
-        [Test]
-        public void InjectComponentFromChildMethod_WithSameNameAndDifferentType_AtSameLevelShouldReturn_DifferentInstancesWithSameName()
-        {
-            // Title say it
-            // + Check if subInstance are same
-        }
-
-        [Test]
-        public void InjectComponentFromParentMethod_WithSameNameAndSameType_AtSameLevelShouldReturn_SameInstances()
-        {
-            // Title say it
-            // + Check if subInstance are same
-        }
-
-        [Test]
-        public void InjectComponentFromParentMethod_WithSameNameAndDifferentType_AtSameLevelShouldReturn_DifferentInstancesWithSameName()
-        {
-            // Title say it
-            // + Check if subInstance are same
-        }
-
-        // Si même GameObjectMethod avec même nom, on a la même instance, sinon on la crée et enregistre
-        [Test]
-        public void InjectComponentFrom_DifferentMethods_OnSameNameAndTypeAtSameLevelShouldReturn_DifferentInstances()
-        {
-            // Check instances are not same, even if this is same type and same name
-            // -> Case same name / same type / different methods
-            // -> Case same name / different type 
-        }
-        #endregion ComponentInjection From Method
     }
 }

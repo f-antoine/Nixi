@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.Characters.SameNamings
+namespace ScriptExample.Characters.SameNamings
 {
     public sealed class SecondDoll : MonoBehaviour
     {

@@ -1,4 +1,4 @@
-﻿namespace Assets.ScriptExample.Genericity.Interfaces
+﻿namespace ScriptExample.Genericity.Interfaces
 {
     public interface IGenericInterface<T>
     {

@@ -1,7 +1,7 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.ComponentsWithInterface
+namespace ScriptExample.ComponentsWithInterface
 {
     public sealed class Duck : MonoBehaviourInjectable
     {
@@ -9,11 +9,11 @@ namespace Assets.ScriptExample.ComponentsWithInterface
         private IFlyBehavior wings;
         public IFlyBehavior Wings => wings;
 
-        [NixInjectComponentFromMethod("Pocket", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("Pocket")]
         private IDuckObjectContainer pocket;
         public IDuckObjectContainer Pocket => pocket;
 
-        [NixInjectComponentFromMethod("DuckCompany", GameObjectMethod.GetComponentsInParent)]
+        [NixInjectComponentFromParent("DuckCompany")]
         private IDuckObjectContainer duckCompanyBackPack;
         public IDuckObjectContainer DuckCompanyBackPack => duckCompanyBackPack;
 

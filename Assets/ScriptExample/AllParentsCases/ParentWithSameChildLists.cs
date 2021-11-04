@@ -2,14 +2,14 @@
 using Nixi.Injections.Attributes;
 using System.Collections.Generic;
 
-namespace Assets.ScriptExample.AllParentsCases
+namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentWithSameChildLists : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public List<Child> FirstChildList;
 
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public List<Child> SecondChildList;
     }
 }

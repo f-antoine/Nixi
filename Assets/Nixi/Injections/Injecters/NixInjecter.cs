@@ -1,6 +1,7 @@
 ﻿using Nixi.Containers;
 using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Nixi.Injections.Injecters
         /// <exception cref="NixInjecterException">Thrown if this method has already been called</exception>
         protected override void InjectAll()
         {
-            List<FieldInfo> fields = GetAllFields(objectToLink.GetType());
+            IEnumerable<FieldInfo> fields = GetAllFields(objectToLink.GetType());
 
             try
             {
@@ -95,7 +96,7 @@ namespace Nixi.Injections.Injecters
                 NixInjectComponentBaseAttribute injectAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
                 injectAttribute.CheckIsValidAndBuildDataFromField(componentField);
 
-                if (injectAttribute is NixInjectComponentListAttribute)
+                if (injectAttribute is NixInjectMultiComponentsBaseAttribute)
                 {
                     InjectEnumerableComponentField(componentField, injectAttribute);
                 }
@@ -107,18 +108,18 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds to the value of NixInjectComponentAttribute.GameObjectMethod in GameObjectMethodBindings
+        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents...Attribute
         /// </summary>
         /// <param name="componentField">Component or interface field</param>
-        /// <param name="injectListAttribute">Nixi component (or interface) list attribute which decorate componentField</param>
-        private void InjectEnumerableComponentField(FieldInfo componentField, NixInjectComponentBaseAttribute injectListAttribute)
+        /// <param name="componentsAttribute">Nixi component (or interface) list attribute which decorate componentField</param>
+        private void InjectEnumerableComponentField(FieldInfo componentField, NixInjectComponentBaseAttribute componentsAttribute)
         {
-            object componentResult = injectListAttribute.GetComponentResult(objectToLink, componentField);
+            object componentResult = componentsAttribute.GetComponentResult(objectToLink, componentField);
             componentField.SetValue(objectToLink, componentResult, BindingFlags.SetProperty, new EnumerableComponentBinder(), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
-        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds to the value of NixInjectComponentAttribute.GameObjectMethod in GameObjectMethodBindings
+        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents...Attribute
         /// </summary>
         /// <param name="componentField">Component or interface field</param>
         /// <param name="injectAttribute">Nixi component (or interface) attribute which decorate componentField</param>

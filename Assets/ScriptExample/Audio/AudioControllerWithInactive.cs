@@ -2,14 +2,14 @@
 using Nixi.Injections.Attributes;
 using UnityEngine.UI;
 
-namespace Assets.ScriptExample.Audio
+namespace ScriptExample.Audio
 {
     public sealed class AudioControllerWithInactive : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("SliderMusic", GameObjectMethod.GetComponentsInChildren, false)]
+        [NixInjectComponentFromChildren("SliderMusic", false)]
         public Slider musicSlider;
 
-        [NixInjectComponentFromMethod("SliderSpatialisation", GameObjectMethod.GetComponentsInChildren, false)]
+        [NixInjectComponentFromChildren("SliderSpatialisation", false)]
         public Slider spatialisationSlider;
     }
 }

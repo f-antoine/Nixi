@@ -8,7 +8,7 @@ namespace ScriptExample.Players
 {
     public class Player : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("SorcererGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("SorcererGameObjectName")]
         public Sorcerer Sorcerer;
 
         [NixInjectFromContainer]

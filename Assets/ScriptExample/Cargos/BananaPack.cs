@@ -3,7 +3,7 @@ using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 using UnityEngine;
 
-namespace Assets.ScriptExample.Cargos
+namespace ScriptExample.Cargos
 {
     public sealed class BananaPack : MonoBehaviourInjectable
     {
@@ -11,7 +11,7 @@ namespace Assets.ScriptExample.Cargos
         private Light bananeLighter;
         public Light BananeLighter => bananeLighter;
 
-        [NixInjectComponentFromMethod("rainbowGeneratorName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("rainbowGeneratorName")]
         private ParticleSystem rainbowGenerator;
         public ParticleSystem RainbowGenerator => rainbowGenerator;
 

@@ -1,19 +1,18 @@
-﻿using Assets.ScriptExample.Audio;
-using Assets.ScriptExample.CannotFindFromMethods;
-using Assets.ScriptExample.Characters;
-using Assets.ScriptExample.ComponentsWithEnumerable;
-using Assets.ScriptExample.ComponentsWithInterface;
-using Assets.ScriptExample.ComponentsWithInterface.BadDucks;
-using Assets.ScriptExample.Fallen.AllComponentAttributes;
-using Assets.ScriptExample.Fallen.List;
-using Assets.ScriptExample.Menu;
-using Assets.Tests.Builders;
-using Nixi.Containers;
+﻿using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
 using NUnit.Framework;
+using ScriptExample.Audio;
+using ScriptExample.CannotFindFromMethods;
 using ScriptExample.Characters;
+using ScriptExample.ComponentsWithEnumerable;
+using ScriptExample.ComponentsWithEnumerable.BadBasket;
+using ScriptExample.ComponentsWithInterface;
+using ScriptExample.ComponentsWithInterface.BadDucks;
 using ScriptExample.Containers;
+using ScriptExample.Fallen.AllComponentAttributes;
+using ScriptExample.Fallen.List;
+using ScriptExample.Menu;
 using System;
 using System.Linq;
 using Tests.Builders;
@@ -585,10 +584,18 @@ namespace Tests.Injections
 
         #region Enumerable Injections
         [Test]
-        public void InjectComponentList_OnEnumerable_ShouldFill()
+        public void InjectComponentList_OnEnumerable_ShouldFillOnlyCurrentLevel()
         {
             // Arrange
-            Basket basket = BasketBuilder.Create().WithChildFruit("apple", 3).WithChildFruit("lemon", 2).Build();
+            Basket basket = BasketBuilder.Create()
+                                         .WithParentFruit("firstLevelParent", 3)
+                                         .WithParentFruit("secondLevelParent", 3)
+                                         .WithLocalFruit(17)
+                                         .WithLocalFruit(14)
+                                         .WithChildFruit("apple", 2)
+                                         .WithChildFruit("melon", 2)
+                                         .WithChildFruit("lemon", 2)
+                                         .Build();
 
             Assert.IsNull(basket.FruitsList);
             Assert.IsNull(basket.FruitsEnumerable);
@@ -599,35 +606,64 @@ namespace Tests.Injections
             NixInjecter injecter = new NixInjecter(basket);
             injecter.CheckAndInjectAll();
 
+            // Check implementation in Unity
+            Assert.That(basket.GetComponentsInParent<Fruit>().Length, Is.EqualTo(4));
+            Assert.That(basket.GetComponents<Fruit>().Length, Is.EqualTo(2));
+            Assert.That(basket.GetComponentsInChildren<Fruit>().Length, Is.EqualTo(5));
+
             // FruitsList
             Assert.NotNull(basket.FruitsList);
             Assert.That(basket.FruitsList.Count, Is.EqualTo(2));
-            Assert.That(basket.FruitsList.Any(x => x.name == "apple" && x.Weight == 3));
-            Assert.That(basket.FruitsList.Any(x => x.name == "lemon" && x.Weight == 2));
+            Assert.That(basket.FruitsList.Any(x => x.name == basket.name && x.Weight == 17));
+            Assert.That(basket.FruitsList.Any(x => x.name == basket.name && x.Weight == 14));
+            foreach (Fruit fruit in basket.FruitsList)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
 
             // FruitsEnumerable
             Assert.NotNull(basket.FruitsEnumerable);
             Assert.That(basket.FruitsEnumerable.Count, Is.EqualTo(2));
-            Assert.That(basket.FruitsEnumerable.Any(x => x.name == "apple" && x.Weight == 3));
-            Assert.That(basket.FruitsEnumerable.Any(x => x.name == "lemon" && x.Weight == 2));
+            Assert.That(basket.FruitsEnumerable.Any(x => x.name == basket.name && x.Weight == 17));
+            Assert.That(basket.FruitsEnumerable.Any(x => x.name == basket.name && x.Weight == 14));
+            foreach (Fruit fruit in basket.FruitsEnumerable)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
 
             // IFruitsList
             Assert.NotNull(basket.IFruitsList);
             Assert.That(basket.IFruitsList.Count, Is.EqualTo(2));
-            Assert.That(basket.IFruitsList.Any(x => x.Name == "apple" && x.Weight == 3));
-            Assert.That(basket.IFruitsList.Any(x => x.Name == "lemon" && x.Weight == 2));
+            Assert.That(basket.IFruitsList.Any(x => x.Name == basket.name && x.Weight == 17));
+            Assert.That(basket.IFruitsList.Any(x => x.Name == basket.name && x.Weight == 14));
+            foreach (Fruit fruit in basket.IFruitsList)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
 
             // IFruitsEnumerable
             Assert.NotNull(basket.IFruitsEnumerable);
             Assert.That(basket.IFruitsEnumerable.Count, Is.EqualTo(2));
-            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == "apple" && x.Weight == 3));
-            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == "lemon" && x.Weight == 2));
+            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == basket.name && x.Weight == 17));
+            Assert.That(basket.IFruitsEnumerable.Any(x => x.Name == basket.name && x.Weight == 14));
+            foreach (Fruit fruit in basket.IFruitsEnumerable)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
         }
 
         [Test]
         public void InjectComponentList_OnNotEnumerable_ShouldThrowException()
         {
-            var wrongBasket = BasketBuilder.Create().BuildNotEnumerable();
+            BadBasketNotEnumerable wrongBasket = InjectableBuilder<BadBasketNotEnumerable>.Create().Build();
 
             NixInjecter injecter = new NixInjecter(wrongBasket);
 
@@ -637,7 +673,7 @@ namespace Tests.Injections
         [Test]
         public void InjectComponentList_OnEnumerableNotInterfaceNorComponent_ShouldThrowException()
         {
-            var wrongBasket = BasketBuilder.Create().BuildEnumerableNotInterfaceNorComponent();
+            var wrongBasket = InjectableBuilder<BadBasketEnumerableNotInterfaceNorComponent>.Create().Build();
 
             NixInjecter injecter = new NixInjecter(wrongBasket);
 
@@ -647,13 +683,154 @@ namespace Tests.Injections
         [Test]
         public void InjectComponentList_OnListNotInterfaceNorComponent_ShouldThrowException()
         {
-            var wrongBasket = BasketBuilder.Create().BuildListNotInterfaceNorComponent();
+            var wrongBasket = InjectableBuilder<BadBasketListNotInterfaceNorComponent>.Create().Build();
 
             NixInjecter injecter = new NixInjecter(wrongBasket);
 
             Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
         #endregion Enumerable Injections
+
+        #region EnumerableFromMethod Injections
+        [Test]
+        public void InjectComponentListFromMethod_OnEnumerable_ShouldFillOtherThanCurrentLevel()
+        {
+            // Arrange
+            BasketWithChildrenAndParents basket = BasketBuilder.Create()
+                                                               .WithParentFruit("firstLevelParent", 4)
+                                                               .WithParentFruit("secondLevelParent", 5)
+                                                               .WithLocalFruit(17)
+                                                               .WithChildFruit("apple", 1)
+                                                               .WithChildFruit("melon", 2)
+                                                               .WithChildFruit("lemon", 3)
+                                                               .BuildBasketWithChildrenAndParents();
+
+            // Checks parent and childs
+            Assert.IsNull(basket.FruitsListParents);
+            Assert.IsNull(basket.FruitsEnumerableParents);
+            Assert.IsNull(basket.IFruitsListParents);
+            Assert.IsNull(basket.IFruitsEnumerableParents);
+
+            Assert.IsNull(basket.FruitsListChildren);
+            Assert.IsNull(basket.FruitsEnumerableChildren);
+            Assert.IsNull(basket.IFruitsListChildren);
+            Assert.IsNull(basket.IFruitsEnumerableChildren);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            // Check implementation in Unity
+            Assert.That(basket.GetComponentsInParent<Fruit>().Length, Is.EqualTo(3));
+            Assert.That(basket.GetComponents<Fruit>().Length, Is.EqualTo(1));
+            Assert.That(basket.GetComponentsInChildren<Fruit>().Length, Is.EqualTo(4));
+
+            #region Parents checks
+            // FruitsList
+            Assert.NotNull(basket.FruitsListParents);
+            Assert.That(basket.FruitsListParents.Count, Is.EqualTo(2));
+            Assert.That(basket.FruitsListParents.Any(x => x.name == "firstLevelParent" && x.Weight == 4));
+            Assert.That(basket.FruitsListParents.Any(x => x.name == "secondLevelParent" && x.Weight == 5));
+            foreach (Fruit fruit in basket.FruitsListParents)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+
+            // FruitsEnumerable
+            Assert.NotNull(basket.FruitsEnumerableParents);
+            Assert.That(basket.FruitsEnumerableParents.Count, Is.EqualTo(2));
+            Assert.That(basket.FruitsEnumerableParents.Any(x => x.name == "firstLevelParent" && x.Weight == 4));
+            Assert.That(basket.FruitsEnumerableParents.Any(x => x.name == "secondLevelParent" && x.Weight == 5));
+            foreach (Fruit fruit in basket.FruitsEnumerableParents)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+
+            // IFruitsList
+            Assert.NotNull(basket.IFruitsListParents);
+            Assert.That(basket.IFruitsListParents.Count, Is.EqualTo(2));
+            Assert.That(basket.IFruitsListParents.Any(x => x.Name == "firstLevelParent" && x.Weight == 4));
+            Assert.That(basket.IFruitsListParents.Any(x => x.Name == "secondLevelParent" && x.Weight == 5));
+            foreach (Fruit fruit in basket.IFruitsListParents)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+            
+            // IFruitsEnumerable
+            Assert.NotNull(basket.IFruitsEnumerableParents);
+            Assert.That(basket.IFruitsEnumerableParents.Count, Is.EqualTo(2));
+            Assert.That(basket.IFruitsEnumerableParents.Any(x => x.Name == "firstLevelParent" && x.Weight == 4));
+            Assert.That(basket.IFruitsEnumerableParents.Any(x => x.Name == "secondLevelParent" && x.Weight == 5));
+            foreach (Fruit fruit in basket.IFruitsEnumerableParents)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+            #endregion Parents checks
+
+            #region Children checks
+            // FruitsList
+            Assert.NotNull(basket.FruitsListChildren);
+            Assert.That(basket.FruitsListChildren.Count, Is.EqualTo(3));
+            Assert.That(basket.FruitsListChildren.Any(x => x.name == "apple" && x.Weight == 1));
+            Assert.That(basket.FruitsListChildren.Any(x => x.name == "melon" && x.Weight == 2));
+            Assert.That(basket.FruitsListChildren.Any(x => x.name == "lemon" && x.Weight == 3));
+            foreach (Fruit fruit in basket.FruitsListChildren)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+
+            // FruitsEnumerable
+            Assert.NotNull(basket.FruitsEnumerableChildren);
+            Assert.That(basket.FruitsEnumerableChildren.Count, Is.EqualTo(3));
+            Assert.That(basket.FruitsEnumerableChildren.Any(x => x.name == "apple" && x.Weight == 1));
+            Assert.That(basket.FruitsEnumerableChildren.Any(x => x.name == "melon" && x.Weight == 2));
+            Assert.That(basket.FruitsEnumerableChildren.Any(x => x.name == "lemon" && x.Weight == 3));
+            foreach (Fruit fruit in basket.FruitsEnumerableChildren)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+
+            // IFruitsList
+            Assert.NotNull(basket.IFruitsListChildren);
+            Assert.That(basket.IFruitsListChildren.Count, Is.EqualTo(3));
+            Assert.That(basket.IFruitsListChildren.Any(x => x.Name == "apple" && x.Weight == 1));
+            Assert.That(basket.IFruitsListChildren.Any(x => x.Name == "melon" && x.Weight == 2));
+            Assert.That(basket.IFruitsListChildren.Any(x => x.Name == "lemon" && x.Weight == 3));
+            foreach (Fruit fruit in basket.IFruitsListChildren)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+
+
+            // IFruitsEnumerable
+            Assert.NotNull(basket.IFruitsEnumerableChildren);
+            Assert.That(basket.IFruitsEnumerableChildren.Count, Is.EqualTo(3));
+            Assert.That(basket.IFruitsEnumerableChildren.Any(x => x.Name == "apple" && x.Weight == 1));
+            Assert.That(basket.IFruitsEnumerableChildren.Any(x => x.Name == "melon" && x.Weight == 2));
+            Assert.That(basket.IFruitsEnumerableChildren.Any(x => x.Name == "lemon" && x.Weight == 3));
+            foreach (Fruit fruit in basket.IFruitsEnumerableChildren)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(basket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(basket.transform.GetInstanceID()));
+                Assert.That(fruit.GetInstanceID(), Is.Not.EqualTo(basket.GetInstanceID()));
+            }
+            #endregion Children checks
+        }
+        #endregion EnumerableFromMethod Injections
 
         #region Error decorator
         [TestCase(typeof(FallenCompoListClass))]
@@ -662,25 +839,25 @@ namespace Tests.Injections
         [TestCase(typeof(FallenCompoListInterface))]
         public void NixInjecter_InjectComponentList_OnWrongFieldType_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             NixInjecter injecter = new NixInjecter(injectable);
 
             Exception exception = Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
 
-            StringAssert.Contains("using decorator NixInjectComponentListAttribute", exception.Message);
+            StringAssert.Contains("using decorator NixInjectComponentsAttribute", exception.Message);
         }
 
         [TestCase(typeof(FallenArrayComponent), "NixInjectComponentAttribute")]
         [TestCase(typeof(FallenEnumerableComponent), "NixInjectComponentAttribute")]
         [TestCase(typeof(FallenListComponent), "NixInjectComponentAttribute")]
-        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromParentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromParentAttribute")]
+        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromParentAttribute")]
         [TestCase(typeof(FallenArrayComponentRoot), "NixInjectRootComponentAttribute")]
         [TestCase(typeof(FallenEnumerableComponentRoot), "NixInjectRootComponentAttribute")]
         [TestCase(typeof(FallenListComponentRoot), "NixInjectRootComponentAttribute")]
@@ -689,7 +866,7 @@ namespace Tests.Injections
         [TestCase(typeof(FallenListComponentRootChild), "NixInjectRootComponentAttribute")]
         public void NixInjecter_InjectAnyComponentWhichIsNotListDecorator_OnWrongEnumerableFieldType_ShouldThrowException(Type injectableTypeToBuild, string attributeName)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             NixInjecter injecter = new NixInjecter(injectable);

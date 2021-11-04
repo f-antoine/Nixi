@@ -2,14 +2,14 @@
 using Nixi.Injections.Attributes;
 using UnityEngine;
 
-namespace Assets.ScriptExample.Characters
+namespace ScriptExample.Characters
 {
     public sealed class Weapon : MonoBehaviourInjectable
     {
         [NixInjectComponent]
         public Transform MainTransform;
 
-        [NixInjectComponentFromMethod("ChildTransform", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("ChildTransform")]
         public Transform ChildTransform;
     }
 }

@@ -1,5 +1,5 @@
-﻿using Assets.ScriptExample.Characters;
-using Assets.ScriptExample.Characters.SameNamings;
+﻿using ScriptExample.Characters;
+using ScriptExample.Characters.SameNamings;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters.Broken;
@@ -16,9 +16,9 @@ namespace Tests.TestTools
         {
             InfiniteRecursionSorcerer infiniteRecursionSorcerer = new GameObject().AddComponent<InfiniteRecursionSorcerer>();
 
-            TestInjecter testInjecter = new TestInjecter(infiniteRecursionSorcerer);
+            TestInjecter injecter = new TestInjecter(infiniteRecursionSorcerer);
 
-            Assert.Throws<StackOverflowException>(() => infiniteRecursionSorcerer.BuildInjections(testInjecter));
+            Assert.Throws<StackOverflowException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
@@ -26,15 +26,15 @@ namespace Tests.TestTools
         {
             InfiniteRecursionSorcererWithInheritance infiniteRecursionSorcererWithInheritance = new GameObject().AddComponent<InfiniteRecursionSorcererWithInheritance>();
 
-            TestInjecter testInjecter = new TestInjecter(infiniteRecursionSorcererWithInheritance);
+            TestInjecter injecter = new TestInjecter(infiniteRecursionSorcererWithInheritance);
 
-            Assert.Throws<StackOverflowException>(() => infiniteRecursionSorcererWithInheritance.BuildInjections(testInjecter));
+            Assert.Throws<StackOverflowException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
         public void SameInstanceNameAndType_ShouldReturnSameInstance()
         {
-            RussianDoll russianDoll = RussianDollBuilder.Create().Build();
+            RussianDoll russianDoll = InjectableBuilder<RussianDoll>.Create().Build();
 
             TestInjecter testInjecter = new TestInjecter(russianDoll);
             testInjecter.CheckAndInjectAll();
@@ -46,7 +46,7 @@ namespace Tests.TestTools
         public void InjectField_WithNixInjectTestMockAttribute_ShouldNotFillField_ButExposeIt()
         {
             // Init
-            Warrior warrior = WarriorBuilder.Create().Build();
+            Warrior warrior = InjectableBuilder<Warrior>.Create().Build();
             Assert.That(warrior.Parasite, Is.Null);
 
             // Inject

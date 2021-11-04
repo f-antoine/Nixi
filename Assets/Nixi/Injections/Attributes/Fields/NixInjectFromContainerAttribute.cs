@@ -14,6 +14,7 @@ namespace Nixi.Injections.Attributes
     {
         /// <summary>
         /// Check if attribute decorate the right field.FieldType and setup data from component field into the nixi attribute component decorator
+        /// <para/>This one prevents from decorating fields that aren't interface
         /// </summary>
         /// <param name="field">Field info to check</param>
         public override void CheckIsValidAndBuildDataFromField(FieldInfo field)

@@ -7,7 +7,7 @@ namespace ScriptExample.Characters
     public sealed class Sorcerer : Character
     {
         [SerializeField]
-        [NixInjectComponentFromMethod("SorcererChildGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("SorcererChildGameObjectName")]
         private Skill magicSkill;
         public Skill MagicSkill => magicSkill;
 

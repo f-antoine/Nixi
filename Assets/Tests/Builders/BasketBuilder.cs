@@ -1,72 +1,54 @@
-﻿using Assets.ScriptExample.ComponentsWithEnumerable;
-using Assets.ScriptExample.ComponentsWithEnumerable.BadBasket;
+﻿using ScriptExample.ComponentsWithEnumerable;
 using UnityEngine;
 
 namespace Tests.Builders
 {
     internal sealed class BasketBuilder
     {
-        private Basket basket;
+        private GameObject lastParent;
+        private GameObject basketGameObject;
 
         private BasketBuilder()
         {
-            basket = new GameObject("BasketName").AddComponent<Basket>();
+            basketGameObject = new GameObject("BasketName");
+            lastParent = basketGameObject;
         }
 
         internal static BasketBuilder Create()
         {
             return new BasketBuilder();
-        }        
+        }
 
         internal Basket Build()
         {
-            return basket;
+            return basketGameObject.AddComponent<Basket>();
         }
 
-        internal SimpleBasket BuildSimple()
+        internal BasketWithChildrenAndParents BuildBasketWithChildrenAndParents()
         {
-            return new GameObject("SimpleBasketName").AddComponent<SimpleBasket>();
+            return basketGameObject.AddComponent<BasketWithChildrenAndParents>();
         }
 
-        internal BasketDualList BuildDualList()
+        internal BasketBuilder WithParentFruit(string name, int weight)
         {
-            return new GameObject("BasketDualListName").AddComponent<BasketDualList>();
+            Fruit newFruit = new GameObject(name).AddComponent<Fruit>();
+            newFruit.ChangeWeight(weight);
+            lastParent.transform.parent = newFruit.transform;
+            lastParent = newFruit.gameObject;
+            return this;
         }
 
-        internal TonsOfBasket BuildTonsOfBasket()
+        internal BasketBuilder WithLocalFruit(int weight)
         {
-            return new GameObject("TonsOfBasketName").AddComponent<TonsOfBasket>();
-        }
-
-        internal BadBasketNotEnumerable BuildNotEnumerable()
-        {
-            return new GameObject("BadBasketNotEnumerableName").AddComponent<BadBasketNotEnumerable>();
-        }
-
-        internal BadBasketListNotInterfaceNorComponent BuildListNotInterfaceNorComponent()
-        {
-            return new GameObject("BadBasketListNotInterfaceNorComponentName").AddComponent<BadBasketListNotInterfaceNorComponent>();
-        }
-
-        internal BadBasketEnumerableNotInterfaceNorComponent BuildEnumerableNotInterfaceNorComponent()
-        {
-            return new GameObject("BadBasketEnumerableNotInterfaceNorComponentName").AddComponent<BadBasketEnumerableNotInterfaceNorComponent>();
-        }
-
-        internal SimpleBasketComponent BuildSimpleBasketComponent()
-        {
-            return new GameObject("SimpleBasketComponentName").AddComponent<SimpleBasketComponent>();
-        }
-
-        internal DualBasketComponent BuildDualBasketComponent()
-        {
-            return new GameObject("DualBasketComponentName").AddComponent<DualBasketComponent>();
+            Fruit newFruit = basketGameObject.gameObject.AddComponent<Fruit>();
+            newFruit.ChangeWeight(weight);
+            return this;
         }
 
         internal BasketBuilder WithChildFruit(string name, int weight)
         {
             Fruit newFruit = new GameObject(name).AddComponent<Fruit>();
-            newFruit.transform.parent = basket.transform;
+            newFruit.transform.parent = basketGameObject.transform;
             newFruit.ChangeWeight(weight);
             return this;
         }

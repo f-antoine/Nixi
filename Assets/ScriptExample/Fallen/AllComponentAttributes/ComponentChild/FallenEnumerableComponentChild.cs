@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using System.Collections.Generic;
 
-namespace Assets.ScriptExample.Fallen.AllComponentAttributes
+namespace ScriptExample.Fallen.AllComponentAttributes
 {
     public sealed class FallenEnumerableComponentChild : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("any", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("any")]
         public IEnumerable<EmptyClass> FallenElement;
     }
 }

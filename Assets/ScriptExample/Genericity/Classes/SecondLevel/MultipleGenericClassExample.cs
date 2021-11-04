@@ -1,7 +1,7 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Genericity.Classes.SecondLevel
+namespace ScriptExample.Genericity.Classes.SecondLevel
 {
     public sealed class MultipleGenericClassExample : MonoBehaviourInjectable
     {

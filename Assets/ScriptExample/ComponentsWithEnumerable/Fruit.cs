@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.ComponentsWithEnumerable
+namespace ScriptExample.ComponentsWithEnumerable
 {
     public interface IFruit
     {

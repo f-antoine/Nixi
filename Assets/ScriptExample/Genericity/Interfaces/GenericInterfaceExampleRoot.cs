@@ -1,7 +1,7 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Genericity.Interfaces
+namespace ScriptExample.Genericity.Interfaces
 {
     public sealed class GenericInterfaceExampleRoot : MonoBehaviourInjectable
     {

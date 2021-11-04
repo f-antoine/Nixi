@@ -2,7 +2,7 @@
 using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.ErrorMultiAttributes
+namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class FieldContainerWithFieldTestMock : MonoBehaviourInjectable
     {

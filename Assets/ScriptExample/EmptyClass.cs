@@ -1,4 +1,4 @@
-﻿namespace Assets.ScriptExample
+﻿namespace ScriptExample
 {
     public sealed class EmptyClass
     {

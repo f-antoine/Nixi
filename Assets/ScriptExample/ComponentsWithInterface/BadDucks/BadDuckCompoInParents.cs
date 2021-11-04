@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using System.Collections;
 
-namespace Assets.ScriptExample.ComponentsWithInterface.BadDucks
+namespace ScriptExample.ComponentsWithInterface.BadDucks
 {
     public sealed class BadDuckCompoInParents : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("any", GameObjectMethod.GetComponentsInParent)]
+        [NixInjectComponentFromParent("any")]
         private IList impossibleToInjectFieldFromGetComponent;
         public IList ImpossibleToInjectFieldFromGetComponent => impossibleToInjectFieldFromGetComponent;
     }

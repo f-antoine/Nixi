@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.Flowers
+namespace ScriptExample.Flowers
 {
     public sealed class Flower : MonoBehaviour
     {

@@ -10,10 +10,10 @@ namespace ScriptExample.GameHost
 {
     public class GameHost : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("PlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("PlayerGameObjectName")]
         public Player Player;
 
-        [NixInjectComponentFromMethod("SecondPlayerGameObjectName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("SecondPlayerGameObjectName")]
         public SecondPlayer SecondPlayer;
 
         [NixInjectFromContainer]

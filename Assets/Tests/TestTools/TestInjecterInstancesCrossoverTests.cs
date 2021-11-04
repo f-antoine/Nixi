@@ -1,32 +1,28 @@
-﻿using Assets.ScriptExample.AllParentsCases;
-using Assets.ScriptExample.Farms;
-using Assets.ScriptExample.Flowers;
+﻿using Nixi.Injections.Attributes;
 using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.AllParentsCases;
+using ScriptExample.ComponentsWithEnumerable;
+using ScriptExample.Farms;
+using ScriptExample.Flowers;
+using ScriptExample.OrphanRootComponents;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tests.Builders;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tests.TestTools
 {
     internal sealed class TestInjecterInstancesCrossoverTests
     {
-        //OK 4) NixInjectComponent au même niveau
-        //OK 1) NixInjectComponentList sur le même type doit renvoyer les mêmes instances d'en dessous
-        //OK 2) AddComponentInList doit tout update s'il y a lieux d'être
-        //OK 3) NixInjectRootComponent sur le même nom doit renvoyer la même instance
-        //OK 4) NixInjectRootComponent sur le même nom et le même GameObjectName doit renvoyer la même instance en ayant le même parent et la même chose que pour 2)
-        //5) NixInjectComponentFromMethod SameChildren, tout ceux en-dessous
-        //6) NixInjectComponentFromMethod SameParents, tout ceux au-dessus
-        //RAF car tu mock 7) Qu'en est-il des interface component ?
-        //À dégager 8) Qu'en est-il des inactives ?
-
         #region GetComponent
         [Test]
         public void GetComponentOnSameType_AtSameLevel_ShouldReturnSameInstance()
         {
             // Arrange
-            Parent parent = AllParentsBuilder.Create().BuildParent();
+            Parent parent = InjectableBuilder<Parent>.Create().Build();
             TestInjecter injecter = new TestInjecter(parent);
             injecter.CheckAndInjectAll();
 
@@ -34,7 +30,92 @@ namespace Tests.TestTools
             Assert.NotNull(parent.FirstChild);
             Assert.NotNull(parent.SecondChild);
 
+            // Parent gameobject = gameobject of first field (second field is tested below)
+            Assert.That(parent.FirstChild.gameObject.GetInstanceID(), Is.EqualTo(parent.gameObject.GetInstanceID()));
+
             Assert.That(parent.FirstChild.GetInstanceID(), Is.EqualTo(parent.SecondChild.GetInstanceID()));
+            Assert.That(parent.FirstChild.gameObject.GetInstanceID(), Is.EqualTo(parent.SecondChild.gameObject.GetInstanceID()));
+            Assert.That(parent.FirstChild.transform.GetInstanceID(), Is.EqualTo(parent.SecondChild.transform.GetInstanceID()));
+        }
+
+        [Test]
+        public void GetComponentOnSameTransform_AtSameLevel_ShouldReturnSameInstance()
+        {
+            // Arrange
+            ParentWithTransformChild parent = InjectableBuilder<ParentWithTransformChild>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parent);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(parent.FirstTransform);
+            Assert.NotNull(parent.SecondTransform);
+
+            // Parent gameobject = gameobject of first field (second field is tested below)
+            Assert.That(parent.FirstTransform.gameObject.GetInstanceID(), Is.EqualTo(parent.gameObject.GetInstanceID()));
+
+            Assert.That(parent.FirstTransform.GetInstanceID(), Is.EqualTo(parent.SecondTransform.GetInstanceID()));
+            Assert.That(parent.FirstTransform.gameObject.GetInstanceID(), Is.EqualTo(parent.SecondTransform.gameObject.GetInstanceID()));
+            Assert.That(parent.FirstTransform.transform.GetInstanceID(), Is.EqualTo(parent.SecondTransform.transform.GetInstanceID()));
+        }
+
+        [Test]
+        public void GetComponentOnSameParentTransformFirstThenSkill_AtSameLevel_ShouldReturnSameInstance()
+        {
+            // Arrange
+            ParentTransformFirstThenSkill parent = InjectableBuilder<ParentTransformFirstThenSkill>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parent);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(parent.ATransform);
+            Assert.NotNull(parent.ZSkill);
+
+            // Parent gameobject = gameobject of first field (second field is tested below)
+            Assert.That(parent.ATransform.gameObject.GetInstanceID(), Is.EqualTo(parent.gameObject.GetInstanceID()));
+
+            Assert.That(parent.ATransform.GetInstanceID(), Is.Not.EqualTo(parent.ZSkill.GetInstanceID()));
+            Assert.That(parent.ATransform.gameObject.GetInstanceID(), Is.EqualTo(parent.ZSkill.gameObject.GetInstanceID()));
+            Assert.That(parent.ATransform.transform.GetInstanceID(), Is.EqualTo(parent.ZSkill.transform.GetInstanceID()));
+        }
+
+        [Test]
+        public void GetComponentOnSameParentSkillFirstThenTransform_AtSameLevel_ShouldReturnSameInstance()
+        {
+            // Arrange
+            ParentSkillFirstThenTransform parent = InjectableBuilder<ParentSkillFirstThenTransform>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parent);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(parent.ASkill);
+            Assert.NotNull(parent.ZTransform);
+
+            // Parent gameobject = gameobject of first field (second field is tested below)
+            Assert.That(parent.ASkill.gameObject.GetInstanceID(), Is.EqualTo(parent.gameObject.GetInstanceID()));
+
+            Assert.That(parent.ASkill.GetInstanceID(), Is.Not.EqualTo(parent.ZTransform.GetInstanceID()));
+            Assert.That(parent.ASkill.gameObject.GetInstanceID(), Is.EqualTo(parent.ZTransform.gameObject.GetInstanceID()));
+            Assert.That(parent.ASkill.transform.GetInstanceID(), Is.EqualTo(parent.ZTransform.transform.GetInstanceID()));
+        }
+
+        [Test]
+        public void GetComponentShouldHaveSameGameObject_ButDifferentComponentId_WhenDifferent()
+        {
+            // Arrange
+            ParentSameLevelComponentButDifferent parent = InjectableBuilder<ParentSameLevelComponentButDifferent>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parent);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(parent.Child);
+            Assert.NotNull(parent.Skill);
+
+            // Parent gameobject = gameobject of first field (second field is tested below)
+            Assert.That(parent.Child.gameObject.GetInstanceID(), Is.EqualTo(parent.gameObject.GetInstanceID()));
+
+            Assert.That(parent.Child.GetInstanceID(), Is.Not.EqualTo(parent.Skill.GetInstanceID()));
+            Assert.That(parent.Child.gameObject.GetInstanceID(), Is.EqualTo(parent.Skill.gameObject.GetInstanceID()));
+            Assert.That(parent.Child.transform.GetInstanceID(), Is.EqualTo(parent.Skill.transform.GetInstanceID()));
         }
         #endregion GetComponent
 
@@ -43,7 +124,7 @@ namespace Tests.TestTools
         public void AddAndGetComponentListOnTwoIdenticalList_ShouldReturnSameInstance()
         {
             // Arrange
-            ParentWithSameChildLists parent = AllParentsBuilder.Create().BuildParentWithSameChildLists();
+            ParentWithSameChildLists parent = InjectableBuilder<ParentWithSameChildLists>.Create().Build();
             TestInjecter injecter = new TestInjecter(parent);
             injecter.CheckAndInjectAll();
 
@@ -54,7 +135,7 @@ namespace Tests.TestTools
             Assert.IsEmpty(parent.SecondChildList);
 
             // Add child in list (should impact both)
-            Child newChild = injecter.AddInComponentList<Child>();
+            Child newChild = injecter.InitSingleEnumerableComponent<Child>();
 
             // Check same list
             Assert.That(parent.FirstChildList.Count, Is.EqualTo(1));
@@ -64,16 +145,20 @@ namespace Tests.TestTools
             Assert.That(parent.SecondChildList[0].GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
 
             // Check from getter
-            IEnumerable<Child> childsFromInjecter = injecter.GetComponentList<Child>();
-            Assert.That(childsFromInjecter.Count, Is.EqualTo(1));
-            Assert.That(childsFromInjecter.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            IEnumerable<Child> childsFromInjecterFirst = injecter.GetEnumerableComponents<Child>("FirstChildList");
+            Assert.That(childsFromInjecterFirst.Count, Is.EqualTo(1));
+            Assert.That(childsFromInjecterFirst.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+
+            IEnumerable<Child> childsFromInjecterSecond = injecter.GetEnumerableComponents<Child>("SecondChildList");
+            Assert.That(childsFromInjecterSecond.Count, Is.EqualTo(1));
+            Assert.That(childsFromInjecterSecond.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
         }
 
         [Test]
         public void AddAndGetComponentListOnTwoDifferentsEnumerables_ShouldReturnSameInstance()
         {
             // Arrange
-            ParentWithSameChildListsDifferentsEnumerables parent = AllParentsBuilder.Create().BuildParentWithSameChildListsDifferentsEnumerables();
+            var parent = InjectableBuilder<ParentWithSameChildListsDifferentsEnumerables>.Create().Build();
             TestInjecter injecter = new TestInjecter(parent);
             injecter.CheckAndInjectAll();
 
@@ -82,28 +167,49 @@ namespace Tests.TestTools
             Assert.IsEmpty(parent.FirstChildList);
             Assert.NotNull(parent.SecondChildList);
             Assert.IsEmpty(parent.SecondChildList);
+            Assert.NotNull(parent.ThirdChildArray);
+            Assert.IsEmpty(parent.ThirdChildArray);
 
             // Add child in list (should impact both)
-            Child newChild = injecter.AddInComponentList<Child>();
+            IEnumerable<Child> childsInjected = injecter.InitEnumerableComponents<Child>(2);
+            Child newChild = childsInjected.First();
+            Child secondChild = childsInjected.Skip(1).First();
 
             // Check same list
-            Assert.That(parent.FirstChildList.Count, Is.EqualTo(1));
+            Assert.That(parent.FirstChildList.Count, Is.EqualTo(2));
             Assert.That(parent.FirstChildList[0].GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(parent.FirstChildList[1].GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
 
-            Assert.That(parent.SecondChildList.Count(), Is.EqualTo(1));
-            Assert.That(parent.SecondChildList.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(parent.SecondChildList.Count(), Is.EqualTo(2));
+            Assert.That(parent.SecondChildList.First().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(parent.SecondChildList.Skip(1).First().GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
+
+            Assert.That(parent.ThirdChildArray.Length, Is.EqualTo(2));
+            Assert.That(parent.ThirdChildArray[0].GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(parent.ThirdChildArray[1].GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
 
             // Check from getter
-            IEnumerable<Child> childsFromInjecter = injecter.GetComponentList<Child>();
-            Assert.That(childsFromInjecter.Count, Is.EqualTo(1));
-            Assert.That(childsFromInjecter.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            IEnumerable<Child> childsFromInjecterList = injecter.GetEnumerableComponents<Child>("FirstChildList");
+            Assert.That(childsFromInjecterList.Count, Is.EqualTo(2));
+            Assert.That(childsFromInjecterList.First().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(childsFromInjecterList.Skip(1).First().GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
+
+            IEnumerable<Child> childsFromInjecterEnumerable = injecter.GetEnumerableComponents<Child>("SecondChildList");
+            Assert.That(childsFromInjecterEnumerable.Count, Is.EqualTo(2));
+            Assert.That(childsFromInjecterEnumerable.First().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(childsFromInjecterEnumerable.Skip(1).First().GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
+
+            IEnumerable<Child> childsFromInjecterArray = injecter.GetEnumerableComponents<Child>("ThirdChildArray");
+            Assert.That(childsFromInjecterArray.Count, Is.EqualTo(2));
+            Assert.That(childsFromInjecterArray.First().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
+            Assert.That(childsFromInjecterArray.Skip(1).First().GetInstanceID(), Is.EqualTo(secondChild.GetInstanceID()));
         }
 
         [Test]
         public void AddAndGetComponentGrandParentWithChildListAndParent_ShouldReturnDifferentInstanceFromParent()
         {
             // Arrange
-            GrandParentWithChildListAndParent grandParent = AllParentsBuilder.Create().BuildGrandParentWithChildListAndParent();
+            GrandParentWithChildListAndParent grandParent = InjectableBuilder<GrandParentWithChildListAndParent>.Create().Build();
             TestInjecter injecter = new TestInjecter(grandParent);
             injecter.CheckAndInjectAll();
 
@@ -115,7 +221,7 @@ namespace Tests.TestTools
             Assert.IsEmpty(grandParent.ParentWithSameChildLists.SecondChildList);
 
             // Add child in list (should impact both)
-            Child newChild = injecter.AddInComponentList<Child>();
+            Child newChild = injecter.InitSingleEnumerableComponent<Child>();
 
             // Check same list
             Assert.That(grandParent.FirstChildList.Count, Is.EqualTo(1));
@@ -125,7 +231,7 @@ namespace Tests.TestTools
             Assert.IsEmpty(grandParent.ParentWithSameChildLists.SecondChildList);
 
             // Check from getter
-            IEnumerable<Child> grandParentChildsFromInjecter = injecter.GetComponentList<Child>();
+            IEnumerable<Child> grandParentChildsFromInjecter = injecter.GetEnumerableComponents<Child>();
             Assert.That(grandParentChildsFromInjecter.Count, Is.EqualTo(1));
             Assert.That(grandParentChildsFromInjecter.Single().GetInstanceID(), Is.EqualTo(newChild.GetInstanceID()));
 
@@ -136,7 +242,7 @@ namespace Tests.TestTools
             Assert.That(parentWithSameChildLists.SecondChildList, Is.Empty);
 
             // Add child into subchild lists, should impact both, but not parent
-            Child subChild = injecter.AddInComponentList<Child>(parentWithSameChildLists);
+            Child subChild = injecter.InitSingleEnumerableComponent<Child>(parentWithSameChildLists);
             Assert.That(parentWithSameChildLists.FirstChildList.Count, Is.EqualTo(1));
             Assert.That(parentWithSameChildLists.FirstChildList.Single().GetInstanceID(), Is.EqualTo(subChild.GetInstanceID()));
             Assert.That(parentWithSameChildLists.SecondChildList.Count, Is.EqualTo(1));
@@ -148,69 +254,771 @@ namespace Tests.TestTools
         }
 
         [Test]
-        public void AddAndGetComponentFarmWithListInjected_ShouldReturnDifferentValuesFromInheritance()
+        public void InitEnumerableComponentFromDerivedType_AtCurrent_ShouldFillOnlyTargetedEnumerable_AndNotInheritance()
         {
             // Arrange
-            Farm farm = CompoBuilder<Farm>.Create().Build();
+            Farm farm = InjectableBuilder<Farm>.Create().Build();
             TestInjecter injecter = new TestInjecter(farm);
             injecter.CheckAndInjectAll();
 
-            // Check init
-            Assert.NotNull(farm.Animals);
-            Assert.IsEmpty(farm.Animals);
-            Assert.NotNull(farm.Cats);
+            Type[] animalTypes = new Type[] { typeof(Animal), typeof(Dog), typeof(Dog), typeof(Cat), typeof(Cat), typeof(Cat) };
+
+            // Init and returned
+            IEnumerable<Animal> animals = injecter.InitEnumerableComponentsWithTypes<Animal>(animalTypes);
+            List<Animal> animalsList = animals.ToList();
+
+            Assert.That(animalTypes.Length, Is.EqualTo(animalsList.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], animalsList[i]);
+            }
+
+            // All cat enumerables are empty!!!
             Assert.IsEmpty(farm.Cats);
+            Assert.IsEmpty(farm.CatsArray);
+            Assert.IsEmpty(farm.CatsEnumerable);
 
-            // Add child in list (should impact both)
-            Animal firstAnimal = injecter.AddInComponentList<Animal>();
-            Animal secondAnimal = injecter.AddInComponentList<Animal>();
+            // List from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.Animals.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.Animals[i]);
+            }
 
-            Cat firstCat = injecter.AddInComponentList<Cat>();
-            Cat secondCat = injecter.AddInComponentList<Cat>();
+            // Enumerable from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsEnumerable.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsEnumerable.ElementAt(i));
+            }
 
-            // Check same list
-            Assert.That(farm.Animals.Count, Is.EqualTo(4));
-            Assert.That(farm.Animals[0].GetInstanceID(), Is.EqualTo(firstAnimal.GetInstanceID()));
-            Assert.That(farm.Animals[1].GetInstanceID(), Is.EqualTo(secondAnimal.GetInstanceID()));
-            Assert.That(farm.Animals[2].GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.Animals[3].GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
+            // Array from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsArray.Length));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsArray[i]);
+            }
 
+            // List from injecter
+            IEnumerable<Animal> listFromInjecter = injecter.GetEnumerableComponents<Animal>("Animals");
+            Assert.That(animalTypes.Length, Is.EqualTo(listFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], listFromInjecter.ElementAt(i));
+            }
+
+            // Enumerable from injecter
+            IEnumerable<Animal> enumerableFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsEnumerable");
+            Assert.That(animalTypes.Length, Is.EqualTo(enumerableFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], enumerableFromInjecter.ElementAt(i));
+            }
+
+            // Array from injecter
+            IEnumerable<Animal> arrayFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsArray");
+            Assert.That(animalTypes.Length, Is.EqualTo(arrayFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], arrayFromInjecter.ElementAt(i));
+            }
+        }
+
+        [Test]
+        public void InitEnumerableComponentFromDerivedType_AtParent_ShouldFillOnlyTargetedEnumerable_AndNotInheritance()
+        {
+            // Arrange
+            FarmWithParent farm = InjectableBuilder<FarmWithParent>.Create().Build();
+            TestInjecter injecter = new TestInjecter(farm);
+            injecter.CheckAndInjectAll();
+
+            Type[] animalTypes = new Type[] { typeof(Animal), typeof(Dog), typeof(Dog), typeof(Cat), typeof(Cat), typeof(Cat) };
+
+            // Init and returned
+            IEnumerable<Animal> animals = injecter.InitEnumerableComponentsWithTypes<Animal>(GameObjectLevel.Parent, animalTypes);
+            List<Animal> animalsList = animals.ToList();
+
+            Assert.That(animalTypes.Length, Is.EqualTo(animalsList.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], animalsList[i]);
+            }
+
+            // All cat enumerables are empty!!!
+            Assert.IsEmpty(farm.Cats);
+            Assert.IsEmpty(farm.CatsArray);
+            Assert.IsEmpty(farm.CatsEnumerable);
+
+            // List from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.Animals.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.Animals[i]);
+            }
+
+            // Enumerable from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsEnumerable.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsEnumerable.ElementAt(i));
+            }
+
+            // Array from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsArray.Length));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsArray[i]);
+            }
+
+            // List from injecter
+            IEnumerable<Animal> listFromInjecter = injecter.GetEnumerableComponents<Animal>("Animals");
+            Assert.That(animalTypes.Length, Is.EqualTo(listFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], listFromInjecter.ElementAt(i));
+            }
+
+            // Enumerable from injecter
+            IEnumerable<Animal> enumerableFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsEnumerable");
+            Assert.That(animalTypes.Length, Is.EqualTo(enumerableFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], enumerableFromInjecter.ElementAt(i));
+            }
+
+            // Array from injecter
+            IEnumerable<Animal> arrayFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsArray");
+            Assert.That(animalTypes.Length, Is.EqualTo(arrayFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], arrayFromInjecter.ElementAt(i));
+            }
+        }
+
+        [Test]
+        public void InitEnumerableComponentFromDerivedType_AtChilds_ShouldFillOnlyTargetedEnumerable_AndNotInheritance()
+        {
+            // Arrange
+            FarmWithChilds farm = InjectableBuilder<FarmWithChilds>.Create().Build();
+            TestInjecter injecter = new TestInjecter(farm);
+            injecter.CheckAndInjectAll();
+
+            Type[] animalTypes = new Type[] { typeof(Animal), typeof(Dog), typeof(Dog), typeof(Cat), typeof(Cat), typeof(Cat) };
+
+            // Init and returned
+            IEnumerable<Animal> animals = injecter.InitEnumerableComponentsWithTypes<Animal>(GameObjectLevel.Children, animalTypes);
+            List<Animal> animalsList = animals.ToList();
+
+            Assert.That(animalTypes.Length, Is.EqualTo(animalsList.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], animalsList[i]);
+            }
+
+            // All cat enumerables are empty!!!
+            Assert.IsEmpty(farm.Cats);
+            Assert.IsEmpty(farm.CatsArray);
+            Assert.IsEmpty(farm.CatsEnumerable);
+
+            // List from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.Animals.Count));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.Animals[i]);
+            }
+
+            // Enumerable from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsEnumerable.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsEnumerable.ElementAt(i));
+            }
+
+            // Array from class
+            Assert.That(animalTypes.Length, Is.EqualTo(farm.AnimalsArray.Length));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], farm.AnimalsArray[i]);
+            }
+
+            // List from injecter
+            IEnumerable<Animal> listFromInjecter = injecter.GetEnumerableComponents<Animal>("Animals");
+            Assert.That(animalTypes.Length, Is.EqualTo(listFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], listFromInjecter.ElementAt(i));
+            }
+
+            // Enumerable from injecter
+            IEnumerable<Animal> enumerableFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsEnumerable");
+            Assert.That(animalTypes.Length, Is.EqualTo(enumerableFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], enumerableFromInjecter.ElementAt(i));
+            }
+
+            // Array from injecter
+            IEnumerable<Animal> arrayFromInjecter = injecter.GetEnumerableComponents<Animal>("AnimalsArray");
+            Assert.That(animalTypes.Length, Is.EqualTo(arrayFromInjecter.Count()));
+            for (int i = 0; i < animalTypes.Length; i++)
+            {
+                Assert.IsAssignableFrom(animalTypes[i], arrayFromInjecter.ElementAt(i));
+            }
+        }
+
+        [Test]
+        public void InitEnumerableComponentFromDerivedType_AtCurrent_ShouldFillOnlyTargetedEnumerable_AndNotInheritance_Reverse()
+        {
+            // Arrange
+            Farm farm = InjectableBuilder<Farm>.Create().Build();
+            TestInjecter injecter = new TestInjecter(farm);
+            injecter.CheckAndInjectAll();
+
+            // Init and returned
+            IEnumerable<Cat> cats = injecter.InitEnumerableComponentsWithTypes<Cat>(typeof(Cat), typeof(Cat));
+
+            Assert.That(cats.Count(), Is.EqualTo(2));
+
+            // All animal enumerables are empty!!!
+            Assert.IsEmpty(farm.Animals);
+            Assert.IsEmpty(farm.AnimalsArray);
+            Assert.IsEmpty(farm.AnimalsEnumerable);
+        }
+
+        [Test]
+        public void InitEnumerableComponentsWithTypes_ShouldFillFieldInRecursiveComponentInjected()
+        {
+            // Arrange
+            ParentFarm parentFarm = InjectableBuilder<ParentFarm>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parentFarm);
+            injecter.CheckAndInjectAll();
+
+            // Throws because nothing at this level
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponentsWithTypes<Cat>(typeof(Cat), typeof(Cat)));
+
+            // Get farm
+            Farm farm = injecter.GetComponent<Farm>();
+
+            // Init and returned
+            IEnumerable<Cat> cats = injecter.InitEnumerableComponentsWithTypes<Cat>(farm, typeof(Cat), typeof(Cat));
+
+            // Check all cats fields
+            Assert.That(cats.Count(), Is.EqualTo(2));
             Assert.That(farm.Cats.Count, Is.EqualTo(2));
-            Assert.That(farm.Cats[0].GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.Cats[1].GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
-
-            // Check same enumerable
-            Assert.That(farm.AnimalsEnumerable.Count, Is.EqualTo(4));
-            Assert.That(farm.AnimalsEnumerable.First().GetInstanceID(), Is.EqualTo(firstAnimal.GetInstanceID()));
-            Assert.That(farm.AnimalsEnumerable.Skip(1).First().GetInstanceID(), Is.EqualTo(secondAnimal.GetInstanceID()));
-            Assert.That(farm.AnimalsEnumerable.Skip(2).First().GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.AnimalsEnumerable.Skip(3).First().GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
-
-            Assert.That(farm.CatsEnumerable.Count, Is.EqualTo(2));
-            Assert.That(farm.CatsEnumerable.First().GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.CatsEnumerable.Skip(1).First().GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
-
-            // Check same array
-            Assert.That(farm.AnimalsArray.Length, Is.EqualTo(4));
-            Assert.That(farm.AnimalsArray[0].GetInstanceID(), Is.EqualTo(firstAnimal.GetInstanceID()));
-            Assert.That(farm.AnimalsArray[1].GetInstanceID(), Is.EqualTo(secondAnimal.GetInstanceID()));
-            Assert.That(farm.AnimalsArray[2].GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.AnimalsArray[3].GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
-
             Assert.That(farm.CatsArray.Length, Is.EqualTo(2));
-            Assert.That(farm.CatsArray[0].GetInstanceID(), Is.EqualTo(firstCat.GetInstanceID()));
-            Assert.That(farm.CatsArray[1].GetInstanceID(), Is.EqualTo(secondCat.GetInstanceID()));
+            Assert.That(farm.CatsEnumerable.Count(), Is.EqualTo(2));
+
+            // All animal enumerables are empty!!!
+            Assert.IsEmpty(farm.Animals);
+            Assert.IsEmpty(farm.AnimalsArray);
+            Assert.IsEmpty(farm.AnimalsEnumerable);
+        }
+
+        [Test]
+        public void InitEnumerableComponents_ShouldFillFieldInRecursiveComponentInjected()
+        {
+            // Arrange
+            ParentFarm parentFarm = InjectableBuilder<ParentFarm>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parentFarm);
+            injecter.CheckAndInjectAll();
+
+            // Throws because nothing at this level
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Cat>(2));
+
+            // Get farm
+            Farm farm = injecter.GetComponent<Farm>();
+
+            // Init and returned
+            IEnumerable<Cat> cats = injecter.InitEnumerableComponents<Cat>(2, farm);
+
+            // Check all cats fields
+            Assert.That(cats.Count(), Is.EqualTo(2));
+            Assert.That(farm.Cats.Count, Is.EqualTo(2));
+            Assert.That(farm.CatsArray.Length, Is.EqualTo(2));
+            Assert.That(farm.CatsEnumerable.Count(), Is.EqualTo(2));
+
+            // All animal enumerables are empty!!!
+            Assert.IsEmpty(farm.Animals);
+            Assert.IsEmpty(farm.AnimalsArray);
+            Assert.IsEmpty(farm.AnimalsEnumerable);
         }
         #endregion GetComponentList
 
+        #region GetComponentList Children, current and parents
+        [Test]
+        public void FullBasketGetComponentExample_ShouldFillOnlyParents()
+        {
+            // Arrange
+            FullBasketListExample fullBasket = InjectableBuilder<FullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(fullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(GameObjectLevel.Parent, 2);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsListParent");
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableParent");
+
+            // Only parent should have
+            Assert.That(fullBasket.FruitsListParent.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.FruitsEnumerableParent.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsListParent.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsEnumerableParent.Count, Is.EqualTo(2));
+
+            // Current should not have
+            Assert.IsEmpty(fullBasket.FruitsList);
+            Assert.IsEmpty(fullBasket.FruitsEnumerable);
+            Assert.Null(fullBasket.IFruitsList);
+            Assert.Null(fullBasket.IFruitsEnumerable);
+
+            // Child should not have
+            Assert.IsEmpty(fullBasket.FruitsListChildren);
+            Assert.IsEmpty(fullBasket.FruitsEnumerableChildren);
+            Assert.Null(fullBasket.IFruitsListChildren);
+            Assert.Null(fullBasket.IFruitsEnumerableChildren);
+
+            // Checks with injectableInstance (parent test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.Not.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.Not.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableParent");
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsListParent");
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+        }
+
+        [Test]
+        public void FullBasketGetComponentExample_ShouldFillOnlyCurrent()
+        {
+            // Arrange
+            FullBasketListExample fullBasket = InjectableBuilder<FullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(fullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(2);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsList");
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerable");
+
+            // Parent should not have
+            Assert.IsEmpty(fullBasket.FruitsListParent);
+            Assert.IsEmpty(fullBasket.FruitsEnumerableParent);
+            Assert.Null(fullBasket.IFruitsListParent);
+            Assert.Null(fullBasket.IFruitsEnumerableParent);
+
+            // Only current should have
+            Assert.That(fullBasket.FruitsList.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.FruitsEnumerable.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsList.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsEnumerable.Count, Is.EqualTo(2));
+
+            // Child should not have
+            Assert.IsEmpty(fullBasket.FruitsListChildren);
+            Assert.IsEmpty(fullBasket.FruitsEnumerableChildren);
+            Assert.Null(fullBasket.IFruitsListChildren);
+            Assert.Null(fullBasket.IFruitsEnumerableChildren);
+
+            // Checks with injectableInstance (current test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerable");
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsList");
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+        }
+
+        [Test]
+        public void FullBasketGetComponentExample_ShouldFillOnlyChildren()
+        {
+            // Arrange
+            FullBasketListExample fullBasket = InjectableBuilder<FullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(fullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(GameObjectLevel.Children, 2, fullBasket);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsListChildren");
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableChildren");
+
+            // Parent should not have
+            Assert.IsEmpty(fullBasket.FruitsListParent);
+            Assert.IsEmpty(fullBasket.FruitsEnumerableParent);
+            Assert.Null(fullBasket.IFruitsListParent);
+            Assert.Null(fullBasket.IFruitsEnumerableParent);
+
+            // Current not have
+            Assert.IsEmpty(fullBasket.FruitsList);
+            Assert.IsEmpty(fullBasket.FruitsEnumerable);
+            Assert.Null(fullBasket.IFruitsList);
+            Assert.Null(fullBasket.IFruitsEnumerable);
+
+            // Only child should have
+            Assert.That(fullBasket.FruitsListChildren.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.FruitsEnumerableChildren.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsListChildren.Count, Is.EqualTo(2));
+            Assert.That(fullBasket.IFruitsEnumerableChildren.Count, Is.EqualTo(2));
+
+            // Checks with injectableInstance (child test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.Not.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.Not.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableChildren");
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsListChildren");
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+        }
+        #endregion GetComponentList Children, current and parents
+
+        #region GetComponentList recursively Children, current and parents
+        [Test]
+        public void AboveFullBasketGetComponentExample_ShouldFillOnlyParents_RecursivelyInSecondLevel()
+        {
+            // Arrange
+            AboveFullBasketListExample aboveFullBasket = InjectableBuilder<AboveFullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(aboveFullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Get child component
+            FullBasketListExample fullBasket = injecter.GetComponent<FullBasketListExample>();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(GameObjectLevel.Parent, 2, fullBasket);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsListParent", fullBasket);
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableParent", fullBasket);
+
+            // Only parent should have
+            Assert.That(aboveFullBasket.ParentBasket.FruitsListParent.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.FruitsEnumerableParent.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsListParent.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsEnumerableParent.Count, Is.EqualTo(2));
+
+            // Current should not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsList);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerable);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsList);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerable);
+
+            // Child should not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListChildren);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerableChildren);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsListChildren);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerableChildren);
+
+            // Checks with injectableInstance (parent test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.Not.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.Not.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableParent", fullBasket);
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsListParent", fullBasket);
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+        }
+
+        [Test]
+        public void AboveFullBasketGetComponentExample_ShouldFillOnlyCurrent_RecursivelyInSecondLevel()
+        {
+            // Arrange
+            AboveFullBasketListExample aboveFullBasket = InjectableBuilder<AboveFullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(aboveFullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Get child component
+            FullBasketListExample fullBasket = injecter.GetComponent<FullBasketListExample>();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(2, fullBasket);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsList", fullBasket);
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerable", fullBasket);
+
+            // Parent should not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListParent);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerableParent);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsListParent);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerableParent);
+
+            // Only current should have
+            Assert.That(aboveFullBasket.ParentBasket.FruitsList.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.FruitsEnumerable.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsList.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsEnumerable.Count, Is.EqualTo(2));
+
+            // Child should not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListChildren);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerableChildren);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsListChildren);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerableChildren);
+
+            // Checks with injectableInstance (current test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerable", fullBasket);
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsList", fullBasket);
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+        }
+
+        [Test]
+        public void AboveFullBasketGetComponentExample_ShouldFillOnlyChildren_RecursivelyInSecondLevel()
+        {
+            // Arrange
+            AboveFullBasketListExample aboveFullBasket = InjectableBuilder<AboveFullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(aboveFullBasket);
+            injecter.CheckAndInjectAll();
+
+            // Get child component
+            FullBasketListExample fullBasket = injecter.GetComponent<FullBasketListExample>();
+
+            // Add in list (build component)
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(GameObjectLevel.Children, 2, fullBasket);
+            Fruit first = fruitsInjected.First();
+            Fruit second = fruitsInjected.Skip(1).First();
+
+            // Link to interface
+            List<IFruit> fruits = new List<IFruit> { first, second };
+            injecter.InjectMock(fruits, "IFruitsListChildren", fullBasket);
+            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableChildren", fullBasket);
+
+            // Parent should not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListParent);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerableParent);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsListParent);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerableParent);
+
+            // Current not have
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsList);
+            Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsEnumerable);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsList);
+            Assert.Null(aboveFullBasket.ParentBasket.IFruitsEnumerable);
+
+            // Only child should have
+            Assert.That(aboveFullBasket.ParentBasket.FruitsListChildren.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.FruitsEnumerableChildren.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsListChildren.Count, Is.EqualTo(2));
+            Assert.That(aboveFullBasket.ParentBasket.IFruitsEnumerableChildren.Count, Is.EqualTo(2));
+
+            // Checks with injectableInstance (child test)
+            foreach (Fruit fruit in new[] { first, second })
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Compare first and second
+            Assert.That(first.gameObject.GetInstanceID(), Is.Not.EqualTo(second.gameObject.GetInstanceID()));
+            Assert.That(first.transform.GetInstanceID(), Is.Not.EqualTo(second.transform.GetInstanceID()));
+            Assert.That(first.GetInstanceID(), Is.Not.EqualTo(second.GetInstanceID()));
+
+            // Check get component Enumerable
+            IEnumerable<Fruit> fruitsEnumerableGetted = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableChildren", fullBasket);
+            foreach (Fruit fruit in fruitsEnumerableGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }
+
+            // Check get component List
+            IEnumerable<Fruit> fruitsListGetted = injecter.GetEnumerableComponents<Fruit>("FruitsListChildren", fullBasket);
+            foreach (Fruit fruit in fruitsListGetted)
+            {
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(aboveFullBasket.transform.GetInstanceID()));
+                Assert.That(fruit.gameObject.GetInstanceID(), Is.Not.EqualTo(fullBasket.gameObject.GetInstanceID()));
+                Assert.That(fruit.transform.GetInstanceID(), Is.Not.EqualTo(fullBasket.transform.GetInstanceID()));
+            }            
+        }
+        #endregion GetComponentList recursively Children, current and parents
+
         #region RootComponent
+        [Test]
+        public void RootComponentFromChild_ButNoParentFilled_ShouldFillAndHaveGoodEmptyGameObject()
+        {
+            // SubRootComponent rempli mais pas rootComponent
+            // On doit pouvoir prendre en compte le subRootComponent correctement
+            // Et avoir le parent comme étant un gameObject vide
+
+            Orphan orphan = InjectableBuilder<Orphan>.Create().Build();
+            TestInjecter injecter = new TestInjecter(orphan);
+            injecter.CheckAndInjectAll();
+
+            // Check init
+            Assert.That(orphan.Image, Is.Not.Null);
+            Assert.That(orphan.Slider, Is.Not.Null);
+
+            // Check same gameObject at child level
+            Assert.That(orphan.Image.gameObject.GetInstanceID(), Is.EqualTo(orphan.Slider.gameObject.GetInstanceID()));
+
+            // Check parent exists
+            Assert.That(orphan.Image.transform.parent, Is.Not.Null);
+            Assert.That(orphan.Slider.transform.parent, Is.Not.Null);
+
+            // Check same parent
+            Assert.That(orphan.Image.transform.parent.GetInstanceID(), Is.EqualTo(orphan.Slider.transform.parent.GetInstanceID()));
+
+            // Check parent has no component except transform
+            Component[] components = orphan.Image.transform.parent.GetComponents<Component>();
+            Assert.That(components.Length, Is.EqualTo(1));
+            Assert.IsAssignableFrom(typeof(Transform), components[0]);
+        }
+
+        [Test]
+        public void TwoRootComponent_WithSameRootNameAndSameSubComponentName_ButDifferentType_ShouldHaveSameGameObject()
+        {
+            Bouquet bouquet = InjectableBuilder<Bouquet>.Create().Build();
+            TestInjecter injecter = new TestInjecter(bouquet);
+            injecter.CheckAndInjectAll();
+
+            DualFlower subRootIsolatedFlower = injecter.GetComponent<DualFlower>("SubRootIsolatedFlower");
+            Image image = injecter.GetComponent<Image>();
+
+            Assert.That(image.GetInstanceID(), Is.Not.EqualTo(subRootIsolatedFlower.GetInstanceID()));
+            Assert.That(image.gameObject.GetInstanceID(), Is.EqualTo(subRootIsolatedFlower.gameObject.GetInstanceID()));
+            Assert.That(image.transform.GetInstanceID(), Is.EqualTo(subRootIsolatedFlower.transform.GetInstanceID()));
+        }
+
         [TestCase("ChildFlower")]
         [TestCase("ParentFlower")]
         [TestCase("RootIsolatedFlower")]
         [TestCase("SubRootIsolatedFlower")]
         public void AllRootComponent_ShouldBeSame_ForEveryComponentInjectionCases(string fieldNameToFind)
         {
-            Bouquet bouquet = CompoBuilder<Bouquet>.Create().Build();
+            Bouquet bouquet = InjectableBuilder<Bouquet>.Create().Build();
             TestInjecter injecter = new TestInjecter(bouquet);
             injecter.CheckAndInjectAll();
 
@@ -236,7 +1044,7 @@ namespace Tests.TestTools
         [Test]
         public void AllRootComponent_ShouldBeSame_ForEveryComponentInjectionCases_WithAddingInList()
         {
-            Bouquet bouquet = CompoBuilder<Bouquet>.Create().Build();
+            Bouquet bouquet = InjectableBuilder<Bouquet>.Create().Build();
             TestInjecter injecter = new TestInjecter(bouquet);
             injecter.CheckAndInjectAll();
 
@@ -252,8 +1060,9 @@ namespace Tests.TestTools
             Assert.That(referentialFlower.PerfectFlower.transform.parent.GetInstanceID(), Is.EqualTo(referentialFlower.FlowerField.transform.GetInstanceID()));
 
             // Add 2 in list
-            DualFlower firstFlower = injecter.AddInComponentList<DualFlower>();
-            DualFlower secondFlower = injecter.AddInComponentList<DualFlower>();
+            IEnumerable<DualFlower> flowersInjected = injecter.InitEnumerableComponents<DualFlower>(2);
+            DualFlower firstFlower = flowersInjected.First();
+            DualFlower secondFlower = flowersInjected.Skip(1).First();
 
             Assert.That(firstFlower.GetInstanceID(), Is.Not.EqualTo(secondFlower.GetInstanceID()));
 
@@ -274,7 +1083,7 @@ namespace Tests.TestTools
         public void SameRootOrSubRoot_ShouldHaveSameGameObjectWhenTypeDifferents_ButNotSameComponent()
         {
             // Init
-            PlagueBouquet plagueBouquet = CompoBuilder<PlagueBouquet>.Create().Build();
+            PlagueBouquet plagueBouquet = InjectableBuilder<PlagueBouquet>.Create().Build();
             TestInjecter injecter = new TestInjecter(plagueBouquet);
             injecter.CheckAndInjectAll();
 

@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.Menu;
+﻿using ScriptExample.Menu;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;

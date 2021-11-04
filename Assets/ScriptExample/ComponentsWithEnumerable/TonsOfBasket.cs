@@ -2,7 +2,7 @@
 using Nixi.Injections.Attributes;
 using UnityEngine;
 
-namespace Assets.ScriptExample.ComponentsWithEnumerable
+namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class TonsOfBasket : MonoBehaviourInjectable
     {
@@ -12,7 +12,7 @@ namespace Assets.ScriptExample.ComponentsWithEnumerable
         public BasketDualList FirstDualList => firstDualList;
 
         [SerializeField]
-        [NixInjectComponentFromMethod("anotherBasketDualList", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("anotherBasketDualList")]
         private BasketDualList secondDualList;
         public BasketDualList SecondDualList => secondDualList;
     }

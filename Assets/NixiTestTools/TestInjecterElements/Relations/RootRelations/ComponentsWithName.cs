@@ -32,8 +32,9 @@ namespace NixiTestTools.TestInjecterElements.Relations.RootRelations
         {
             Name = name;
 
-            if (component != null)
-                components.Add(component);
+            component ??= new GameObject().transform;
+
+            components.Add(component);
         }
 
         /// <summary>

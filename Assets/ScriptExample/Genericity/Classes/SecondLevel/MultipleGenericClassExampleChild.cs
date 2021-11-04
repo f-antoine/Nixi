@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Genericity.Classes.SecondLevel
+namespace ScriptExample.Genericity.Classes.SecondLevel
 {
     public sealed class MultipleGenericClassExampleChild : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("ChildName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("ChildName")]
         public MultipleGenericClass<int, string> GenericClass;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Nixi.Injections.Attributes.Abstractions
 {
     /// <summary>
-    /// Common abstract base attribute for all NixInjection
+    /// Common abstract base attribute for all NixInjections
     /// </summary>
     public abstract class NixInjectAbstractBaseAttribute : Attribute
     {

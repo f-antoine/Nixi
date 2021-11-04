@@ -39,7 +39,7 @@ namespace Tests.TestTools
         [Test]
         public void InjectMockWithoutName_ShouldThrowException_WhenTwoSameInterfaceAndNoNameToDefine()
         {
-            TestInjecter testInjecter = BrokenSorcererBuilder.Create().BuildTestInjecter();
+            TestInjecter testInjecter = InjectableBuilder<BrokenSorcerer>.Create().BuildTestInjecter();
 
             testInjecter.CheckAndInjectAll();
 
@@ -149,7 +149,7 @@ namespace Tests.TestTools
         public void InjectMockWithName_ShouldFillMoreComplicated()
         {
             // Init
-            BrokenSorcerer brokenSorcerer = BrokenSorcererBuilder.Create().Build();
+            BrokenSorcerer brokenSorcerer = InjectableBuilder<BrokenSorcerer>.Create().Build();
             Assert.That(brokenSorcerer.BrokenTestInterface, Is.Null);
             Assert.That(brokenSorcerer.BrokenTestInterfaceSecond, Is.Null);
 

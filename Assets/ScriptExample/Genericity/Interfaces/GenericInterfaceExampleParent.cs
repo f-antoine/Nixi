@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Genericity.Interfaces
+namespace ScriptExample.Genericity.Interfaces
 {
     public sealed class GenericInterfaceExampleParent : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("ParentName", GameObjectMethod.GetComponentsInParent)]
+        [NixInjectComponentFromParent("ParentName")]
         public IGenericInterface<int> ParentGenericityInterface;
     }
 }

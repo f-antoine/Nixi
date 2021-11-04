@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.ComponentsWithInterface;
+﻿using ScriptExample.ComponentsWithInterface;
 using Moq;
 using NixiTestTools;
 using NUnit.Framework;

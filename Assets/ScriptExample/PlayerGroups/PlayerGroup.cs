@@ -4,12 +4,12 @@ using ScriptExample.Players;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.ScriptExample.PlayerGroups
+namespace ScriptExample.PlayerGroups
 {
     public sealed class PlayerGroup : MonoBehaviourInjectable
     {
         [SerializeField]
-        [NixInjectComponentList]
+        [NixInjectComponents]
         private IEnumerable<Player> players;
         public IEnumerable<Player> Players => players;
     }

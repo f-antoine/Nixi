@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.ComponentsWithInterface
+namespace ScriptExample.ComponentsWithInterface
 {
     public interface IDuckObjectContainer
     {

@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.Characters.Broken;
+﻿using ScriptExample.Characters.Broken;
 using Nixi.Injections.Injecters;
 using NixiTestTools;
 using NUnit.Framework;
@@ -15,7 +15,7 @@ namespace Tests.Injections
 
             TestInjecter injecter = new TestInjecter(wrongSorcerer);
 
-            Assert.Throws<TestInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Tests.Injections
 
             TestInjecter injecter = new TestInjecter(wrongSorcerer);
 
-            Assert.Throws<TestInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace Tests.Injections
 
             NixInjecter injecter = new NixInjecter(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Tests.Injections
 
             NixInjecter injecter = new NixInjecter(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Tests.Injections
 
             NixInjecter injecter = new NixInjecter(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => wrongSorcerer.BuildInjections(injecter));
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
     }
 }

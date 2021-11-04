@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Genericity.Classes
+namespace ScriptExample.Genericity.Classes
 {
     public sealed class GenericClassExampleChild : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("ChildName", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("ChildName")]
         public GenericClass<int> GenericClass;
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Fallen.List
+namespace ScriptExample.Fallen.List
 {
     public sealed class FallenCompoListClass : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public EmptyClass FallenEmptyClass;
     }
 }

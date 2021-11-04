@@ -2,7 +2,7 @@
 using ScriptExample.Characters;
 using UnityEngine;
 
-namespace Assets.ScriptExample.Characters
+namespace ScriptExample.Characters
 {
     public sealed class Warrior : Character
     {

@@ -2,7 +2,7 @@
 using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.Characters.Broken
+namespace ScriptExample.Characters.Broken
 {
     /// <summary>
     /// Allow to do test on bad designed code for nixi injection

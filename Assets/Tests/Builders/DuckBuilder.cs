@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.ComponentsWithInterface;
+﻿using ScriptExample.ComponentsWithInterface;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 

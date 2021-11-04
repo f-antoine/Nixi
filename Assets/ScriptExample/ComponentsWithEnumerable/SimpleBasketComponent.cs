@@ -3,12 +3,12 @@ using Nixi.Injections.Attributes;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.ScriptExample.ComponentsWithEnumerable
+namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class SimpleBasketComponent : MonoBehaviourInjectable
     {
         [SerializeField]
-        [NixInjectComponentList]
+        [NixInjectComponents]
         private List<Fruit> fruitsList;
         public List<Fruit> FruitsList => fruitsList;
     }

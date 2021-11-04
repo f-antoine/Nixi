@@ -24,6 +24,12 @@ namespace NixiTestTools
         protected TestInjecter MainInjecter {  get; private set; }
 
         /// <summary>
+        /// Name of the instance, mainly modified to consider MainTested as a root component
+        /// <para/>See documentation part : "NixInjectRootComponent special case when you want your MainTested to be recognized as a root gameObject"
+        /// </summary>
+        protected string InstanceName = "";
+
+        /// <summary>
         /// Create an instance of the test MonoBehaviourInjectable that we want to test as well as its TestInjecter which allows to expose the fields to test / mock with the Nixi approach
         /// </summary>
         [SetUp]
@@ -31,9 +37,9 @@ namespace NixiTestTools
         {
             MainTested = new GameObject().AddComponent<T>();
 
-            MainInjecter = new TestInjecter(MainTested);
+            MainInjecter = new TestInjecter(MainTested, InstanceName);
 
-            MainTested.BuildInjections(MainInjecter);
+            MainInjecter.CheckAndInjectAll();
         }
     }
 }

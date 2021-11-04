@@ -1,10 +1,8 @@
-﻿using Nixi.Injections.Attributes;
-using Nixi.Injections.Attributes.Abstractions;
+﻿using Nixi.Injections.Attributes.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 
 namespace Nixi.Injections.Injecters
 {
@@ -81,7 +79,7 @@ namespace Nixi.Injections.Injecters
         /// Find all the fields (public, protected and private) contained in the objectToLink type, this goes back recursively to the first type derived from MonoBehaviourInjectable
         /// </summary>
         /// <returns>All the fields contained in objectToLink type</returns>
-        protected virtual List<FieldInfo> GetAllFields(Type currentType)
+        protected virtual IEnumerable<FieldInfo> GetAllFields(Type currentType)
         {
             List<FieldInfo> fieldsToReturn = new List<FieldInfo>();
 

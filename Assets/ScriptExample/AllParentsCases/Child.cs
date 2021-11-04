@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.AllParentsCases
+namespace ScriptExample.AllParentsCases
 {
     public sealed class Child : MonoBehaviour
     {

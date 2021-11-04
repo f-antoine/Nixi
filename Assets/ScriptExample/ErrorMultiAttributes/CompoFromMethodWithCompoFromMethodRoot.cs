@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.ErrorMultiAttributes
+namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class CompoFromMethodWithCompoFromMethodRoot : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("any", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("any")]
         [NixInjectRootComponent("anyRoot")]
         public Sorcerer Sorcerer;
     }

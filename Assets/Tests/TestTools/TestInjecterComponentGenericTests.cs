@@ -1,8 +1,8 @@
-﻿using Assets.ScriptExample.Genericity.Classes;
-using Assets.ScriptExample.Genericity.Classes.SecondLevel;
-using Assets.ScriptExample.Genericity.Interfaces;
-using Assets.ScriptExample.Genericity.Interfaces.SecondLevel;
-using Assets.Tests.Builders;
+﻿using ScriptExample.Genericity.Classes;
+using ScriptExample.Genericity.Classes.SecondLevel;
+using ScriptExample.Genericity.Interfaces;
+using ScriptExample.Genericity.Interfaces.SecondLevel;
+using Tests.Builders;
 using Nixi.Injections;
 using NixiTestTools;
 using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace Tests.TestTools
         [TestCase(typeof(GenericInterfaceExampleRootChild))]
         public void NonEnumerable_GenericInterfaceWithOnlyOneGenericArgument_InjectedAsComponent_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);
@@ -35,7 +35,7 @@ namespace Tests.TestTools
         [TestCase(typeof(MultipleGenericInterfaceExampleRootChild))]
         public void NonEnumerable_GenericInterfaceWithManyGenericArgument_InjectedAsComponent_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);
@@ -50,7 +50,7 @@ namespace Tests.TestTools
         [TestCase(typeof(GenericClassExampleRootChild))]
         public void GenericClass_WithOnlyOneGenericArgument_InjectedAsComponent_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);
@@ -65,7 +65,7 @@ namespace Tests.TestTools
         [TestCase(typeof(MultipleGenericClassExampleRootChild))]
         public void GenericClass_GenericInterfaceWithManyGenericArgument_InjectedAsComponent_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);

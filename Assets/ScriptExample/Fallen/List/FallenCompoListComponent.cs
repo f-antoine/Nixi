@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using UnityEngine.UI;
 
-namespace Assets.ScriptExample.Fallen.List
+namespace ScriptExample.Fallen.List
 {
     public sealed class FallenCompoListComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public Slider FallenSlider;
     }
 }

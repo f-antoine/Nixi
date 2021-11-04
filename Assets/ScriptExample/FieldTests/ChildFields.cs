@@ -37,13 +37,13 @@ namespace ScriptExample.FieldTests
         [NixInjectFromContainer]
         public ITestInterface publicChildTestInterface;
 
-        [NixInjectComponentFromMethod("privateChildSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("privateChildSkill")]
         private Skill privateChildSkill;
 
-        [NixInjectComponentFromMethod("protectedChildSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("protectedChildSkill")]
         protected Skill protectedChildSkill;
 
-        [NixInjectComponentFromMethod("publicChildSkill", GameObjectMethod.GetComponentsInChildren)]
+        [NixInjectComponentFromChildren("publicChildSkill")]
         public Skill publicChildSkill;
     }
 }

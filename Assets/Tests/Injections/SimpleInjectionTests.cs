@@ -18,13 +18,13 @@ namespace Tests.Injections
             Skill characterSkill = MainInjecter.GetComponent<Skill>("attackSkill");
 
             Assert.That(sorcererSkill.name, Is.EqualTo("SorcererChildGameObjectName"));
-            Assert.That(characterSkill.name, Is.EqualTo(""));
+            Assert.That(characterSkill.name, Is.EqualTo(MainTested.name));
         }
 
         [Test]
         public void GameObjectInjection_ShouldThrowExceptionWhenReBuildInjections()
-        {
-            Assert.Throws<NixInjecterException>(() => MainTested.BuildInjections());
+        {   
+            Assert.Throws<NixInjecterException>(() => MainInjecter.CheckAndInjectAll());
         }
 
         [Test]

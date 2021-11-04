@@ -1,11 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.ComponentsWithEnumerable.BadBasket
+namespace ScriptExample.ComponentsWithEnumerable.BadBasket
 {
     public sealed class BadBasketNotEnumerable : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         private Fruit fruit;
     }
 }

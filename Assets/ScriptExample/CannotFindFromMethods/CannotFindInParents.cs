@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.CannotFindFromMethods
+namespace ScriptExample.CannotFindFromMethods
 {
     public sealed class CannotFindInParents : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("CurrentName", GameObjectMethod.GetComponentsInParent)]
+        [NixInjectComponentFromParent("CurrentName")]
         public Skill SkillInChildren;
     }
 }

@@ -1,15 +1,16 @@
-﻿using Assets.ScriptExample.Cargos;
-using Assets.ScriptExample.ComponentsWithEnumerable;
-using Assets.ScriptExample.Fallen.AllComponentAttributes;
-using Assets.ScriptExample.Fallen.List;
-using Assets.ScriptExample.PlayerGroups;
-using Assets.Tests.Builders;
-using Moq;
+﻿using Moq;
 using Nixi.Injections;
+using Nixi.Injections.Attributes;
 using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.Cargos;
 using ScriptExample.Characters;
 using ScriptExample.Characters.ScriptableObjects;
+using ScriptExample.ComponentsWithEnumerable;
+using ScriptExample.Fallen.AllComponentAttributes;
+using ScriptExample.Fallen.List;
+using ScriptExample.Farms;
+using ScriptExample.PlayerGroups;
 using ScriptExample.Players;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,12 @@ namespace Tests.TestTools
 {
     internal sealed class TestInjecterComponentEnumerableTests
     {
+        #region General
         [Test]
         public void BasketInterfaceList_ShouldBeFilled_FromListInterfaceInjection_WithoutFieldName()
         {
             // Arrange
-            SimpleBasket basket = BasketBuilder.Create().BuildSimple();
+            SimpleBasket basket = InjectableBuilder<SimpleBasket>.Create().Build();
 
             List<IFruit> fruitsList = new List<IFruit>();
             Mock<IFruit> firstFruitMock = new Mock<IFruit>(MockBehavior.Strict);
@@ -58,7 +60,7 @@ namespace Tests.TestTools
         public void BasketInterfaceEnumerable_ShouldBeFilled_FromListInterfaceInjection_WithoutFieldName()
         {
             // Arrange
-            SimpleBasket basket = BasketBuilder.Create().BuildSimple();
+            SimpleBasket basket = InjectableBuilder<SimpleBasket>.Create().Build();
 
             List<IFruit> fruitsList = new List<IFruit>();
             Mock<IFruit> firstFruitMock = new Mock<IFruit>(MockBehavior.Strict);
@@ -93,7 +95,7 @@ namespace Tests.TestTools
         public void BasketWithTwoInterfaceList_ShouldThrowException_FromListInterfaceInjection_WithoutName()
         {
             // Arrange
-            BasketDualList basketDual = BasketBuilder.Create().BuildDualList();
+            BasketDualList basketDual = InjectableBuilder<BasketDualList>.Create().Build();
 
             List<IFruit> fruitsList = new List<IFruit>();
             Mock<IFruit> firstFruitMock = new Mock<IFruit>(MockBehavior.Strict);
@@ -115,7 +117,7 @@ namespace Tests.TestTools
         public void BasketWithTwoInterfaceList_ShouldBeFilled_FromListInterfaceInjection_WithName()
         {
             // Arrange
-            BasketDualList basketDual = BasketBuilder.Create().BuildDualList();
+            BasketDualList basketDual = InjectableBuilder<BasketDualList>.Create().Build();
 
             List<IFruit> fruitsList = new List<IFruit>();
             Mock<IFruit> firstFruitMock = new Mock<IFruit>(MockBehavior.Strict);
@@ -148,7 +150,7 @@ namespace Tests.TestTools
         [Test]
         public void TonsOfBasketWithNameAtBothLevels_ShouldBeFilled_FromListInterfaceInjection()
         {
-            TonsOfBasket tonsOfBasket = BasketBuilder.Create().BuildTonsOfBasket();
+            TonsOfBasket tonsOfBasket = InjectableBuilder<TonsOfBasket>.Create().Build();
 
             // Prepare
             TestInjecter injecter = new TestInjecter(tonsOfBasket);
@@ -197,14 +199,14 @@ namespace Tests.TestTools
         [Test]
         public void BasketComponent_ShouldReturnEmptyList()
         {
-            SimpleBasketComponent basketCompo = BasketBuilder.Create().BuildSimpleBasketComponent();
+            SimpleBasketComponent basketCompo = InjectableBuilder<SimpleBasketComponent>.Create().Build();
 
             Assert.Null(basketCompo.FruitsList);
 
             // Arrange + Act
             TestInjecter injecter = new TestInjecter(basketCompo);
             injecter.CheckAndInjectAll();
-            IEnumerable<Fruit> fruits = injecter.GetComponentList<Fruit>();
+            IEnumerable<Fruit> fruits = injecter.GetEnumerableComponents<Fruit>();
 
             // Asserts
             Assert.NotNull(basketCompo.FruitsList);
@@ -215,7 +217,7 @@ namespace Tests.TestTools
         [Test]
         public void BasketComponent_ShouldReturnFillList()
         {
-            SimpleBasketComponent basketCompo = BasketBuilder.Create().BuildSimpleBasketComponent();
+            SimpleBasketComponent basketCompo = InjectableBuilder<SimpleBasketComponent>.Create().Build();
 
             Assert.Null(basketCompo.FruitsList);
 
@@ -226,8 +228,9 @@ namespace Tests.TestTools
             Assert.NotNull(basketCompo.FruitsList);
 
             // Act
-            Fruit newFruit = injecter.AddInComponentList<Fruit>();
-            Fruit secondNewFruit = injecter.AddInComponentList<Fruit>();
+            IEnumerable<Fruit> fruitsInjected = injecter.InitEnumerableComponents<Fruit>(2);
+            Fruit newFruit = fruitsInjected.First();
+            Fruit secondNewFruit = fruitsInjected.Skip(1).First();
 
             // Asserts on basketCompo
             Assert.That(basketCompo.FruitsList.Count, Is.EqualTo(2));
@@ -237,7 +240,7 @@ namespace Tests.TestTools
             Assert.That(basketCompo.FruitsList.Any(x => x.GetInstanceID() == secondNewFruit.GetInstanceID()));
 
             // Asserts on GetComponentList
-            IEnumerable<Fruit> fruits = injecter.GetComponentList<Fruit>();
+            IEnumerable<Fruit> fruits = injecter.GetEnumerableComponents<Fruit>();
             Assert.That(fruits.Count(), Is.EqualTo(2));
             Assert.That(fruits.Any(x => x.gameObject.GetInstanceID() == newFruit.gameObject.GetInstanceID()));
             Assert.That(fruits.Any(x => x.gameObject.GetInstanceID() == secondNewFruit.gameObject.GetInstanceID()));
@@ -248,7 +251,7 @@ namespace Tests.TestTools
         [Test]
         public void DualBasketComponent_ShouldReturnComponentsWithName_WhenGetComponentListOnTwoIdenticalTypeWithName()
         {
-            DualBasketComponent dualBasketCompo = BasketBuilder.Create().BuildDualBasketComponent();
+            DualBasketComponent dualBasketCompo = InjectableBuilder<DualBasketComponent>.Create().Build();
 
             Assert.Null(dualBasketCompo.FruitsList);
 
@@ -256,21 +259,25 @@ namespace Tests.TestTools
             TestInjecter injecter = new TestInjecter(dualBasketCompo);
             injecter.CheckAndInjectAll();
 
-            // Get both
-            IEnumerable<Fruit> fruitsList = injecter.GetComponentList<Fruit>();
-
-            // Asserts
+            // Checks
             Assert.NotNull(dualBasketCompo.FruitsList);
             Assert.NotNull(dualBasketCompo.FruitsEnumerable);
             Assert.IsEmpty(dualBasketCompo.FruitsList);
             Assert.IsEmpty(dualBasketCompo.FruitsEnumerable);
+
+            // Get fruitsList
+            IEnumerable<Fruit> fruitsList = injecter.GetEnumerableComponents<Fruit>("fruitsList");
             Assert.IsEmpty(fruitsList);
+
+            // Get fruitsEnumerable
+            IEnumerable<Fruit> fruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("fruitsEnumerable");
+            Assert.IsEmpty(fruitsEnumerable);
         }
 
         [Test]
         public void DualBasketComponent_ShouldFillListForBothWithName()
         {
-            DualBasketComponent dualBasketCompo = BasketBuilder.Create().BuildDualBasketComponent();
+            DualBasketComponent dualBasketCompo = InjectableBuilder<DualBasketComponent>.Create().Build();
 
             Assert.Null(dualBasketCompo.FruitsList);
             Assert.Null(dualBasketCompo.FruitsEnumerable);
@@ -283,8 +290,9 @@ namespace Tests.TestTools
             Assert.NotNull(dualBasketCompo.FruitsEnumerable);
 
             // Act
-            Fruit newFruit = injecter.AddInComponentList<Fruit>();
-            Fruit secondNewFruit = injecter.AddInComponentList<Fruit>();
+            IEnumerable<Fruit> fruits = injecter.InitEnumerableComponents<Fruit>(2);
+            Fruit newFruit = fruits.First();
+            Fruit secondNewFruit = fruits.Skip(1).First();
 
             // Asserts on dualBasketCompo.FruitsList directly
             Assert.That(dualBasketCompo.FruitsList.Count, Is.EqualTo(2));
@@ -300,19 +308,27 @@ namespace Tests.TestTools
             Assert.That(dualBasketCompo.FruitsEnumerable.Any(x => x.GetInstanceID() == newFruit.GetInstanceID()));
             Assert.That(dualBasketCompo.FruitsEnumerable.Any(x => x.GetInstanceID() == secondNewFruit.GetInstanceID()));
 
-            // Asserts on get (same for both, because same enumerable type on children)
-            IEnumerable<Fruit> fruitsList = injecter.GetComponentList<Fruit>();
+            // Asserts on get list (same for both, because same enumerable type on children)
+            IEnumerable<Fruit> fruitsList = injecter.GetEnumerableComponents<Fruit>("fruitsList");
             Assert.That(fruitsList.Count(), Is.EqualTo(2));
             Assert.That(fruitsList.Any(x => x.gameObject.GetInstanceID() == newFruit.gameObject.GetInstanceID()));
             Assert.That(fruitsList.Any(x => x.gameObject.GetInstanceID() == secondNewFruit.gameObject.GetInstanceID()));
             Assert.That(fruitsList.Any(x => x.GetInstanceID() == newFruit.GetInstanceID()));
             Assert.That(fruitsList.Any(x => x.GetInstanceID() == secondNewFruit.GetInstanceID()));
+
+            // Asserts on get enumerable (same for both, because same enumerable type on children)
+            IEnumerable<Fruit> fruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("fruitsEnumerable");
+            Assert.That(fruitsEnumerable.Count(), Is.EqualTo(2));
+            Assert.That(fruitsEnumerable.Any(x => x.gameObject.GetInstanceID() == newFruit.gameObject.GetInstanceID()));
+            Assert.That(fruitsEnumerable.Any(x => x.gameObject.GetInstanceID() == secondNewFruit.gameObject.GetInstanceID()));
+            Assert.That(fruitsEnumerable.Any(x => x.GetInstanceID() == newFruit.GetInstanceID()));
+            Assert.That(fruitsEnumerable.Any(x => x.GetInstanceID() == secondNewFruit.GetInstanceID()));
         }
 
         [Test]
         public void PlayerGroupWithSubsequentLevel_ShouldFillRecursively()
         {
-            PlayerGroup playerGroup = PlayerGroupBuilder.Create().Build();
+            PlayerGroup playerGroup = InjectableBuilder<PlayerGroup>.Create().Build();
             Assert.Null(playerGroup.Players);
 
             // Prepare
@@ -323,8 +339,9 @@ namespace Tests.TestTools
             Assert.IsNotNull(playerGroup.Players);
             Assert.IsEmpty(playerGroup.Players);
 
-            Player firstPlayer = injecter.AddInComponentList<Player>();
-            Player secondPlayer = injecter.AddInComponentList<Player>();
+            IEnumerable<Player> players = injecter.InitEnumerableComponents<Player>(2);
+            Player firstPlayer = players.First();
+            Player secondPlayer = players.Skip(1).First();
 
             // check player in
             Assert.That(playerGroup.Players.Count, Is.EqualTo(2));
@@ -357,7 +374,7 @@ namespace Tests.TestTools
         [Test]
         public void PlayerGroupWithNameOnSameTypeAndSubsequentLevel_ShouldFillRecursively_WithName()
         {
-            PlayerGroupWithName playerGroupWithName = PlayerGroupBuilder.Create().BuildWithName();
+            PlayerGroupWithName playerGroupWithName = InjectableBuilder<PlayerGroupWithName>.Create().Build();
             Assert.Null(playerGroupWithName.Players);
             Assert.Null(playerGroupWithName.SecondPlayers);
 
@@ -371,8 +388,9 @@ namespace Tests.TestTools
             Assert.IsNotNull(playerGroupWithName.SecondPlayers);
             Assert.IsEmpty(playerGroupWithName.SecondPlayers);
 
-            Player firstPlayer = injecter.AddInComponentList<Player>();
-            Player secondPlayer = injecter.AddInComponentList<Player>();
+            IEnumerable<Player> players = injecter.InitEnumerableComponents<Player>(2);
+            Player firstPlayer = players.First();
+            Player secondPlayer = players.Skip(1).First();
 
             // check player in
             Assert.That(playerGroupWithName.Players.Count, Is.EqualTo(2));
@@ -406,36 +424,301 @@ namespace Tests.TestTools
         }
 
         [Test]
-        public void Cargo_AddInComponentListFromChildInjected_And_GetComponentListFromChildInjected_Correctly()
+        public void GetComponentInList_ShouldReturnEmptyWhenNeverAdded()
         {
-            Cargo cargo = CargoBuilder.Create().Build();
+            // Prepare
+            FullBasketListExample basket = InjectableBuilder<FullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
 
-            Assert.That(cargo.FirstContainers, Is.Empty);
-            Assert.That(cargo.SecondContainers, Is.Empty);
+            // Parent
+            IEnumerable<Fruit> parentFruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsListParent");
+            Assert.IsEmpty(parentFruitsList);
+            IEnumerable<Fruit> parentFruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableParent");
+            Assert.IsEmpty(parentFruitsEnumerable);
+            Assert.IsEmpty(basket.FruitsEnumerableParent);
+            Assert.IsEmpty(basket.FruitsListParent);
 
+            // Current
+            IEnumerable<Fruit> fruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsList");
+            Assert.IsEmpty(fruitsList);
+            IEnumerable<Fruit> fruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerable");
+            Assert.IsEmpty(fruitsEnumerable);
+            Assert.IsEmpty(basket.FruitsEnumerable);
+            Assert.IsEmpty(basket.FruitsList);
+
+            // Child
+            IEnumerable<Fruit> childFruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsListChildren");
+            Assert.IsEmpty(childFruitsList);
+            IEnumerable<Fruit> childFruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableChildren");
+            Assert.IsEmpty(childFruitsEnumerable);
+            Assert.IsEmpty(basket.FruitsEnumerableChildren);
+            Assert.IsEmpty(basket.FruitsListChildren);
+        }
+
+        [Test]
+        public void GetComponentInChildList_ShouldReturnEmptyWhenNeverAdded()
+        {
+            // Prepare
+            AboveFullBasketListExample aboveBasket = InjectableBuilder<AboveFullBasketListExample>.Create().Build();
+            TestInjecter injecter = new TestInjecter(aboveBasket);
+            injecter.CheckAndInjectAll();
+
+            // ChildComponent
+            FullBasketListExample basket = injecter.GetComponent<FullBasketListExample>();
+
+            // Parent
+            IEnumerable<Fruit> parentFruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsListParent", basket);
+            Assert.IsEmpty(parentFruitsList);
+            IEnumerable<Fruit> parentFruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableParent", basket);
+            Assert.IsEmpty(parentFruitsEnumerable);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsEnumerableParent);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsListParent);
+
+            // Current
+            IEnumerable<Fruit> fruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsList", basket);
+            Assert.IsEmpty(fruitsList);
+            IEnumerable<Fruit> fruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerable", basket);
+            Assert.IsEmpty(fruitsEnumerable);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsEnumerable);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsList);
+
+            // Child
+            IEnumerable<Fruit> childFruitsList = injecter.GetEnumerableComponents<Fruit>("FruitsListChildren", basket);
+            Assert.IsEmpty(childFruitsList);
+            IEnumerable<Fruit> childFruitsEnumerable = injecter.GetEnumerableComponents<Fruit>("FruitsEnumerableChildren", basket);
+            Assert.IsEmpty(childFruitsEnumerable);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsEnumerableChildren);
+            Assert.IsEmpty(aboveBasket.ParentBasket.FruitsListChildren);
+        }
+
+        [Test]
+        public void AddComponentInList_ShouldInjectRecurvisely_OnCurrentLists()
+        {
+            // Prepare
+            Cargo cargo = InjectableBuilder<Cargo>.Create().Build();
             TestInjecter injecter = new TestInjecter(cargo);
             injecter.CheckAndInjectAll();
 
-            // add two in secondContainer
-            Container container = injecter.AddInComponentList<Container>();
-            Container secondContainer = injecter.AddInComponentList<Container>();
+            // Check init
+            Assert.IsEmpty(cargo.FirstContainers);
+            Assert.IsEmpty(cargo.SecondContainers);
+            Assert.NotNull(cargo.WaterTransform);
 
-            BananaPack bananaPack = injecter.AddInComponentList<BananaPack>(secondContainer);
-            BananaPack secondBananaPack = injecter.AddInComponentList<BananaPack>(secondContainer);
+            // Adding new container in lists
+            Container container = injecter.InitSingleEnumerableComponent<Container>();
+            Assert.That(cargo.FirstContainers.Count(), Is.EqualTo(1));
+            Assert.That(cargo.SecondContainers.Count(), Is.EqualTo(1));
+            Assert.That(cargo.FirstContainers.First().GetInstanceID(), Is.EqualTo(cargo.SecondContainers.First().GetInstanceID()));
+            Assert.That(cargo.FirstContainers.First().GetInstanceID(), Is.EqualTo(container.GetInstanceID()));
 
-            Assert.That(bananaPack.RainbowSummonSkill.GetInstanceID(), Is.EqualTo(secondBananaPack.RainbowSummonSkill.GetInstanceID()));
+            // Check child init
+            Assert.IsEmpty(container.FirstBananaPacks);
+            Assert.IsEmpty(container.SecondBananaPacks);
+            Assert.NotNull(container.OpenCloseButton);
+            Assert.NotNull(container.LogoImg);
 
-            int a = 0;
+            // Adding new bananaPack in child lists (container)
+            BananaPack bananaPack = injecter.InitSingleEnumerableComponent<BananaPack>(container);
+            Assert.That(container.FirstBananaPacks.Count(), Is.EqualTo(1));
+            Assert.That(container.SecondBananaPacks.Count(), Is.EqualTo(1));
+            Assert.That(container.FirstBananaPacks.First().GetInstanceID(), Is.EqualTo(container.SecondBananaPacks.First().GetInstanceID()));
+            Assert.That(container.FirstBananaPacks.First().GetInstanceID(), Is.EqualTo(bananaPack.GetInstanceID()));
 
+            // Check nothing else was filled
+            Assert.IsEmpty(cargo.ChildContainers);
+            Assert.IsEmpty(cargo.ParentContainers);
+            Assert.IsEmpty(container.ParentBananaPacks);
+            Assert.IsEmpty(container.ChildBananaPacks);
         }
 
-        // MaClass contient des MonoBehaviourInjectable qui contiennent chacun des MonoBehaviourInjectable, dernier niveau auquel nous modifions une donnée
-        // Puis on GetComponentListFromChildInjected
+        [Test]
+        public void AddComponentInList_ShouldInjectRecurvisely_OnParentLists()
+        {
+            // Prepare
+            Cargo cargo = InjectableBuilder<Cargo>.Create().Build();
+            TestInjecter injecter = new TestInjecter(cargo);
+            injecter.CheckAndInjectAll();
 
-        //AddInComponentListFromChildInjected+GetComponentListFromChildInjected
-        //AddInComponentListFromChildInjected bug without fieldname
-        //GetComponentListFromChildInjected bug without fieldname
-        //AddInComponentListFromChildInjected(fieldName)+GetComponentListFromChildInjected(fieldName)
+            // Check init
+            Assert.IsEmpty(cargo.ParentContainers);
+
+            // Adding new container in lists
+            Container container = injecter.InitSingleEnumerableComponent<Container>(GameObjectLevel.Parent);
+            Assert.That(cargo.ParentContainers.Count(), Is.EqualTo(1));
+            Assert.That(cargo.ParentContainers.First().GetInstanceID(), Is.EqualTo(container.GetInstanceID()));
+
+            // Check child init
+            Assert.IsEmpty(container.ParentBananaPacks);
+
+            // Adding new bananaPack in child lists (container)
+            BananaPack bananaPack = injecter.InitSingleEnumerableComponent<BananaPack>(GameObjectLevel.Parent, container);
+            Assert.That(container.ParentBananaPacks.Count(), Is.EqualTo(1));
+            Assert.That(container.ParentBananaPacks.First().GetInstanceID(), Is.EqualTo(bananaPack.GetInstanceID()));
+
+            // Check nothing else was filled
+            Assert.IsEmpty(cargo.FirstContainers);
+            Assert.IsEmpty(cargo.SecondContainers);
+            Assert.IsEmpty(cargo.ChildContainers);
+            Assert.IsEmpty(container.FirstBananaPacks);
+            Assert.IsEmpty(container.SecondBananaPacks);
+            Assert.IsEmpty(container.ChildBananaPacks);
+        }
+
+        [Test]
+        public void AddComponentInList_ShouldInjectRecurvisely_OnChildLists()
+        {
+            // Prepare
+            Cargo cargo = InjectableBuilder<Cargo>.Create().Build();
+            TestInjecter injecter = new TestInjecter(cargo);
+            injecter.CheckAndInjectAll();
+
+            // Check init
+            Assert.IsEmpty(cargo.ChildContainers);
+
+            // Adding new container in lists
+            Container container = injecter.InitSingleEnumerableComponent<Container>(GameObjectLevel.Children);
+            Assert.That(cargo.ChildContainers.Count(), Is.EqualTo(1));
+            Assert.That(cargo.ChildContainers.First().GetInstanceID(), Is.EqualTo(container.GetInstanceID()));
+
+            // Check child init
+            Assert.IsEmpty(container.ChildBananaPacks);
+
+            // Adding new bananaPack in child lists (container)
+            BananaPack bananaPack = injecter.InitSingleEnumerableComponent<BananaPack>(GameObjectLevel.Children, container);
+            Assert.That(container.ChildBananaPacks.Count(), Is.EqualTo(1));
+            Assert.That(container.ChildBananaPacks.First().GetInstanceID(), Is.EqualTo(bananaPack.GetInstanceID()));
+
+            // Check nothing else was filled
+            Assert.IsEmpty(cargo.FirstContainers);
+            Assert.IsEmpty(cargo.SecondContainers);
+            Assert.IsEmpty(cargo.ParentContainers);
+            Assert.IsEmpty(container.FirstBananaPacks);
+            Assert.IsEmpty(container.SecondBananaPacks);
+            Assert.IsEmpty(container.ParentBananaPacks);
+        }
+
+        [TestCase(GameObjectLevel.Children)]
+        [TestCase(GameObjectLevel.Parent)]
+        public void AddComponentInList_ShouldThrowException_WhenWithGameObjectLevelDoesNotExist(GameObjectLevel gameObjectLevelToCheck)
+        {
+            // Prepare
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            // Adding new fruit in lists which not exist with GameObjectLevel flag
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Fruit>(gameObjectLevelToCheck));
+        }
+
+        [TestCase(GameObjectLevel.Children)]
+        [TestCase(GameObjectLevel.Parent)]
+        public void AddComponentInList_ShouldThrowException_WhenWithGameObjectLevelDoesNotExist_ForChildList(GameObjectLevel gameObjectLevelToCheck)
+        {
+            // Prepare
+            ParentBasket parentBasket = InjectableBuilder<ParentBasket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parentBasket);
+            injecter.CheckAndInjectAll();
+
+            Basket basket = injecter.GetComponent<Basket>();
+
+            // Adding new fruit in lists which not exist with GameObjectLevel flag
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Fruit>(gameObjectLevelToCheck, 1, basket));
+        }
+
+        [Test]
+        public void AddComponentInList_ShouldThrowException_WhenWithoutGameObjectLevelDoesNotExist_ForCurrent_ForChild()
+        {
+            // Prepare
+            ParentBasketWithoutCurrentList parentBasket = InjectableBuilder<ParentBasketWithoutCurrentList>.Create().Build();
+            TestInjecter injecter = new TestInjecter(parentBasket);
+            injecter.CheckAndInjectAll();
+
+            BasketWithoutCurrentList basket = injecter.GetComponent<BasketWithoutCurrentList>();
+
+            // Adding new fruit in lists which not exist with GameObjectLevel flag
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Fruit>(1, basket));
+        }
+        #endregion General
+
+        #region GetEnumerable Exceptions
+        [Test]
+        public void InitEnumerableComponentsWithType_WithEmptyType_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Type[] emptyTypes = new Type[0];
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponentsWithTypes<Fruit>(emptyTypes));
+        }
+
+        [Test]
+        public void InitEnumerableComponentsWithType_WithWrongType_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Type[] wrongTypes = new Type[] { typeof(Cat) };
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponentsWithTypes<Fruit>(wrongTypes));
+        }
+
+        [Test]
+        public void GetEnumerableComponentsWithoutFieldName_WithWrongType_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Assert.Throws<TestInjecterException>(() => injecter.GetEnumerableComponents<Cat>());
+        }
+
+        [Test]
+        public void GetEnumerableComponentsWithoutFieldName_WithTypeFoundManyTimes_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Assert.Throws<TestInjecterException>(() => injecter.GetEnumerableComponents<Fruit>());
+        }
+
+        [Test]
+        public void GetEnumerableComponentsWithFieldName_WithWrongType_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Assert.Throws<TestInjecterException>(() => injecter.GetEnumerableComponents<Cat>("anyName"));
+        }
+
+        [Test]
+        public void GetEnumerableComponentsWithFieldName_WithTypeFoundManyTimes_AndWrongName_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Assert.Throws<TestInjecterException>(() => injecter.GetEnumerableComponents<Fruit>("anyName"));
+        }
+
+        [Test]
+        public void All_InitEnumerableComponents_WithoutTypeFound_ShouldThrowException()
+        {
+            Basket basket = InjectableBuilder<Basket>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basket);
+            injecter.CheckAndInjectAll();
+
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Cat>(2));
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponentsWithTypes<Cat>(typeof(Fruit)));
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponentsWithTypes<Cat>(typeof(Cat)));
+            Assert.Throws<TestInjecterException>(() => injecter.InitSingleEnumerableComponent<Cat>());
+            Assert.Throws<TestInjecterException>(() => injecter.InitSingleEnumerableComponent<Cat>(GameObjectLevel.Children));
+            Assert.Throws<TestInjecterException>(() => injecter.InitSingleEnumerableComponent<Cat>(GameObjectLevel.Parent));
+        }
+        #endregion GetEnumerable Exceptions
 
         #region Error decorator
         [TestCase(typeof(FallenCompoListClass))]
@@ -444,25 +727,25 @@ namespace Tests.TestTools
         [TestCase(typeof(FallenCompoListInterface))]
         public void TestInjecter_InjectComponentList_OnWrongFieldType_ShouldThrowException(Type injectableTypeToBuild)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);
 
             Exception exception = Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
 
-            StringAssert.Contains("using decorator NixInjectComponentListAttribute", exception.Message);
+            StringAssert.Contains("using decorator NixInjectComponentsAttribute", exception.Message);
         }
 
         [TestCase(typeof(FallenArrayComponent), "NixInjectComponentAttribute")]
         [TestCase(typeof(FallenEnumerableComponent), "NixInjectComponentAttribute")]
         [TestCase(typeof(FallenListComponent), "NixInjectComponentAttribute")]
-        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromMethodAttribute")]
-        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromMethodAttribute")]
+        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromParentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromParentAttribute")]
+        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromParentAttribute")]
         [TestCase(typeof(FallenArrayComponentRoot), "NixInjectRootComponentAttribute")]
         [TestCase(typeof(FallenEnumerableComponentRoot), "NixInjectRootComponentAttribute")]
         [TestCase(typeof(FallenListComponentRoot), "NixInjectRootComponentAttribute")]
@@ -471,7 +754,7 @@ namespace Tests.TestTools
         [TestCase(typeof(FallenListComponentRootChild), "NixInjectRootComponentAttribute")]
         public void TestInjecter_InjectAnyComponentWhichIsNotListDecorator_OnWrongEnumerableFieldType_ShouldThrowException(Type injectableTypeToBuild, string attributeName)
         {
-            Component component = CompoBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
+            Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
             MonoBehaviourInjectable injectable = component as MonoBehaviourInjectable;
 
             TestInjecter injecter = new TestInjecter(injectable);

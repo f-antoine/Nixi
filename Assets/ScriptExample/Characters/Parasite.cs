@@ -1,12 +1,11 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
-using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.Characters
+namespace ScriptExample.Characters
 {
     public sealed class Parasite : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromMethod("ParentSorcererGameObjectName", GameObjectMethod.GetComponentsInParent)]
+        [NixInjectComponentFromParent("ParentSorcererGameObjectName")]
         private Sorcerer parentSorcerer;
         public Sorcerer ParentSorcerer => parentSorcerer;
     }

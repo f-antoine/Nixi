@@ -1,8 +1,9 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
-namespace Assets.ScriptExample.Flowers
+namespace ScriptExample.Flowers
 {
     public sealed class Bouquet : MonoBehaviourInjectable
     {
@@ -10,10 +11,10 @@ namespace Assets.ScriptExample.Flowers
 		[NixInjectComponent]
 		public DualFlower ReferentialFlower;
 
-		[NixInjectComponentFromMethod("ChildFlower", GameObjectMethod.GetComponentsInChildren)]
+		[NixInjectComponentFromChildren("ChildFlower")]
 		public DualFlower ChildFlower;
 
-		[NixInjectComponentFromMethod("ParentFlower", GameObjectMethod.GetComponentsInParent)]
+		[NixInjectComponentFromParent("ParentFlower")]
 		public DualFlower ParentFlower;
 
 		[NixInjectRootComponent("RootIsolatedFlower")]
@@ -22,7 +23,10 @@ namespace Assets.ScriptExample.Flowers
 		[NixInjectRootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
 		public DualFlower SubRootIsolatedFlower;
 
-		[NixInjectComponentList]
+		[NixInjectRootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
+		public Image Image;
+
+		[NixInjectComponents]
 		public List<DualFlower> FlowersRemaining;
 	}
 }

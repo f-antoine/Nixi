@@ -2,11 +2,11 @@
 using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 
-namespace Assets.ScriptExample.Fallen.List
+namespace ScriptExample.Fallen.List
 {
     public sealed class FallenCompoListInjectable : MonoBehaviourInjectable
     {
-        [NixInjectComponentList]
+        [NixInjectComponents]
         public Skill FallenSkill;
     }
 }

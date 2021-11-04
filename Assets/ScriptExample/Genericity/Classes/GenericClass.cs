@@ -1,4 +1,4 @@
-﻿namespace Assets.ScriptExample.Genericity.Classes
+﻿namespace ScriptExample.Genericity.Classes
 {
     public class GenericClass<T>
     {

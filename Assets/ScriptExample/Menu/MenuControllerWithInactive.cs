@@ -1,7 +1,7 @@
 ﻿using Nixi.Injections;
 using Nixi.Injections.Attributes;
 
-namespace Assets.ScriptExample.Menu
+namespace ScriptExample.Menu
 {
     public sealed class MenuControllerWithInactive : MonoBehaviourInjectable
     {
