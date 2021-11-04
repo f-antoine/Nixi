@@ -1,4 +1,5 @@
 ﻿using Assets.ScriptExample.Audio;
+using Assets.ScriptExample.CannotFindFromMethods;
 using Assets.ScriptExample.Characters;
 using Assets.ScriptExample.ComponentsWithEnumerable;
 using Assets.ScriptExample.ComponentsWithInterface;
@@ -698,5 +699,27 @@ namespace Tests.Injections
             StringAssert.Contains($"using decorator {attributeName}", exception.Message);
         }
         #endregion Error decorator
+
+        #region NixInjectComponentFromMethod should ignore itself
+        [Test]
+        public void GetChildren_ShouldNotFindElementWhenItsTargetingMyself()
+        {
+            CannotFindInChildren injectable = CannotFindBuilder.Create().BuildForChildWithCurrentName();
+            
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void GetParents_ShouldNotFindElementWhenItsTargetingMyself()
+        {
+            CannotFindInParents injectable = CannotFindBuilder.Create().BuildForParentWithCurrentName();
+
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+        #endregion NixInjectComponentFromMethod should ignore itself
     }
 }

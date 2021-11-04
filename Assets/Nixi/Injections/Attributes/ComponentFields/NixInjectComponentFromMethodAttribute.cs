@@ -55,7 +55,7 @@ namespace Nixi.Injections.Attributes
         /// <returns>Unique component which exactly matches criteria of a NixInjectComponent injection using the Unity dependency injection method</returns>
         public override object GetComponentResult(MonoBehaviourInjectable monoBehaviourInjectable, FieldInfo componentField)
         {
-            Component[] componentsFound = GetComponentsFromGameObjectMethod(monoBehaviourInjectable, componentField.FieldType);
+            IEnumerable<Component> componentsFound = GetComponentsFromGameObjectMethod(monoBehaviourInjectable, componentField.FieldType);
             return CheckAndGetSingleComponent(componentField, componentsFound);
         }
 
@@ -65,13 +65,21 @@ namespace Nixi.Injections.Attributes
         /// <param name="monoBehaviourInjectable">Instance of the MonoBehaviourInjectable</param>
         /// <param name="gameObjectTypeToFind">GameObject type to find</param>
         /// <returns>All components returned from the method call</returns>
-        private Component[] GetComponentsFromGameObjectMethod(MonoBehaviourInjectable monoBehaviourInjectable, Type gameObjectTypeToFind)
+        private IEnumerable<Component> GetComponentsFromGameObjectMethod(MonoBehaviourInjectable monoBehaviourInjectable, Type gameObjectTypeToFind)
         {
+            Component[] components;
+
             if (GameObjectMethod == GameObjectMethod.GetComponentsInChildren)
             {
-                return monoBehaviourInjectable.GetComponentsInChildren(gameObjectTypeToFind, IncludeInactive);
+                components = monoBehaviourInjectable.GetComponentsInChildren(gameObjectTypeToFind, IncludeInactive);
             }
-            return monoBehaviourInjectable.GetComponentsInParent(gameObjectTypeToFind, IncludeInactive);
+            else
+            {
+                components = monoBehaviourInjectable.GetComponentsInParent(gameObjectTypeToFind, IncludeInactive);
+            }
+
+            // Ignore itself
+            return components.Where(x => x.gameObject.GetInstanceID() != monoBehaviourInjectable.gameObject.GetInstanceID());
         }
 
         /// <summary>
@@ -80,7 +88,7 @@ namespace Nixi.Injections.Attributes
         /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
-        private Component CheckAndGetSingleComponent(FieldInfo componentField, Component[] componentsFound)
+        private Component CheckAndGetSingleComponent(FieldInfo componentField, IEnumerable<Component> componentsFound)
         {
             if (!componentsFound.Any())
                 throw new NixiAttributeException($"No component with type {componentField.FieldType.Name} was found to fill field with name {componentField.Name}");
