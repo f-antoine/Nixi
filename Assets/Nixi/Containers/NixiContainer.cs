@@ -38,34 +38,41 @@ namespace Nixi.Containers
         }
 
         /// <summary>
+        /// Map an interface type with an implementation type and register his instance from implementationToRegister parameter,
+        /// with a singleton approach (return the same instance at each resolve call or create it if never called)
+        /// </summary>
+        /// <typeparam name="TInterface">Interface key type</typeparam>
+        /// <typeparam name="TImplementation">Implementation value type</typeparam>
+        /// <param name="implementationToRegister">Pass an implementation to register instead of building manually</param>
+        public static void MapSingle<TInterface, TImplementation>(TImplementation implementationToRegister)
+            where TImplementation : class, TInterface, new()
+        {
+            SingleContainerElement newMapping = Map<TInterface, TImplementation, SingleContainerElement>();
+            newMapping.Instance = implementationToRegister;
+        }
+
+        /// <summary>
         /// Generic way to map an interface type with an implementation type
         /// </summary>
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
-        private static void Map<TInterface, TImplementation, TypeOfMapping>()
+        private static TypeOfMapping Map<TInterface, TImplementation, TypeOfMapping>()
             where TImplementation : class, TInterface, new()
             where TypeOfMapping : ContainerElement, new()
         {
             Type interfaceType = typeof(TInterface);
             Type implementationType = typeof(TImplementation);
-            CheckInterfaceWithImplementation(interfaceType, implementationType);
+            
+            if (!interfaceType.IsInterface)
+                throw new NixiContainerException($"Cannot map left member {interfaceType.Name} with right member {implementationType.Name} because the left member is not an interface");
 
-            AddMapping(new TypeOfMapping
+            TypeOfMapping newMapping = new TypeOfMapping
             {
                 KeyType = interfaceType,
                 ValueType = implementationType
-            });
-        }
-
-        /// <summary>
-        /// In NixiContainer, the left member of a mapping must be an interface, this method check this
-        /// </summary>
-        /// <param name="interfaceType">Interface key type</param>
-        /// <param name="implementationType">Implementation value type</param>
-        private static void CheckInterfaceWithImplementation(Type interfaceType, Type implementationType)
-        {
-            if (!interfaceType.IsInterface)
-                throw new NixiContainerException($"Cannot map left member {interfaceType.Name} with right member {implementationType.Name} because the left member is not an interface");
+            };
+            AddMapping(newMapping);
+            return newMapping;
         }
 
         /// <summary>
@@ -128,6 +135,29 @@ namespace Nixi.Containers
                 // Transient
                 return Activator.CreateInstance(elementResolved.ValueType);
             }
+        }
+
+        /// <summary>
+        /// Check if an interface was already registered in the container
+        /// </summary>
+        /// <typeparam name="TInterface">Type of interface to check</typeparam>
+        /// <returns>True if already registered</returns>
+        public static bool CheckIfRegistered<TInterface>()
+        {
+            return CheckIfRegistered(typeof(TInterface));
+        }
+
+        /// <summary>
+        /// Check if an interface was already registered in the container
+        /// </summary>
+        /// <param name="keyType">Type of interface to check</param>
+        /// <returns>True if already registered</returns>
+        public static bool CheckIfRegistered(Type keyType)
+        {
+            if (!keyType.IsInterface)
+                throw new NixiContainerException($"Cannot check if {keyType.Name} is registered, because it is not an interface and only interface can be mapped");
+
+            return registrations.Any(x => x.KeyType == keyType);
         }
 
         /// <summary>

@@ -52,7 +52,7 @@ namespace NixiTestTools.TestInjecterElements
             InjectableHandler injectableHandler = GetInjectable(injectable);
 
             if (injectableHandler == null)
-                throw new InjectablesContainerException($"no instance of MonoBehaviourInjectable with name {injectable.name} was found, {injectable.GetType().Name} class does not contain the field");
+                throw new InjectablesContainerException($"no instance of MonoBehaviourInjectable with name {injectable.name} and type {injectable.GetType().Name} was found");
 
             return injectableHandler;
         }
@@ -86,7 +86,7 @@ namespace NixiTestTools.TestInjecterElements
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectMockIntoInstance<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal void InjectMock<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
 
@@ -110,7 +110,7 @@ namespace NixiTestTools.TestInjecterElements
         /// <param name="fieldName">Name of the field to mock</param>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectMockIntoInstance<T>(string fieldName, T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal void InjectMock<T>(string fieldName, T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
 
@@ -134,7 +134,7 @@ namespace NixiTestTools.TestInjecterElements
         /// <typeparam name="T">Type of Component searched</typeparam>
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
         /// <returns>Single component which corresponds to the type T field</returns>
-        internal T GetComponentFromInstance<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal T GetComponent<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
             where T : Component
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
@@ -160,7 +160,7 @@ namespace NixiTestTools.TestInjecterElements
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
         /// <param name="fieldName">Name of the component field</param>
         /// <returns>Single component which corresponds to the type T field</returns>
-        internal T GetComponentFromInstance<T>(string fieldName, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal T GetComponent<T>(string fieldName, MonoBehaviourInjectable monoBehaviourInjectableToFind)
             where T : Component
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);

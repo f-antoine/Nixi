@@ -10,9 +10,9 @@ namespace ScriptExample.Containers
     public static class InjectionConfiguration
     {
         /// <summary>
-        /// Create all the mappings between interfaces and implementations used in NixiContainer before the scene has been loaded
+        /// Create all the mappings between interfaces and implementations used in NixiContainer before splash screen and only once
         /// </summary>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static void LinkFieldInjections()
         {
             NixiContainer.MapTransient<ITestInterface, TestImplementation>();

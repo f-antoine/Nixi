@@ -106,7 +106,7 @@ namespace NixiTestTools.TestInjecterElements.Relations.RootRelations
             if (parentComponent != null)
             {
                 Component newComponent = newComponentsWithName.Components.Single();
-                newComponent.transform.parent = parentComponent.transform;
+                newComponent.transform.SetParent(parentComponent.transform);
             }
 
             parentRelation.AddChildComponent(newComponentsWithName);
@@ -129,7 +129,7 @@ namespace NixiTestTools.TestInjecterElements.Relations.RootRelations
             Component parentComponent = parentRelation.Parent.Components.FirstOrDefault();
             if (parentComponent != null)
             {
-                componentToAdd.transform.parent = parentComponent.transform;
+                componentToAdd.transform.SetParent(parentComponent.transform);
             }
 
             child.AddComponent(componentToAdd);

@@ -3,6 +3,7 @@ using Nixi.Injections;
 using Nixi.Injections.Attributes;
 using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.AllParentsCases;
 using ScriptExample.Cargos;
 using ScriptExample.Characters;
 using ScriptExample.Characters.ScriptableObjects;
@@ -212,6 +213,92 @@ namespace Tests.TestTools
             Assert.NotNull(basketCompo.FruitsList);
             Assert.IsEmpty(basketCompo.FruitsList);
             Assert.IsEmpty(fruits);
+        }
+
+        [Test]
+        public void BasketComponent_ShouldReturnEmptyList_ThenAddCorrectlyFromAccessor()
+        {
+            // Arrange
+            SimpleBasketComponent basketCompo = InjectableBuilder<SimpleBasketComponent>.Create().Build();
+            TestInjecter injecter = new TestInjecter(basketCompo);
+            injecter.CheckAndInjectAll();
+            IEnumerable<Fruit> fruits = injecter.GetEnumerableComponents<Fruit>();
+
+            // Check
+            Assert.IsEmpty(fruits);
+            Assert.IsEmpty(basketCompo.FruitsList);
+
+            // Act
+            basketCompo.FruitsList.Add(new GameObject().AddComponent<Fruit>());
+            basketCompo.FruitsList.Add(new GameObject().AddComponent<Fruit>());
+            basketCompo.FruitsList.Add(new GameObject().AddComponent<Fruit>());
+
+            // Checks
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Fruit>(2));
+
+            IEnumerable<Fruit> secondFruits = injecter.GetEnumerableComponents<Fruit>();
+            Assert.IsNotEmpty(secondFruits);
+            Assert.AreEqual(3, secondFruits.Count());
+        }
+
+        [Test]
+        public void BasketComponent_ShouldReturnEmptyEnumerable_ThenAddCorrectlyFromAccessor()
+        {
+            // Arrange
+            ParentWithSameChildListsDifferentsEnumerables mainTested = InjectableBuilder<ParentWithSameChildListsDifferentsEnumerables>.Create().Build();
+            TestInjecter injecter = new TestInjecter(mainTested);
+            injecter.CheckAndInjectAll();
+            IEnumerable<Child> childs = injecter.GetEnumerableComponents<Child>("SecondChildList");
+
+            // Check
+            Assert.IsEmpty(childs);
+            Assert.IsEmpty(mainTested.SecondChildList);
+
+            // Act
+            List<Child> childEnumerableToForce = new List<Child>
+            {
+                new GameObject().AddComponent<Child>(),
+                new GameObject().AddComponent<Child>()
+            };
+
+            mainTested.SecondChildList = childEnumerableToForce;
+
+            // Checks
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Child>(2));
+
+            IEnumerable<Child> secondChilds = injecter.GetEnumerableComponents<Child>("SecondChildList");
+            Assert.IsNotEmpty(secondChilds);
+            Assert.AreEqual(2, secondChilds.Count());
+        }
+
+        [Test]
+        public void BasketComponent_ShouldReturnEmptyArray_ThenAddCorrectlyFromAccessor()
+        {
+            // Arrange
+            ParentWithSameChildListsDifferentsEnumerables mainTested = InjectableBuilder<ParentWithSameChildListsDifferentsEnumerables>.Create().Build();
+            TestInjecter injecter = new TestInjecter(mainTested);
+            injecter.CheckAndInjectAll();
+            IEnumerable<Child> childs = injecter.GetEnumerableComponents<Child>("ThirdChildArray");
+
+            // Check
+            Assert.IsEmpty(childs);
+            Assert.IsEmpty(mainTested.ThirdChildArray);
+
+            // Act
+            Child[] childArrayToForce = new Child[]
+            {
+                new GameObject().AddComponent<Child>(),
+                new GameObject().AddComponent<Child>()
+            };
+
+            mainTested.ThirdChildArray = childArrayToForce;
+
+            // Checks
+            Assert.Throws<TestInjecterException>(() => injecter.InitEnumerableComponents<Child>(2));
+
+            IEnumerable<Child> secondChilds = injecter.GetEnumerableComponents<Child>("ThirdChildArray");
+            Assert.IsNotEmpty(secondChilds);
+            Assert.AreEqual(2, secondChilds.Count());
         }
 
         [Test]

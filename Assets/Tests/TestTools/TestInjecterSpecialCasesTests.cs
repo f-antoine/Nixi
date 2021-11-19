@@ -1,6 +1,8 @@
-﻿using ScriptExample.Geometrics;
-using NixiTestTools;
+﻿using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.Geometrics;
+using ScriptExample.Geometrics.Inheritance;
+using ScriptExample.RootComponents;
 using Tests.Builders;
 using UnityEngine;
 
@@ -91,6 +93,38 @@ namespace Tests.TestTools
             TestInjecter injecter = new TestInjecter(differentSquare);
 
             Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void RootComponent_MustExcludeRootItSelfOnGetComponentInChildren()
+        {
+            RootWithExcludingItself element = InjectableBuilder<RootWithExcludingItself>.Create().Build();
+            TestInjecter injecter = new TestInjecter(element, "CurrentLevel");
+            injecter.CheckAndInjectAll();
+
+            Assert.AreNotEqual(element.CurrentImage.GetInstanceID(), element.ChildImage.GetInstanceID());
+            Assert.AreNotEqual(element.CurrentImage.gameObject.GetInstanceID(), element.ChildImage.gameObject.GetInstanceID());
+        }
+
+        [Test]
+        public void TestInjecterShouldNotLog_InheritedRectTransformSquareWithImage_ShouldInstantiateRectTransform_WithoutInformationMessage()
+        {
+            // True if log was written
+            bool cantAddRectTransformLogGotCalled = false;
+
+            // Should not create log : Can't add component 'RectTransform' to New Game Object because such a component is already added to the game object!
+            Application.logMessageReceived += (condition, stackTrace, logType) =>
+            {
+                cantAddRectTransformLogGotCalled = true;
+            };
+
+            // Act
+            InheritedRectTransformSquareWithImage button = new GameObject().AddComponent<InheritedRectTransformSquareWithImage>();
+            TestInjecter injecter = new TestInjecter(button);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.False(cantAddRectTransformLogGotCalled);
         }
     }
 }

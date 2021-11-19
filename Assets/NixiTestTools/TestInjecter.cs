@@ -80,8 +80,10 @@ namespace NixiTestTools
         private void InjectMonoBehaviourInjectable(MonoBehaviourInjectable monoBehaviourInjectable, string instanceName = "")
         {
             InjectableHandler newInjectableHandler = injectablesContainer.CreateAndAdd(monoBehaviourInjectable, instanceName);
-            IEnumerable<FieldInfo> fields = GetAllFields(monoBehaviourInjectable.GetType());
+            List<FieldInfo> fields = GetAllFields(monoBehaviourInjectable.GetType());
+            
             CheckNotDifferentTransformOnInjectable(fields);
+            PrioritizeOnRectTransformIfExists(fields);
 
             try
             {
@@ -99,9 +101,9 @@ namespace NixiTestTools
         /// <para/> e.g : exception will be thrown if Transform and RectTransform are at top level (same level) of the monoBehaviourInjectable instance
         /// </summary>
         /// <param name="allFields">All fields to check</param>
-        private void CheckNotDifferentTransformOnInjectable(IEnumerable<FieldInfo> allFields)
+        private void CheckNotDifferentTransformOnInjectable(List<FieldInfo> fields)
         {
-            List<FieldInfo> transformFields = allFields.Where(x => typeof(Transform).IsAssignableFrom(x.FieldType)).ToList();
+            List<FieldInfo> transformFields = fields.Where(x => typeof(Transform).IsAssignableFrom(x.FieldType)).ToList();
 
             if (transformFields.Count <= 1)
                 return;
@@ -111,6 +113,30 @@ namespace NixiTestTools
             {
                 if (transformField.FieldType != firstFieldType)
                     throw new TestInjecterException($"Cannot inject a monoBehaviourInjectable with two differents type of Transform, both (or all) of them correspond to {firstFieldType.Name} and {transformField.FieldType.Name}", objectToLink);
+            }
+        }
+
+        /// <summary>
+        /// Detect if a rect transform is present and place it at the top of the list (this is because can't add two different kind of transform on one gameObject)
+        /// </summary>
+        /// <param name="fields">All fields to check</param>
+        private void PrioritizeOnRectTransformIfExists(List<FieldInfo> fields)
+        {
+            for (int i = 0; i < fields.Count; i++)
+            {
+                if (fields[i].FieldType == typeof(RectTransform))
+                {
+                    // Found at first position, nothing to change
+                    if (i == 0)
+                        return;
+
+                    // Moving RectTransform field detected at top position (swap with first element)
+                    FieldInfo rectTransformField = fields[i];
+                    FieldInfo firstField = fields[0];
+                    fields[0] = rectTransformField;
+                    fields[i] = firstField;
+                    return;
+                }
             }
         }
 
@@ -386,7 +412,7 @@ namespace NixiTestTools
         {
             try
             {
-                injectablesContainer.InjectMockIntoInstance(mockToInject, targetInjectable ?? objectToLink);
+                injectablesContainer.InjectMock(mockToInject, targetInjectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {
@@ -406,7 +432,7 @@ namespace NixiTestTools
         {
             try
             {
-                injectablesContainer.InjectMockIntoInstance(fieldName, mockToInject, targetInjectable ?? objectToLink);
+                injectablesContainer.InjectMock(fieldName, mockToInject, targetInjectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {
@@ -427,7 +453,7 @@ namespace NixiTestTools
         {
             try
             {
-                return injectablesContainer.GetComponentFromInstance<T>(targetInjectable ?? objectToLink);
+                return injectablesContainer.GetComponent<T>(targetInjectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {
@@ -448,7 +474,7 @@ namespace NixiTestTools
         {
             try
             {
-                return injectablesContainer.GetComponentFromInstance<T>(fieldName, targetInjectable ?? objectToLink);
+                return injectablesContainer.GetComponent<T>(fieldName, targetInjectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {

@@ -37,7 +37,7 @@ namespace Nixi.Injections.Injecters
         private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
-        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribut on a CustomAttributeData
+        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribute on a CustomAttributeData
         /// </summary>
         private Func<CustomAttributeData, bool> componentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
@@ -79,7 +79,7 @@ namespace Nixi.Injections.Injecters
         /// Find all the fields (public, protected and private) contained in the objectToLink type, this goes back recursively to the first type derived from MonoBehaviourInjectable
         /// </summary>
         /// <returns>All the fields contained in objectToLink type</returns>
-        protected virtual IEnumerable<FieldInfo> GetAllFields(Type currentType)
+        protected virtual List<FieldInfo> GetAllFields(Type currentType)
         {
             List<FieldInfo> fieldsToReturn = new List<FieldInfo>();
 
