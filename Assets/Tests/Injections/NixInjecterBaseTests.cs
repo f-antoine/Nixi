@@ -15,7 +15,7 @@ namespace Tests.Injections
         [SetUp]
         public void InitTests()
         {
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>();
         }
 

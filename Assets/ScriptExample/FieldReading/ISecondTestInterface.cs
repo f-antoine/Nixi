@@ -1,4 +1,4 @@
-﻿namespace Assets.ScriptExample.FieldReading
+﻿namespace ScriptExample.FieldReading
 {
     public interface ISecondTestInterface
     {

@@ -1,6 +1,9 @@
 ﻿using Nixi.Containers;
 using NUnit.Framework;
+using ScriptExample.Characters;
 using ScriptExample.Containers;
+using ScriptExample.ContainersWithParameters;
+using Tests.Builders;
 
 namespace Tests.Containers
 {
@@ -9,14 +12,14 @@ namespace Tests.Containers
         [Test]
         public void ContainerShould_ThrowExceptionWhenNotMapped()
         {
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.Resolve<ITestInterface>());
         }
 
         [Test]
         public void ContainerShould_ThrowExceptionWhenLeftElementIsNotInterface()
         {
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapSingle<TestImplementation, TestImplementation>());
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapTransient<TestImplementation, TestImplementation>());
         }
@@ -25,31 +28,31 @@ namespace Tests.Containers
         public void ContainerShould_ThrowExceptionWhenAddingTwice()
         {
             // Double transient
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapTransient<ITestInterface, TestImplementation>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapTransient<ITestInterface, TestImplementation>());
 
             // Double singleton
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapSingle<ITestInterface, TestImplementation>());
 
             // Singleton then transient
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapTransient<ITestInterface, TestImplementation>());
 
             // Transient then singleton
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapTransient<ITestInterface, TestImplementation>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapSingle<ITestInterface, TestImplementation>());
         }
 
         [Test]
         public void ContainerShould_HandleTransientWithGoodType()
-        {   
+        {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             // Retrieve transient first time
             NixiContainer.MapTransient<ITestInterface, TestImplementation>();
@@ -71,7 +74,7 @@ namespace Tests.Containers
         public void ContainerShould_HandleSingletonWithGoodType()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             NixiContainer.MapSingle<ITestInterface, TestImplementation>();
 
@@ -85,7 +88,7 @@ namespace Tests.Containers
 
             // Retrieve singleton second time
             ITestInterface sameInstance = NixiContainer.Resolve<ITestInterface>();
-            
+
             Assert.That(instance.ValueToRetrieve, Is.EqualTo(2));
             Assert.That(sameInstance.ValueToRetrieve, Is.EqualTo(2));
         }
@@ -94,7 +97,7 @@ namespace Tests.Containers
         public void ContainerShould_RegisterSingletonWithInstancePassed()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             TestImplementation implementation = new TestImplementation();
             implementation.ValueToRetrieve = 14;
@@ -121,7 +124,7 @@ namespace Tests.Containers
         public void ContainerShouldNotRegisterTwice_WhenSingletonAlreadyRegisteredWithInstancePassed()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             TestImplementation implementation = new TestImplementation();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>(implementation);
@@ -134,7 +137,7 @@ namespace Tests.Containers
         public void CheckIfRegistered_ShouldCheckCorrectlyForSingleton()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             Assert.False(NixiContainer.CheckIfRegistered<ITestInterface>());
             Assert.False(NixiContainer.CheckIfRegistered(typeof(ITestInterface)));
@@ -149,7 +152,7 @@ namespace Tests.Containers
         public void CheckIfRegistered_ShouldCheckCorrectlyForSingletonWithInstance()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             Assert.False(NixiContainer.CheckIfRegistered<ITestInterface>());
             Assert.False(NixiContainer.CheckIfRegistered(typeof(ITestInterface)));
@@ -157,6 +160,9 @@ namespace Tests.Containers
             TestImplementation implementation = new TestImplementation();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>(implementation);
 
+            ITestInterface resolved = NixiContainer.Resolve<ITestInterface>();
+
+            Assert.NotNull(resolved);
             Assert.True(NixiContainer.CheckIfRegistered<ITestInterface>());
             Assert.True(NixiContainer.CheckIfRegistered(typeof(ITestInterface)));
         }
@@ -165,7 +171,7 @@ namespace Tests.Containers
         public void CheckIfRegistered_ShouldCheckCorrectlyForTransients()
         {
             // Clearing
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             Assert.False(NixiContainer.CheckIfRegistered<ITestInterface>());
             Assert.False(NixiContainer.CheckIfRegistered(typeof(ITestInterface)));
@@ -182,5 +188,91 @@ namespace Tests.Containers
             Assert.Throws<NixiContainerException>(() => NixiContainer.CheckIfRegistered<TestImplementation>());
             Assert.Throws<NixiContainerException>(() => NixiContainer.CheckIfRegistered(typeof(TestImplementation)));
         }
+
+        #region Container with parameters
+        [Test]
+        public void SingletonShouldReturnSameInstance_AndSameParameter()
+        {
+            // Cleaning
+            NixiContainer.RemoveMap<IContainerWithOneParameter>();
+
+            // Arrange
+            Sorcerer sorcererParameter = InjectableBuilder<Sorcerer>.Create().Build();
+            NixiContainer.MapSingle<IContainerWithOneParameter, ContainerWithOneParameter>(sorcererParameter);
+
+            // Act
+            IContainerWithOneParameter resolved = NixiContainer.Resolve<IContainerWithOneParameter>();
+            IContainerWithOneParameter resolvedSecond = NixiContainer.Resolve<IContainerWithOneParameter>();
+
+            // Check
+            Assert.AreEqual(resolved.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(resolvedSecond.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(resolved, resolvedSecond);
+        }
+
+        [Test]
+        public void TransientShouldReturnDifferentInstance_AndSameParameter()
+        {
+            // Cleaning
+            NixiContainer.RemoveMap<IContainerWithOneParameter>();
+
+            // Arrange
+            Sorcerer sorcererParameter = InjectableBuilder<Sorcerer>.Create().Build();
+            NixiContainer.MapTransient<IContainerWithOneParameter, ContainerWithOneParameter>(sorcererParameter);
+
+            // Act
+            IContainerWithOneParameter resolved = NixiContainer.Resolve<IContainerWithOneParameter>();
+            IContainerWithOneParameter resolvedSecond = NixiContainer.Resolve<IContainerWithOneParameter>();
+
+            // Check
+            Assert.AreEqual(resolved.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(resolvedSecond.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreNotEqual(resolved, resolvedSecond);
+        }
+
+        [Test]
+        public void SingletonShouldReturnSameInstance_AndSameTwoParameters()
+        {
+            // Cleaning
+            NixiContainer.RemoveMap<IContainerWithTwoParameters>();
+
+            // Arrange
+            Sorcerer sorcererParameter = InjectableBuilder<Sorcerer>.Create().Build();
+            NixiContainer.MapSingle<IContainerWithTwoParameters, ContainerWithTwoParameters>(sorcererParameter, 4);
+
+            // Act
+            IContainerWithTwoParameters resolved = NixiContainer.Resolve<IContainerWithTwoParameters>();
+            IContainerWithTwoParameters resolvedSecond = NixiContainer.Resolve<IContainerWithTwoParameters>();
+
+            // Check
+            Assert.AreEqual(resolved.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(4, resolved.IntFromSecondParameter);
+            Assert.AreEqual(resolvedSecond.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(4, resolvedSecond.IntFromSecondParameter);
+            Assert.AreEqual(resolved, resolvedSecond);
+        }
+
+        [Test]
+        public void TransientShouldReturnDifferentInstance_AndSameTwoParameters()
+        {
+            // Cleaning
+            NixiContainer.RemoveMap<IContainerWithTwoParameters>();
+
+            // Arrange
+            Sorcerer sorcererParameter = InjectableBuilder<Sorcerer>.Create().Build();
+            NixiContainer.MapTransient<IContainerWithTwoParameters, ContainerWithTwoParameters>(sorcererParameter, 3);
+
+            // Act
+            IContainerWithTwoParameters resolved = NixiContainer.Resolve<IContainerWithTwoParameters>();
+            IContainerWithTwoParameters resolvedSecond = NixiContainer.Resolve<IContainerWithTwoParameters>();
+
+            // Check
+            Assert.AreEqual(resolved.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(3, resolved.IntFromSecondParameter);
+            Assert.AreEqual(resolvedSecond.SorcererFromParameter.GetInstanceID(), sorcererParameter.GetInstanceID());
+            Assert.AreEqual(3, resolvedSecond.IntFromSecondParameter);
+            Assert.AreNotEqual(resolved, resolvedSecond);
+        }
+        #endregion Container with parameters
     }
 }

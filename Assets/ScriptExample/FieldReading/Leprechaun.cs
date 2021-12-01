@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.ScriptExample.FieldReading
+namespace ScriptExample.FieldReading
 {
     public interface ILeprechaun
     {

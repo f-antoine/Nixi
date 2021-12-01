@@ -20,10 +20,10 @@ namespace Nixi.Containers
         /// </summary>
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
-        public static void MapTransient<TInterface, TImplementation>()
-            where TImplementation : class, TInterface, new()
+        public static void MapTransient<TInterface, TImplementation>(params object[] constructorParameters)
+            where TImplementation : class, TInterface
         {
-            Map<TInterface, TImplementation, TransientContainerElement>();
+            Map<TInterface, TImplementation, TransientContainerElement>(constructorParameters);
         }
 
         /// <summary>
@@ -31,10 +31,10 @@ namespace Nixi.Containers
         /// </summary>
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
-        public static void MapSingle<TInterface, TImplementation>()
-            where TImplementation : class, TInterface, new()
+        public static void MapSingle<TInterface, TImplementation>(params object[] constructorParameters)
+            where TImplementation : class, TInterface
         {
-            Map<TInterface, TImplementation, SingleContainerElement>();
+            Map<TInterface, TImplementation, SingleContainerElement>(constructorParameters);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Nixi.Containers
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
         /// <param name="implementationToRegister">Pass an implementation to register instead of building manually</param>
         public static void MapSingle<TInterface, TImplementation>(TImplementation implementationToRegister)
-            where TImplementation : class, TInterface, new()
+            where TImplementation : class, TInterface
         {
             SingleContainerElement newMapping = Map<TInterface, TImplementation, SingleContainerElement>();
             newMapping.Instance = implementationToRegister;
@@ -56,20 +56,18 @@ namespace Nixi.Containers
         /// </summary>
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
-        private static TypeOfMapping Map<TInterface, TImplementation, TypeOfMapping>()
-            where TImplementation : class, TInterface, new()
+        private static TypeOfMapping Map<TInterface, TImplementation, TypeOfMapping>(params object[] constructorParameters)
+            where TImplementation : class, TInterface
             where TypeOfMapping : ContainerElement, new()
         {
             Type interfaceType = typeof(TInterface);
             Type implementationType = typeof(TImplementation);
-            
-            if (!interfaceType.IsInterface)
-                throw new NixiContainerException($"Cannot map left member {interfaceType.Name} with right member {implementationType.Name} because the left member is not an interface");
 
             TypeOfMapping newMapping = new TypeOfMapping
             {
                 KeyType = interfaceType,
-                ValueType = implementationType
+                ValueType = implementationType,
+                ConstructorParameters = constructorParameters
             };
             AddMapping(newMapping);
             return newMapping;
@@ -81,7 +79,7 @@ namespace Nixi.Containers
         /// <param name="elementToAdd">Container element to add</param>
         private static void AddMapping(ContainerElement elementToAdd)
         {
-            if (registrations.Any(x => x.KeyType == elementToAdd.KeyType))
+            if (CheckIfRegistered(elementToAdd.KeyType))
                 throw new NixiContainerException($"Cannot add twice the same left member which correspond to the key value : {elementToAdd.KeyType.Name}, use Remove<{elementToAdd.KeyType.Name}> if you want to change it");
 
             registrations.Add(elementToAdd);
@@ -126,14 +124,14 @@ namespace Nixi.Containers
                 // Singleton
                 if (singleElementToResolve.Instance == null)
                 {
-                    singleElementToResolve.Instance = Activator.CreateInstance(singleElementToResolve.ValueType);
+                    singleElementToResolve.Instance = Activator.CreateInstance(singleElementToResolve.ValueType, elementResolved.ConstructorParameters);
                 }
                 return singleElementToResolve.Instance;
             }
             else
             {
                 // Transient
-                return Activator.CreateInstance(elementResolved.ValueType);
+                return Activator.CreateInstance(elementResolved.ValueType, elementResolved.ConstructorParameters);
             }
         }
 
@@ -164,10 +162,19 @@ namespace Nixi.Containers
         /// Delete a mapping with a key type T if it is registered
         /// </summary>
         /// <typeparam name="TInterface">Interface key type to find in the registrations</typeparam>
-        public static void Remove<TInterface>()
+        public static void RemoveMap<TInterface>()
         {
-            ContainerElement elementToResolve = registrations.SingleOrDefault(x => x.KeyType == typeof(TInterface));
+            RemoveMap(typeof(TInterface));
+        }
+
+        /// <summary>
+        /// Delete a mapping with a key type T if it is registered
+        /// </summary>
+        /// <param name="keyType">Type of interface to check</param>
+        public static void RemoveMap(Type keyType)
+        {
+            ContainerElement elementToResolve = registrations.SingleOrDefault(x => x.KeyType == keyType);
             registrations.Remove(elementToResolve);
-        }        
+        }
     }
 }

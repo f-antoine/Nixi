@@ -11,11 +11,11 @@ namespace Tests.TestTools
 {
     internal sealed class TestInjecterInstantiateComponentInList
     {
-        [TestCase(null, GameObjectLevel.Children, GameObjectLevel.Parent, "")]
-        [TestCase(GameObjectLevel.Children, null, GameObjectLevel.Parent, "Childs")]
-        [TestCase(GameObjectLevel.Parent, null, GameObjectLevel.Children, "Parent")]
+        [TestCase(null, GameObjectLevel.Children, GameObjectLevel.Parent)]
+        [TestCase(GameObjectLevel.Children, null, GameObjectLevel.Parent)]
+        [TestCase(GameObjectLevel.Parent, null, GameObjectLevel.Children)]
         public void InitEnumerableComponent_ShouldFillAllFields(GameObjectLevel? filledMethod, GameObjectLevel? emptyMethod,
-                                                                GameObjectLevel? secondEmptyMethod, string suffix)
+                                                                GameObjectLevel? secondEmptyMethod)
         {
             // Init
             Spawner spawner = InjectableBuilder<Spawner>.Create().Build();

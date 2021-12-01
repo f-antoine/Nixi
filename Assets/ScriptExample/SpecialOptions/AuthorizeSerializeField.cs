@@ -4,7 +4,7 @@ using Nixi.Injections.Injecters;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.ScriptExample.SpecialOptions
+namespace ScriptExample.SpecialOptions
 {
     public sealed class AuthorizeSerializeField : MonoBehaviourInjectable
     {

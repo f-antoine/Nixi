@@ -16,5 +16,10 @@ namespace Nixi.Containers.ContainerElements
         /// Value type of the mapping
         /// </summary>
         public Type ValueType { get; set; }
+
+        /// <summary>
+        /// Constructor parameters
+        /// </summary>
+        public object[] ConstructorParameters { get; set; }
     }
 }

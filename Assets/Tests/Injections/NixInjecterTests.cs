@@ -1,5 +1,5 @@
-﻿using Assets.ScriptExample.ComponentFromMethodWithoutName;
-using Assets.ScriptExample.SpecialOptions;
+﻿using ScriptExample.ComponentFromMethodWithoutName;
+using ScriptExample.SpecialOptions;
 using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
@@ -29,7 +29,7 @@ namespace Tests.Injections
         [SetUp]
         public void InitTests()
         {
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
             NixiContainer.MapSingle<ITestInterface, TestImplementation>();
         }
 
@@ -37,7 +37,7 @@ namespace Tests.Injections
         [Test]
         public void InjectField_ShouldThrowException_WhenInterfaceNotMapped()
         {
-            NixiContainer.Remove<ITestInterface>();
+            NixiContainer.RemoveMap<ITestInterface>();
 
             NixInjecter nixInjecter = SorcererBuilder.Create().WithSkill().WithChildSkill().BuildNixInjecter();
 

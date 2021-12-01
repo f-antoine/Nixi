@@ -5,7 +5,7 @@ using ScriptExample.ComponentsWithEnumerable;
 using ScriptExample.Containers;
 using UnityEngine;
 
-namespace Assets.ScriptExample.FieldReading
+namespace ScriptExample.FieldReading
 {
     public sealed class FieldsToRead : MonoBehaviourInjectable
     {

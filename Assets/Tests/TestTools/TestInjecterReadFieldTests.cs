@@ -1,4 +1,4 @@
-﻿using Assets.ScriptExample.FieldReading;
+﻿using ScriptExample.FieldReading;
 using Moq;
 using NixiTestTools;
 using NUnit.Framework;
@@ -9,7 +9,7 @@ using System;
 using Tests.Builders;
 using UnityEngine;
 
-namespace Assets.Tests.TestTools
+namespace Tests.TestTools
 {
     internal sealed class TestInjecterReadFieldTests
     {

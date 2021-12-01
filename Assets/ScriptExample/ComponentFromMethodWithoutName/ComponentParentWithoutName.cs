@@ -3,7 +3,7 @@ using Nixi.Injections.Attributes;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Assets.ScriptExample.ComponentFromMethodWithoutName
+namespace ScriptExample.ComponentFromMethodWithoutName
 {
     public sealed class ComponentParentWithoutName : MonoBehaviourInjectable
     {
