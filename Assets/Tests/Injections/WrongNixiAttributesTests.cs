@@ -1,7 +1,7 @@
-﻿using ScriptExample.Characters.Broken;
-using Nixi.Injections.Injecters;
+﻿using Nixi.Injections.Injecters;
 using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.Characters.Broken;
 using UnityEngine;
 
 namespace Tests.Injections

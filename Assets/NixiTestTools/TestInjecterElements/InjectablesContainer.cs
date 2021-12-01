@@ -14,7 +14,7 @@ using UnityEngine;
 namespace NixiTestTools.TestInjecterElements
 {
     /// <summary>
-    /// Container to handle TestInjecter instances, it is used to injectMock into a field or GetComponent from fields/root instantiated during the Test injections
+    /// Container to handle TestInjecter instances, it is used to inject fields or GetComponent from fields/root instantiated during the Test injections
     /// </summary>
     internal sealed class InjectablesContainer
     {
@@ -80,25 +80,63 @@ namespace NixiTestTools.TestInjecterElements
         #endregion Managing MonoBehaviourInjectableData 
 
         #region Mock injection and Get Component
+        // TODO : Factorisation of all ReadField / InjectField / GetComponent ?
+
+        // TODO : Comment
+        internal T ReadField<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        {
+            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+
+            Type typeToFind = typeof(T);
+
+            IEnumerable<SimpleFieldInfo> fieldSelecteds = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
+
+            if (!fieldSelecteds.Any())
+                throw new InjectablesContainerException($"no field with type {typeToFind.Name} was found");
+
+            if (fieldSelecteds.Count() > 1)
+                throw new InjectablesContainerException($"multiple fields with type {typeToFind.Name} were found, cannot define which one use, please use ReadField<T>(T mockToInject, string fieldName) instead");
+            
+            return (T)fieldSelecteds.Single().FieldInfo.GetValue(injectableHandler.Instance);
+        }
+
+        // TODO : Comment
+        internal T ReadField<T>(string fieldName, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        {
+            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+
+            Type typeToFind = typeof(T);
+
+            IEnumerable<SimpleFieldInfo> fieldsWithType = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
+            if (!fieldsWithType.Any())
+                throw new InjectablesContainerException($"no field with type {typeToFind.Name}");
+
+            IEnumerable<SimpleFieldInfo> fieldsWithTypeAndName = fieldsWithType.Where(x => x.FieldInfo.Name == fieldName);
+            if (!fieldsWithTypeAndName.Any())
+                throw new InjectablesContainerException($"field with type {typeToFind.Name} was/were found, but none with fieldName {fieldName}");
+
+            return (T)fieldsWithTypeAndName.Single().FieldInfo.GetValue(injectableHandler.Instance);
+        }
+
         /// <summary>
         /// Inject manually a mock into the Non-Component field with T Type in a MonoBehaviourInjectable
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectMock<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal void InjectField<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
 
-            Type interfaceType = typeof(T);
+            Type typeToFind = typeof(T);
 
-            IEnumerable<SimpleFieldInfo> fieldSelecteds = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == interfaceType);
+            IEnumerable<SimpleFieldInfo> fieldSelecteds = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
 
             if (!fieldSelecteds.Any())
-                throw new InjectablesContainerException($"no field with type {interfaceType.Name} was found");
+                throw new InjectablesContainerException($"no field with type {typeToFind.Name} was found");
 
             if (fieldSelecteds.Count() > 1)
-                throw new InjectablesContainerException($"multiple fields with type {interfaceType.Name} were found, cannot define which one use, please use InjectMock<T>(T mockToInject, string fieldName) instead");
+                throw new InjectablesContainerException($"multiple fields with type {typeToFind.Name} were found, cannot define which one use, please use InjectField<T>(T mockToInject, string fieldName) instead");
 
             fieldSelecteds.Single().FieldInfo.SetValue(injectableHandler.Instance, mockToInject);
         }
@@ -110,19 +148,19 @@ namespace NixiTestTools.TestInjecterElements
         /// <param name="fieldName">Name of the field to mock</param>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectMock<T>(string fieldName, T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal void InjectField<T>(string fieldName, T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
         {
             InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
 
-            Type interfaceType = typeof(T);
+            Type typeToFind = typeof(T);
 
-            IEnumerable<SimpleFieldInfo> fieldsWithType = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == interfaceType);
+            IEnumerable<SimpleFieldInfo> fieldsWithType = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
             if (!fieldsWithType.Any())
-                throw new InjectablesContainerException($"no field with type {interfaceType.Name}");
+                throw new InjectablesContainerException($"no field with type {typeToFind.Name}");
 
             IEnumerable<SimpleFieldInfo> fieldsWithTypeAndName = fieldsWithType.Where(x => x.FieldInfo.Name == fieldName);
             if (!fieldsWithTypeAndName.Any())
-                throw new InjectablesContainerException($"field with type {interfaceType.Name} was/were found, but none with fieldName {fieldName}");
+                throw new InjectablesContainerException($"field with type {typeToFind.Name} was/were found, but none with fieldName {fieldName}");
 
             fieldsWithTypeAndName.Single().FieldInfo.SetValue(injectableHandler.Instance, mockToInject);
         }
@@ -149,7 +187,7 @@ namespace NixiTestTools.TestInjecterElements
             if (componentsWithType.Count() > 1)
                 throw new InjectablesContainerException($"multiple components with type {typeToFind.Name} were found, cannot define which one use, please use GetComponent(fieldName)");
 
-            return componentsWithType.Single().Component as T;
+            return (T)componentsWithType.Single().Component;
         }
 
         /// <summary>
@@ -175,7 +213,7 @@ namespace NixiTestTools.TestInjecterElements
             if (!componentsWithFieldTypeAndFieldName.Any())
                 throw new InjectablesContainerException($"component with type {typeToFind.Name} was/were found, but none with field name {fieldName}");
 
-            return componentsWithFieldTypeAndFieldName.Single().Component as T;
+            return (T)componentsWithFieldTypeAndFieldName.Single().Component;
         }
         #endregion Mock injection and Get Component
 
@@ -238,7 +276,7 @@ namespace NixiTestTools.TestInjecterElements
                     throw new InjectablesContainerException($"{baseType.Name} is not assignable from {typeDerived.Name}");
 
                 Component componentBuilded = BuildComponentForEnumerableComponentFields(gameObjectLevel, injectable, typeDerived);
-                components.Add(componentBuilded as T);
+                components.Add((T)componentBuilded);
             }
 
             foreach (ComponentListWithFieldInfo enumerableFieldData in enumerableFieldsData)
@@ -414,17 +452,17 @@ namespace NixiTestTools.TestInjecterElements
         {
             if (value.GetType().IsArray)
             {
-                var valueEnumerable = value as System.Collections.IEnumerable;
+                var valueEnumerable = (System.Collections.IEnumerable)value;
 
                 List<T> objectsToConvert = new List<T>();
                 foreach (var element in valueEnumerable)
                 {
-                    objectsToConvert.Add(element as T);
+                    objectsToConvert.Add((T)element);
                 }
 
                 return objectsToConvert.ToArray();
             }
-            return value as IEnumerable<T>;
+            return (IEnumerable<T>)value;
         }
         #endregion EnumerableComponent
 

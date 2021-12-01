@@ -27,7 +27,7 @@ namespace Nixi.Injections.Injecters
             {
                 if (typeof(System.Collections.IEnumerable).IsAssignableFrom(value.GetType()))
                 {
-                    var valueEnumerable = value as System.Collections.IEnumerable;
+                    var valueEnumerable = (System.Collections.IEnumerable)value;
 
                     List<object> objectsToConvert = new List<object>();
                     foreach (var element in valueEnumerable)

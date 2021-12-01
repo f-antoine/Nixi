@@ -8,7 +8,6 @@ namespace ScriptExample.PlayerGroups
 {
     public sealed class PlayerGroup : MonoBehaviourInjectable
     {
-        [SerializeField]
         [NixInjectComponents]
         private IEnumerable<Player> players;
         public IEnumerable<Player> Players => players;

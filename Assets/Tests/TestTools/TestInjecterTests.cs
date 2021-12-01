@@ -1,8 +1,8 @@
-﻿using ScriptExample.Characters;
-using ScriptExample.Characters.SameNamings;
-using NixiTestTools;
+﻿using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.Characters;
 using ScriptExample.Characters.Broken;
+using ScriptExample.Characters.SameNamings;
 using System;
 using Tests.Builders;
 using UnityEngine;
@@ -60,7 +60,7 @@ namespace Tests.TestTools
             Assert.Throws<TestInjecterException>(() => testInjecter.GetComponent<Warrior>());
 
             Parasite parasite = ParasiteBuilder.Create().Build();
-            testInjecter.InjectMock(parasite);
+            testInjecter.InjectField(parasite);
 
             Assert.That(warrior.Parasite, Is.Not.Null);
             Assert.That(warrior.Parasite.GetInstanceID(), Is.EqualTo(parasite.GetInstanceID()));

@@ -73,6 +73,21 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstraction
             if (!componentsFoundExcludingItself.Any())
                 throw new NixiAttributeException($"No component with type {componentField.FieldType.Name} was found to fill field with name {componentField.Name}");
 
+            if (string.IsNullOrEmpty(ComponentNameToFind))
+            {
+                return GetWithoutName(componentField, componentsFoundExcludingItself);
+            }
+            return GetWithName(componentField, componentsFoundExcludingItself);
+        }
+
+        /// <summary>
+        /// Returns single component whose type that matches componentField.FieldType and whose name equals to ComponentNameToFind
+        /// </summary>
+        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
+        /// <param name="componentsFoundExcludingItself">All the components returned by Unity dependency injection method excluding gameObject of the MonoBehaviour injectable instance</param>
+        /// <returns>Unique component which exactly matches criteria</returns>
+        private Component GetWithName(FieldInfo componentField, IEnumerable<Component> componentsFoundExcludingItself)
+        {
             IEnumerable<Component> componentsWithName = componentsFoundExcludingItself.Where(x => x.name == ComponentNameToFind);
 
             if (!componentsWithName.Any())
@@ -83,6 +98,22 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstraction
                 throw new NixiAttributeException($"Multiple components were found with type {componentField.FieldType.Name} and gameObject name {ComponentNameToFind} to fill field with name {componentField.Name}, could not define which one should be used ({nbFound} found instead of just one, please use NixInjectComponentsAttribute)");
 
             return componentsWithName.Single();
+        }
+
+        /// <summary>
+        /// Returns single component whose type that matches componentField.FieldType
+        /// </summary>
+        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
+        /// <param name="componentsFoundExcludingItself">All the components returned by Unity dependency injection method excluding gameObject of the MonoBehaviour injectable instance</param>
+        /// <returns>Unique component which exactly matches criteria</returns>
+        private Component GetWithoutName(FieldInfo componentField, IEnumerable<Component> componentsFoundExcludingItself)
+        {
+            int nbFound = componentsFoundExcludingItself.Count();
+            
+            if (nbFound > 1)
+                throw new NixiAttributeException($"Multiple components were found with type {componentField.FieldType.Name} to fill field with name {componentField.Name}, could not define which one should be used ({nbFound} found instead of just one, please use gameObjectNameToFind parameter with {GetType().Name} to refine your search)");
+
+            return componentsFoundExcludingItself.Single();
         }
     }
 }

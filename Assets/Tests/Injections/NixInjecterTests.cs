@@ -1,4 +1,6 @@
-﻿using Nixi.Containers;
+﻿using Assets.ScriptExample.ComponentFromMethodWithoutName;
+using Assets.ScriptExample.SpecialOptions;
+using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
 using NUnit.Framework;
@@ -18,6 +20,7 @@ using System.Linq;
 using Tests.Builders;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tests.Injections
 {
@@ -832,6 +835,26 @@ namespace Tests.Injections
         }
         #endregion EnumerableFromMethod Injections
 
+        #region NixInjectOptions
+        [Test]
+        public void AuthorizeSerializedFieldWithNixiAttributesOption_ShouldAllowSerializeWithNixiAttribute_OnCheckAndInjectAll()
+        {
+            AuthorizeSerializeField injectable = InjectableBuilder<AuthorizeSerializeField>.Create().Build();
+            injectable.gameObject.AddComponent<Slider>();
+            Assert.Null(injectable.Slider);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable, new NixInjectOptions
+            {
+                AuthorizeSerializedFieldWithNixiAttributes = true
+            });
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(injectable.Slider);
+        }
+        #endregion NixInjectOptions
+
         #region Error decorator
         [TestCase(typeof(FallenCompoListClass))]
         [TestCase(typeof(FallenCompoListComponent))]
@@ -877,9 +900,110 @@ namespace Tests.Injections
         }
         #endregion Error decorator
 
+        #region NixInjectComponentFromMethod without name (should find unique)
+        [Test]
+        public void GetChildren_ShouldFindUniqueElement_WithoutName()
+        {
+            ComponentChildWithoutName injectable = InjectableBuilder<ComponentChildWithoutName>.Create().Build();
+            Slider childSlider = new GameObject().AddComponent<Slider>();
+            childSlider.transform.SetParent(injectable.transform);
+            
+            Assert.Null(injectable.Slider);
+            Assert.Null(injectable.SliderWithEmptyString);
+            Assert.Null(injectable.SliderInterface);
+            Assert.Null(injectable.SliderInterfaceWithEmptyString);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.AreEqual(childSlider.GetInstanceID(), injectable.Slider.GetInstanceID());
+            Assert.AreEqual(childSlider.GetInstanceID(), injectable.SliderWithEmptyString.GetInstanceID());
+            Assert.NotNull(injectable.SliderInterface);
+            Assert.NotNull(injectable.SliderInterfaceWithEmptyString);
+        }
+
+        [Test]
+        public void GetChildren_ShouldThrowException_WhenNotFound()
+        {
+            ComponentChildWithoutName injectable = InjectableBuilder<ComponentChildWithoutName>.Create().Build();
+
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void GetChildren_ShouldThrowException_WhenFoundMany_WithoutName()
+        {
+            ComponentChildWithoutName injectable = InjectableBuilder<ComponentChildWithoutName>.Create().Build();
+
+            // Add two child with good type
+            new GameObject().AddComponent<Slider>().transform.SetParent(injectable.transform);
+            new GameObject().AddComponent<Slider>().transform.SetParent(injectable.transform);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void GetParent_ShouldFindUniqueElement_WithoutName()
+        {
+            ComponentParentWithoutName injectable = InjectableBuilder<ComponentParentWithoutName>.Create().Build();
+            Slider parentSlider = new GameObject().AddComponent<Slider>();
+            injectable.transform.SetParent(parentSlider.transform);
+
+            Assert.Null(injectable.Slider);
+            Assert.Null(injectable.SliderWithEmptyString);
+            Assert.Null(injectable.SliderInterface);
+            Assert.Null(injectable.SliderInterfaceWithEmptyString);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable);
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.AreEqual(parentSlider.GetInstanceID(), injectable.Slider.GetInstanceID());
+            Assert.AreEqual(parentSlider.GetInstanceID(), injectable.SliderWithEmptyString.GetInstanceID());
+            Assert.NotNull(injectable.SliderInterface);
+            Assert.NotNull(injectable.SliderInterfaceWithEmptyString);
+        }
+
+        [Test]
+        public void GetParent_ShouldThrowException_WhenNotFound()
+        {
+            ComponentParentWithoutName injectable = InjectableBuilder<ComponentParentWithoutName>.Create().Build();
+
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+
+        [Test]
+        public void GetParent_ShouldThrowException_WhenFoundMany_WithoutName()
+        {
+            ComponentParentWithoutName injectable = InjectableBuilder<ComponentParentWithoutName>.Create().Build();
+
+            // Add two parent with good type
+            Slider parent = new GameObject().AddComponent<Slider>();
+            Slider grandParent = new GameObject().AddComponent<Slider>();
+
+            parent.transform.SetParent(grandParent.transform);
+            injectable.transform.SetParent(parent.transform);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable);
+
+            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+        }
+        #endregion NixInjectComponentFromMethod without name (should find unique)
+
         #region NixInjectComponentFromMethod should ignore itself
         [Test]
-        public void GetChildren_ShouldNotFindElementWhenItsTargetingMyself()
+        public void GetChildren_ShouldNotFindElementWhenItsTargetingItself()
         {
             CannotFindInChildren injectable = CannotFindBuilder.Create().BuildForChildWithCurrentName();
             
@@ -889,7 +1013,7 @@ namespace Tests.Injections
         }
 
         [Test]
-        public void GetParents_ShouldNotFindElementWhenItsTargetingMyself()
+        public void GetParents_ShouldNotFindElementWhenItsTargetingItself()
         {
             CannotFindInParents injectable = CannotFindBuilder.Create().BuildForParentWithCurrentName();
 

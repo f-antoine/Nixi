@@ -15,39 +15,29 @@ namespace Tests.TestTools
 {
     internal sealed class TestInjecterFieldInjectionTests
     {
-        #region FieldInjection : InjectMock without field name
+        #region FieldInjection : InjectField without field name
         [Test]
-        public void InjectMockWithoutName_ShouldThrowException_WhenIsNotInterface()
+        public void InjectFieldWithoutName_ShouldThrowException_WhenInterfaceNotReferencedInClass()
         {
             TestInjecter testInjecter = SorcererBuilder.Create().BuildTestInjecter();
 
             testInjecter.CheckAndInjectAll();
 
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<TestImplementation>().Object));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(new Mock<IList>().Object));
         }
 
         [Test]
-        public void InjectMockWithoutName_ShouldThrowException_WhenInterfaceNotReferencedInClass()
-        {
-            TestInjecter testInjecter = SorcererBuilder.Create().BuildTestInjecter();
-
-            testInjecter.CheckAndInjectAll();
-
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<IList>().Object));
-        }
-
-        [Test]
-        public void InjectMockWithoutName_ShouldThrowException_WhenTwoSameInterfaceAndNoNameToDefine()
+        public void InjectFieldWithoutName_ShouldThrowException_WhenTwoSameInterfaceAndNoNameToDefine()
         {
             TestInjecter testInjecter = InjectableBuilder<BrokenSorcerer>.Create().BuildTestInjecter();
 
             testInjecter.CheckAndInjectAll();
 
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<IBrokenTestInterface>().Object));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(new Mock<IBrokenTestInterface>().Object));
         }
 
         [Test]
-        public void InjectMockWithoutName_ShouldFill()
+        public void InjectFieldWithoutName_ShouldFill()
         {
             // Init
             Sorcerer sorcerer = SorcererBuilder.Create().Build();
@@ -60,7 +50,7 @@ namespace Tests.TestTools
             // Mock
             Mock<ITestInterface> testMock = new Mock<ITestInterface>(MockBehavior.Strict);
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
-            testInjecter.InjectMock(testMock.Object);
+            testInjecter.InjectField(testMock.Object);
 
             // Asserts
             Assert.That(sorcerer.TestInterface, Is.Not.Null);
@@ -83,48 +73,38 @@ namespace Tests.TestTools
             SO_Sorcerer soInfos = ScriptableObject.CreateInstance<SO_Sorcerer>();
             soInfos.CharaName = "SorcererCharaName";
             soInfos.ManaMax = 2000;
-            testInjecter.InjectMock(soInfos);
+            testInjecter.InjectField(soInfos);
 
             // Asserts
             Assert.That(sorcerer.SOInfos, Is.Not.Null);
             Assert.That(sorcerer.SOInfos.CharaName, Is.EqualTo(soInfos.CharaName));
             Assert.That(sorcerer.SOInfos.ManaMax, Is.EqualTo(soInfos.ManaMax));
         }
-        #endregion FieldInjection : InjectMock without field name
+        #endregion FieldInjection : InjectField without field name
 
-        #region FieldInjection : InjectMock with field name
+        #region FieldInjection : InjectField with field name
         [Test]
-        public void InjectMockWithName_ShouldThrowException_WhenIsNotInterface()
+        public void InjectFieldWithName_ShouldThrowException_WhenInterfaceNotReferencedInClass()
         {
             TestInjecter testInjecter = SorcererBuilder.Create().BuildTestInjecter();
 
             testInjecter.CheckAndInjectAll();
 
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<TestImplementation>().Object, "anyName"));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(new Mock<IList>().Object, "anyName"));
         }
 
         [Test]
-        public void InjectMockWithName_ShouldThrowException_WhenInterfaceNotReferencedInClass()
+        public void InjectFieldWithName_ShouldThrowException_WhenInterfaceReferencedWithBadNameInClass()
         {
             TestInjecter testInjecter = SorcererBuilder.Create().BuildTestInjecter();
 
             testInjecter.CheckAndInjectAll();
 
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<IList>().Object, "anyName"));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(new Mock<ITestInterface>().Object, "anyName"));
         }
 
         [Test]
-        public void InjectMockWithName_ShouldThrowException_WhenInterfaceReferencedWithBadNameInClass()
-        {
-            TestInjecter testInjecter = SorcererBuilder.Create().BuildTestInjecter();
-
-            testInjecter.CheckAndInjectAll();
-
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(new Mock<ITestInterface>().Object, "anyName"));
-        }
-
-        [Test]
-        public void InjectMockWithName_ShouldFill()
+        public void InjectFieldWithName_ShouldFill()
         {
             // Init
             Sorcerer sorcerer = SorcererBuilder.Create().Build();
@@ -137,7 +117,7 @@ namespace Tests.TestTools
             // Mock
             Mock<ITestInterface> testMock = new Mock<ITestInterface>(MockBehavior.Strict);
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
-            testInjecter.InjectMock(testMock.Object, "testInterface");
+            testInjecter.InjectField(testMock.Object, "testInterface");
 
             // Asserts
             Assert.That(sorcerer.TestInterface, Is.Not.Null);
@@ -146,7 +126,7 @@ namespace Tests.TestTools
         }
 
         [Test]
-        public void InjectMockWithName_ShouldFillMoreComplicated()
+        public void InjectFieldWithName_ShouldFillMoreComplicated()
         {
             // Init
             BrokenSorcerer brokenSorcerer = InjectableBuilder<BrokenSorcerer>.Create().Build();
@@ -160,12 +140,12 @@ namespace Tests.TestTools
             // Mock First
             Mock<IBrokenTestInterface> testMock = new Mock<IBrokenTestInterface>(MockBehavior.Strict);
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(1).Verifiable();
-            testInjecter.InjectMock(testMock.Object, "brokenTestInterface");
+            testInjecter.InjectField(testMock.Object, "brokenTestInterface");
 
             // Mock Second
             Mock<IBrokenTestInterface> testMockSecond = new Mock<IBrokenTestInterface>(MockBehavior.Strict);
             testMockSecond.SetupGet(x => x.ValueToRetrieve).Returns(2).Verifiable();
-            testInjecter.InjectMock(testMockSecond.Object, "brokenTestInterfaceSecond");
+            testInjecter.InjectField(testMockSecond.Object, "brokenTestInterfaceSecond");
 
             // Asserts First
             Assert.That(brokenSorcerer.BrokenTestInterface, Is.Not.Null);
@@ -192,7 +172,7 @@ namespace Tests.TestTools
             SO_InventoryBag soInfosBag = ScriptableObject.CreateInstance<SO_InventoryBag>();
 
             // Assert
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(soInfosBag));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(soInfosBag));
         }
 
         [Test]
@@ -211,7 +191,7 @@ namespace Tests.TestTools
             SO_InventoryBag soInfosBag = ScriptableObject.CreateInstance<SO_InventoryBag>();
             soInfosBag.BagName = "Pocket";
             soInfosBag.NbSlot = 14;
-            testInjecter.InjectMock(soInfosBag, "firstInventoryBagInfos");
+            testInjecter.InjectField(soInfosBag, "firstInventoryBagInfos");
 
             // Asserts
             Assert.That(sorcerer.FirstInventoryBagInfos, Is.Not.Null);
@@ -233,8 +213,8 @@ namespace Tests.TestTools
             Assert.That(sorcerer, Is.Not.Null);
 
             Skill skillMock = new GameObject().AddComponent<Skill>();
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(skillMock, "anyName", sorcerer));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(skillMock, "anyName", sorcerer));
         }
-        #endregion FieldInjection : InjectMock with field name
+        #endregion FieldInjection : InjectField with field name
     }
 }

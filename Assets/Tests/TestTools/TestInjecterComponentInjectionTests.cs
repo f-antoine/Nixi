@@ -1,10 +1,9 @@
-﻿using ScriptExample.Characters;
-using ScriptExample.Characters.SameNamings;
-using ScriptExample.Controllers;
-using NixiTestTools;
+﻿using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.Characters.Broken;
+using ScriptExample.Characters.SameNamings;
+using ScriptExample.Controllers;
 using Tests.Builders;
 using UnityEngine;
 

@@ -80,24 +80,24 @@ namespace Tests.Injections
 
             SO_InventoryBag firstInventoryBagInfos = ScriptableObject.CreateInstance<SO_InventoryBag>();
 
-            Assert.Throws<TestInjecterException>(() => MainInjecter.InjectMock(firstInventoryBagInfos, sorcerer));
+            Assert.Throws<TestInjecterException>(() => MainInjecter.InjectField(firstInventoryBagInfos, sorcerer));
         }
 
-        #region InjectMocks without name
+        #region InjectFields without name
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMock_CorrectlyAtSameLevel()
+        public void RecursiveInjectionTests_ShouldInjectField_CorrectlyAtSameLevel()
         {
             Mock<ISettings> settingsMock = new Mock<ISettings>(MockBehavior.Strict);
             settingsMock.SetupGet(x => x.GameName).Returns("Nixi").Verifiable();
             
-            MainInjecter.InjectMock(settingsMock.Object);
+            MainInjecter.InjectField(settingsMock.Object);
 
             Assert.That(MainTested.Settings.GameName, Is.EqualTo("Nixi"));
             settingsMock.VerifyGet(x => x.GameName, Times.Once);
         }
 
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMock_CorrectlyAtSecondLevel()
+        public void RecursiveInjectionTests_ShouldInjectField_CorrectlyAtSecondLevel()
         {
             // Check player find
             Player player = MainInjecter.GetComponent<Player>();
@@ -108,7 +108,7 @@ namespace Tests.Injections
             Mock<ILifeBar> playerLifeBarMock = new Mock<ILifeBar>(MockBehavior.Strict);
             playerLifeBarMock.SetupGet(x => x.CurrentHealth).Returns(123).Verifiable();
             
-            MainInjecter.InjectMock(playerLifeBarMock.Object, player);
+            MainInjecter.InjectField(playerLifeBarMock.Object, player);
 
             Assert.That(player.LifeBar, Is.Not.Null);
             Assert.That(player.LifeBar.CurrentHealth, Is.EqualTo(123));
@@ -116,7 +116,7 @@ namespace Tests.Injections
         }
 
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMock_CorrectlyAtThirdLevel()
+        public void RecursiveInjectionTests_ShouldInjectField_CorrectlyAtThirdLevel()
         {
             // Check sorcerer find in player find
             Player player = MainInjecter.GetComponent<Player>();
@@ -129,7 +129,7 @@ namespace Tests.Injections
             Mock<ITestInterface> sorcererTestInterfaceMock = new Mock<ITestInterface>(MockBehavior.Strict);
             sorcererTestInterfaceMock.SetupGet(x => x.ValueToRetrieve).Returns(222).Verifiable();
 
-            MainInjecter.InjectMock(sorcererTestInterfaceMock.Object, sorcerer);
+            MainInjecter.InjectField(sorcererTestInterfaceMock.Object, sorcerer);
 
             Assert.That(sorcerer.TestInterface, Is.Not.Null);
             Assert.That(sorcerer.TestInterface.ValueToRetrieve, Is.EqualTo(222));
@@ -144,7 +144,7 @@ namespace Tests.Injections
             SO_GameHost gameHostInfos = ScriptableObject.CreateInstance<SO_GameHost>();
             gameHostInfos.NbSlot = 3;
 
-            MainInjecter.InjectMock(gameHostInfos);
+            MainInjecter.InjectField(gameHostInfos);
 
             Assert.That(MainTested.SOGameHostInfos, Is.Not.Null);
             Assert.That(MainTested.SOGameHostInfos.NbSlot, Is.EqualTo(gameHostInfos.NbSlot));
@@ -159,7 +159,7 @@ namespace Tests.Injections
             SO_Player playerInfos = ScriptableObject.CreateInstance<SO_Player>();
             playerInfos.Pseudo = "Kainy";
 
-            MainInjecter.InjectMock(playerInfos, player);
+            MainInjecter.InjectField(playerInfos, player);
 
             Assert.That(player.SOPlayerInfos, Is.Not.Null);
             Assert.That(player.SOPlayerInfos.Pseudo, Is.EqualTo(playerInfos.Pseudo));
@@ -178,7 +178,7 @@ namespace Tests.Injections
             sorcererInfos.CharaName = "Magda";
             sorcererInfos.ManaMax = 1234;
 
-            MainInjecter.InjectMock(sorcererInfos, sorcerer);
+            MainInjecter.InjectField(sorcererInfos, sorcerer);
 
             Assert.That(sorcerer.SOInfos, Is.Not.Null);
             Assert.That(sorcerer.SOInfos.CharaName, Is.EqualTo(sorcererInfos.CharaName));
@@ -187,11 +187,11 @@ namespace Tests.Injections
             Assert.That(MainTested.Player.Sorcerer.SOInfos.CharaName, Is.EqualTo(sorcererInfos.CharaName));
             Assert.That(MainTested.Player.Sorcerer.SOInfos.ManaMax, Is.EqualTo(sorcererInfos.ManaMax));
         }
-        #endregion InjectMocks without name
+        #endregion InjectFields without name
 
-        #region InjectMocks with name
+        #region InjectFields with name
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMockWithName_CorrectlyAtSameLevel()
+        public void RecursiveInjectionTests_ShouldInjectFieldWithName_CorrectlyAtSameLevel()
         {
             // Check
             Assert.That(MainTested.FirstBrokenInterfaceGameHost, Is.Null);
@@ -202,7 +202,7 @@ namespace Tests.Injections
             brokenTestInterfaceMock.SetupGet(x => x.ValueToRetrieve).Returns(1234).Verifiable();
 
             // Act
-            MainInjecter.InjectMock(brokenTestInterfaceMock.Object, "FirstBrokenInterfaceGameHost");
+            MainInjecter.InjectField(brokenTestInterfaceMock.Object, "FirstBrokenInterfaceGameHost");
 
             Assert.That(MainTested.FirstBrokenInterfaceGameHost.ValueToRetrieve, Is.EqualTo(1234));
             Assert.That(MainTested.SecondBrokenInterfaceGameHost, Is.Null);
@@ -210,7 +210,7 @@ namespace Tests.Injections
         }
 
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMockWithName_CorrectlyAtSecondLevel()
+        public void RecursiveInjectionTests_ShouldInjectFieldWithName_CorrectlyAtSecondLevel()
         {
             // Check player find
             SecondPlayer secondPlayer = MainInjecter.GetComponent<SecondPlayer>();
@@ -222,7 +222,7 @@ namespace Tests.Injections
             Mock<IBrokenTestInterface> playerBrokenInterfaceMock = new Mock<IBrokenTestInterface>(MockBehavior.Strict);
             playerBrokenInterfaceMock.SetupGet(x => x.ValueToRetrieve).Returns(345).Verifiable();
 
-            MainInjecter.InjectMock(playerBrokenInterfaceMock.Object, "FirstBrokenInterfacePlayer", secondPlayer);
+            MainInjecter.InjectField(playerBrokenInterfaceMock.Object, "FirstBrokenInterfacePlayer", secondPlayer);
 
             Assert.That(secondPlayer.FirstBrokenInterfacePlayer, Is.Not.Null);
             Assert.That(secondPlayer.FirstBrokenInterfacePlayer.ValueToRetrieve, Is.EqualTo(345));
@@ -230,7 +230,7 @@ namespace Tests.Injections
         }
 
         [Test]
-        public void RecursiveInjectionTests_ShouldInjectMockWithName_CorrectlyAtThirdLevel()
+        public void RecursiveInjectionTests_ShouldInjectFieldWithName_CorrectlyAtThirdLevel()
         {
             // Check brokenSorcerer find in secondPlayer find
             SecondPlayer secondPlayer = MainInjecter.GetComponent<SecondPlayer>();
@@ -243,7 +243,7 @@ namespace Tests.Injections
             Mock<IBrokenTestInterface> brokenSorcererTestInterfaceMock = new Mock<IBrokenTestInterface>(MockBehavior.Strict);
             brokenSorcererTestInterfaceMock.SetupGet(x => x.ValueToRetrieve).Returns(222).Verifiable();
 
-            MainInjecter.InjectMock(brokenSorcererTestInterfaceMock.Object, "brokenTestInterface", brokenSorcerer);
+            MainInjecter.InjectField(brokenSorcererTestInterfaceMock.Object, "brokenTestInterface", brokenSorcerer);
 
             Assert.That(brokenSorcerer.BrokenTestInterface, Is.Not.Null);
             Assert.That(brokenSorcerer.BrokenTestInterface.ValueToRetrieve, Is.EqualTo(222));
@@ -265,7 +265,7 @@ namespace Tests.Injections
             firstInventoryBagInfos.NbSlot = 48;
 
             // Act
-            MainInjecter.InjectMock(firstInventoryBagInfos, "firstInventoryBagInfos", sorcerer);
+            MainInjecter.InjectField(firstInventoryBagInfos, "firstInventoryBagInfos", sorcerer);
 
             // Assert
             Assert.That(sorcerer.FirstInventoryBagInfos, Is.Not.Null);
@@ -276,6 +276,6 @@ namespace Tests.Injections
             Assert.That(MainTested.Player.Sorcerer.FirstInventoryBagInfos.BagName, Is.EqualTo(firstInventoryBagInfos.BagName));
             Assert.That(MainTested.Player.Sorcerer.FirstInventoryBagInfos.NbSlot, Is.EqualTo(firstInventoryBagInfos.NbSlot));
         }
-        #endregion InjectMocks with name
+        #endregion InjectFields with name
     }
 }

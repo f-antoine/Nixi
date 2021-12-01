@@ -15,8 +15,12 @@ namespace ScriptExample.Players
         public ILifeBar LifeBar;
 
         [SerializeField]
-        [NixInjectTestMock]
         private SO_Player soPlayerInfos;
         public SO_Player SOPlayerInfos => soPlayerInfos;
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
     }
 }

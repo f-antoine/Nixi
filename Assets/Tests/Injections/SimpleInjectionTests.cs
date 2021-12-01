@@ -34,12 +34,15 @@ namespace Tests.Injections
             Mock<ITestInterface> testMock = new Mock<ITestInterface>(MockBehavior.Strict);
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
 
-            // Act
-            MainInjecter.InjectMock(testMock.Object);
+            // Act + check value returned is same as injected
+            ITestInterface interfaceMockInjected = MainInjecter.InjectField(testMock.Object);
 
             // Assert
             Assert.That(MainTested.TestInterface.ValueToRetrieve, Is.EqualTo(4));
-            testMock.VerifyGet(x => x.ValueToRetrieve, Times.Once);
+            Assert.That(interfaceMockInjected.ValueToRetrieve, Is.EqualTo(4));
+
+            testMock.VerifyGet(x => x.ValueToRetrieve, Times.Exactly(2));
+            testMock.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -49,12 +52,15 @@ namespace Tests.Injections
             Mock< ITestInterface> testMock = new Mock<ITestInterface>(MockBehavior.Strict);
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
 
-            // Act
-            MainInjecter.InjectMock(testMock.Object, "testInterface");
+            // Act + check value returned is same as injected
+            ITestInterface interfaceMockInjected = MainInjecter.InjectField(testMock.Object, "testInterface");
 
             // Assert
             Assert.That(MainTested.TestInterface.ValueToRetrieve, Is.EqualTo(4));
-            testMock.VerifyGet(x => x.ValueToRetrieve, Times.Once);
+            Assert.That(interfaceMockInjected.ValueToRetrieve, Is.EqualTo(4));
+
+            testMock.VerifyGet(x => x.ValueToRetrieve, Times.Exactly(2));
+            testMock.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -66,7 +72,7 @@ namespace Tests.Injections
             soInfosToInject.CharaName = "TestCharaName";
             soInfosToInject.ManaMax = 20;
 
-            MainInjecter.InjectMock(soInfosToInject);
+            MainInjecter.InjectField(soInfosToInject);
 
             Assert.That(MainTested.SOInfos, Is.Not.Null);
             Assert.That(MainTested.SOInfos.CharaName, Is.EqualTo(soInfosToInject.CharaName));
@@ -83,7 +89,7 @@ namespace Tests.Injections
             soInventoryBag.BagName = "Pocket";
             soInventoryBag.NbSlot = 9;
 
-            MainInjecter.InjectMock(soInventoryBag, "firstInventoryBagInfos");
+            MainInjecter.InjectField(soInventoryBag, "firstInventoryBagInfos");
 
             Assert.That(MainTested.SecondInventoryBagInfos, Is.Null);
             Assert.That(MainTested.FirstInventoryBagInfos, Is.Not.Null);

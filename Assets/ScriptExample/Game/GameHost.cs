@@ -25,7 +25,6 @@ namespace ScriptExample.GameHost
         [NixInjectFromContainer]
         public IBrokenTestInterface SecondBrokenInterfaceGameHost;
 
-        [NixInjectTestMock]
         [SerializeField]
         private SO_GameHost soGameHostInfos;
         public SO_GameHost SOGameHostInfos => soGameHostInfos;

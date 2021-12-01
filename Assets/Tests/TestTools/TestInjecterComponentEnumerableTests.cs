@@ -46,7 +46,7 @@ namespace Tests.TestTools
             // Act
             TestInjecter injecter = new TestInjecter(basket);
             injecter.CheckAndInjectAll();
-            injecter.InjectMock(fruitsList);
+            injecter.InjectField(fruitsList);
 
             Assert.That(basket.IFruitsList, Is.Not.Null);
             Assert.That(basket.IFruitsEnumerable, Is.Null);
@@ -81,7 +81,7 @@ namespace Tests.TestTools
             // Act
             TestInjecter injecter = new TestInjecter(basket);
             injecter.CheckAndInjectAll();
-            injecter.InjectMock(fruitsEnumerable);
+            injecter.InjectField(fruitsEnumerable);
 
             Assert.That(basket.IFruitsEnumerable, Is.Not.Null);
             Assert.That(basket.IFruitsList, Is.Null);
@@ -111,7 +111,7 @@ namespace Tests.TestTools
             // Act
             TestInjecter injecter = new TestInjecter(basketDual);
             injecter.CheckAndInjectAll();
-            Assert.Throws<TestInjecterException>(() => injecter.InjectMock(fruitsList));
+            Assert.Throws<TestInjecterException>(() => injecter.InjectField(fruitsList));
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Tests.TestTools
             // Act
             TestInjecter injecter = new TestInjecter(basketDual);
             injecter.CheckAndInjectAll();
-            injecter.InjectMock(fruitsList, "firstFruitsList");
+            injecter.InjectField(fruitsList, "firstFruitsList");
 
             // Assert
             Assert.That(basketDual.FirstFruitsList, Is.Not.Null);
@@ -179,7 +179,7 @@ namespace Tests.TestTools
 
             // Act
             BasketDualList secondDualList = injecter.GetComponent<BasketDualList>("secondDualList");
-            injecter.InjectMock(fruitsList, "secondFruitsList", secondDualList);
+            injecter.InjectField(fruitsList, "secondFruitsList", secondDualList);
 
             // Asserts
             Assert.That(tonsOfBasket.FirstDualList, Is.Not.Null);
@@ -445,10 +445,10 @@ namespace Tests.TestTools
             Skill attackSkill = injecter.GetComponent<Skill>("attackSkill", firstSorcerer);
             Assert.That(attackSkillRetrieved.GetInstanceID(), Is.EqualTo(attackSkill.GetInstanceID()));
 
-            // injectMock to sorcerer level
+            // injectField to sorcerer level
             SO_InventoryBag inventoryBag = ScriptableObject.CreateInstance<SO_InventoryBag>();
             inventoryBag.BagName = "Baggy";
-            injecter.InjectMock(inventoryBag, "secondInventoryBagInfos", firstSorcerer);
+            injecter.InjectField(inventoryBag, "secondInventoryBagInfos", firstSorcerer);
 
             Assert.That(firstSorcerer.SecondInventoryBagInfos.GetInstanceID(), Is.EqualTo(inventoryBag.GetInstanceID()));
             Assert.That(firstSorcerer.SecondInventoryBagInfos.BagName, Is.EqualTo(inventoryBag.BagName));
@@ -497,10 +497,10 @@ namespace Tests.TestTools
             Skill attackSkill = injecter.GetComponent<Skill>("attackSkill", firstSorcerer);
             Assert.That(attackSkillRetrieved.GetInstanceID(), Is.EqualTo(attackSkill.GetInstanceID()));
 
-            // injectMock to sorcerer level
+            // injectField to sorcerer level
             SO_InventoryBag inventoryBag = ScriptableObject.CreateInstance<SO_InventoryBag>();
             inventoryBag.BagName = "Baggy";
-            injecter.InjectMock(inventoryBag, "secondInventoryBagInfos", firstSorcerer);
+            injecter.InjectField(inventoryBag, "secondInventoryBagInfos", firstSorcerer);
 
             Assert.That(firstSorcerer.SecondInventoryBagInfos.GetInstanceID(), Is.EqualTo(inventoryBag.GetInstanceID()));
             Assert.That(firstSorcerer.SecondInventoryBagInfos.BagName, Is.EqualTo(inventoryBag.BagName));

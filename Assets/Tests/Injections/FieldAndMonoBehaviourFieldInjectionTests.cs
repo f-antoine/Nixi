@@ -24,7 +24,7 @@ namespace Tests.Injections
             fieldMock.SetupGet(x => x.ValueToRetrieve).Returns(1).Verifiable();
 
             // Act
-            MainInjecter.InjectMock(fieldMock.Object, fieldName);
+            MainInjecter.InjectField(fieldMock.Object, fieldName);
 
             // Assert
             Assert.That(MainTested.GetInterfaceFieldFromName(fieldName), Is.Not.Null);

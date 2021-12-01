@@ -31,7 +31,7 @@ namespace NixiTestTools
     public sealed class TestInjecter : NixInjecterBase
     {
         /// <summary>
-        /// Container to handle TestInjecter instances, it is used to injectMock into a field or GetComponent from fields instantiated during the Test injections
+        /// Container to handle TestInjecter instances, it is used to inject into a field or GetComponent from fields instantiated during the Test injections
         /// </summary>
         private InjectablesContainer injectablesContainer = new InjectablesContainer();
 
@@ -150,10 +150,21 @@ namespace NixiTestTools
         {
             foreach (FieldInfo nonComponentField in nonComponentFields)
             {
-                NixInjectBaseAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectBaseAttribute>();
-                injectAttribute.CheckIsValidAndBuildDataFromField(nonComponentField);
-
+                CheckIfNixInjectBaseAttribute(nonComponentField);
                 newInjectableHandler.AddField(nonComponentField);
+            }
+        }
+
+        /// <summary>
+        /// Check if a field is decorated with an attribute derived from NixInjectBaseAttribute, if yes it applies his validity checks
+        /// </summary>
+        /// <param name="nonComponentField">Non-Component field</param>
+        private static void CheckIfNixInjectBaseAttribute(FieldInfo nonComponentField)
+        {
+            NixInjectBaseAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectBaseAttribute>();
+            if (injectAttribute != null)
+            {
+                injectAttribute.CheckIsValidAndBuildDataFromField(nonComponentField);
             }
         }
 
@@ -400,23 +411,51 @@ namespace NixiTestTools
         #endregion Recursion
 
         #region Mock injection and Get Component
+        // TODO : Comment
+        public T ReadField<T>(MonoBehaviourInjectable targetInjectable = null)
+        {
+            try
+            {
+                return injectablesContainer.ReadField<T>(targetInjectable ?? objectToLink);
+            }
+            catch (InjectablesContainerException e)
+            {
+                throw new TestInjecterException($"Cannot ReadExposedField because {e.Message}", objectToLink);
+            }
+        }
+
+        // TODO : Comment
+        public T ReadField<T>(string fieldName, MonoBehaviourInjectable targetInjectable = null)
+        {
+            try
+            {
+                return injectablesContainer.ReadField<T>(fieldName, targetInjectable ?? objectToLink);
+            }
+            catch (InjectablesContainerException e)
+            {
+                throw new TestInjecterException($"Cannot ReadExposedField because {e.Message}", objectToLink);
+            }
+        }
+
         /// <summary>
         /// Inject manually a mock into the Non-Component type T field
         /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
-        /// <para/>If multiple type T fields are found, you must use InjectMock(Mock mockToInject, string fieldName)
+        /// <para/>If multiple type T fields are found, you must use InjectField(Mock mockToInject, string fieldName)
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
-        public void InjectMock<T>(T mockToInject, MonoBehaviourInjectable targetInjectable = null)
+        /// <returns>Mock injected, it can help simplify test readilibity</returns>
+        public T InjectField<T>(T mockToInject, MonoBehaviourInjectable targetInjectable = null)
         {
             try
             {
-                injectablesContainer.InjectMock(mockToInject, targetInjectable ?? objectToLink);
+                injectablesContainer.InjectField(mockToInject, targetInjectable ?? objectToLink);
+                return mockToInject;
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjecterException($"Cannot InjectMock because {e.Message}", objectToLink);
+                throw new TestInjecterException($"Cannot InjectField because {e.Message}", objectToLink);
             }
         }
 
@@ -428,15 +467,17 @@ namespace NixiTestTools
         /// <param name="fieldName">Name of the field to mock</param>
         /// <param name="mockToInject">Mock to inject into field</param>
         /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
-        public void InjectMock<T>(T mockToInject, string fieldName, MonoBehaviourInjectable targetInjectable = null)
+        /// <returns>Mock injected, it can help simplify test readilibity</returns>
+        public T InjectField<T>(T mockToInject, string fieldName, MonoBehaviourInjectable targetInjectable = null)
         {
             try
             {
-                injectablesContainer.InjectMock(fieldName, mockToInject, targetInjectable ?? objectToLink);
+                injectablesContainer.InjectField(fieldName, mockToInject, targetInjectable ?? objectToLink);
+                return mockToInject;
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjecterException($"Cannot InjectMock because {e.Message}", objectToLink);
+                throw new TestInjecterException($"Cannot InjectField because {e.Message}", objectToLink);
             }
         }
 

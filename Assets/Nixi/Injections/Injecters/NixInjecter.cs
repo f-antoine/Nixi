@@ -28,8 +28,9 @@ namespace Nixi.Injections.Injecters
         /// Default way to handle all injections of fields decorated with Nixi attributes of a class derived from MonoBehaviourInjectable during play mode
         /// </summary>
         /// <param name="objectToLink">Instance of the class derived from MonoBehaviourInjectable on which all injections will be triggered</param>
-        public NixInjecter(MonoBehaviourInjectable objectToLink)
-            : base(objectToLink)
+        /// <param name="nixInjectOptions">Allow to parameterized the injections options</param>
+        public NixInjecter(MonoBehaviourInjectable objectToLink, NixInjectOptions nixInjectOptions = null)
+            : base(objectToLink, nixInjectOptions)
         {
         }
 

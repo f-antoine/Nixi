@@ -1,8 +1,8 @@
-﻿using ScriptExample.Spawners;
-using Nixi.Injections.Attributes;
+﻿using Nixi.Injections.Attributes;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
+using ScriptExample.Spawners;
 using System.Collections.Generic;
 using System.Linq;
 using Tests.Builders;

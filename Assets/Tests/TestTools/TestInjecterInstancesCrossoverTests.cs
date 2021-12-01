@@ -560,8 +560,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsListParent");
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableParent");
+            injecter.InjectField(fruits, "IFruitsListParent");
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerableParent");
 
             // Only parent should have
             Assert.That(fullBasket.FruitsListParent.Count, Is.EqualTo(2));
@@ -625,8 +625,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsList");
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerable");
+            injecter.InjectField(fruits, "IFruitsList");
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerable");
 
             // Parent should not have
             Assert.IsEmpty(fullBasket.FruitsListParent);
@@ -690,8 +690,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsListChildren");
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableChildren");
+            injecter.InjectField(fruits, "IFruitsListChildren");
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerableChildren");
 
             // Parent should not have
             Assert.IsEmpty(fullBasket.FruitsListParent);
@@ -760,8 +760,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsListParent", fullBasket);
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableParent", fullBasket);
+            injecter.InjectField(fruits, "IFruitsListParent", fullBasket);
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerableParent", fullBasket);
 
             // Only parent should have
             Assert.That(aboveFullBasket.ParentBasket.FruitsListParent.Count, Is.EqualTo(2));
@@ -834,8 +834,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsList", fullBasket);
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerable", fullBasket);
+            injecter.InjectField(fruits, "IFruitsList", fullBasket);
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerable", fullBasket);
 
             // Parent should not have
             Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListParent);
@@ -908,8 +908,8 @@ namespace Tests.TestTools
 
             // Link to interface
             List<IFruit> fruits = new List<IFruit> { first, second };
-            injecter.InjectMock(fruits, "IFruitsListChildren", fullBasket);
-            injecter.InjectMock(fruits.AsEnumerable(), "IFruitsEnumerableChildren", fullBasket);
+            injecter.InjectField(fruits, "IFruitsListChildren", fullBasket);
+            injecter.InjectField(fruits.AsEnumerable(), "IFruitsEnumerableChildren", fullBasket);
 
             // Parent should not have
             Assert.IsEmpty(aboveFullBasket.ParentBasket.FruitsListParent);
@@ -969,9 +969,9 @@ namespace Tests.TestTools
         [Test]
         public void RootComponentFromChild_ButNoParentFilled_ShouldFillAndHaveGoodEmptyGameObject()
         {
-            // SubRootComponent rempli mais pas rootComponent
-            // On doit pouvoir prendre en compte le subRootComponent correctement
-            // Et avoir le parent comme étant un gameObject vide
+            // SubRootComponent filled but not rootComponent
+            // We have to handle subRootComponent correctly
+            // and his parent must be an empty gameObject
 
             Orphan orphan = InjectableBuilder<Orphan>.Create().Build();
             TestInjecter injecter = new TestInjecter(orphan);

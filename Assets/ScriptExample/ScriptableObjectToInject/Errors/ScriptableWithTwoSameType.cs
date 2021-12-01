@@ -1,15 +1,14 @@
-﻿using Nixi.Injections.Attributes;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ScriptExample.ScriptableObjectToInject.Errors
 {
     public sealed class ScriptableWithTwoSameType : ScriptableObject
     {
-        [NixInjectTestMock]
+        [SerializeField]
         private SO_ContainerElement firstContainer;
         public SO_ContainerElement FirstContainer => firstContainer;
 
-        [NixInjectTestMock]
+        [SerializeField]
         private SO_ContainerElement secondContainer;
         public SO_ContainerElement SecondContainer => secondContainer;
     }

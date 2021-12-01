@@ -1,9 +1,9 @@
-﻿using ScriptExample.ErrorMultiAttributes;
-using Nixi.Containers;
+﻿using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
 using NUnit.Framework;
 using ScriptExample.Containers;
+using ScriptExample.ErrorMultiAttributes;
 using System;
 using Tests.Builders;
 using UnityEngine;
@@ -35,8 +35,8 @@ namespace Tests.Injections
         [TestCase(typeof(CompoFromMethodWithCompoFromMethodRoot))]
         [TestCase(typeof(CompoWithCompoFromMethodRoot))]
         [TestCase(typeof(AllCompoAttributes))]
-        [TestCase(typeof(FieldContainerWithFieldTestMock))]
-        [TestCase(typeof(FieldTestMockWithCompo))]
+        [TestCase(typeof(FieldContainerWithSerializeField))]
+        [TestCase(typeof(SerializeFieldWithCompo))]
         [TestCase(typeof(CompoWithCompoList))]
         public void InjectFieldWithMultiple_ShouldThrowException(Type type)
         {

@@ -1,7 +1,7 @@
-﻿using ScriptExample.ComponentsWithInterface;
-using Moq;
+﻿using Moq;
 using NixiTestTools;
 using NUnit.Framework;
+using ScriptExample.ComponentsWithInterface;
 using Tests.Builders;
 
 namespace Tests.TestTools
@@ -23,7 +23,7 @@ namespace Tests.TestTools
             // Inject Mock
             Mock<IFlyBehavior> flyBehaviorMock = new Mock<IFlyBehavior>(MockBehavior.Strict);
             flyBehaviorMock.Setup(x => x.Height).Returns(22);
-            testInjecter.InjectMock(flyBehaviorMock.Object);
+            testInjecter.InjectField(flyBehaviorMock.Object);
 
             // Verify
             Assert.That(duck.Wings, Is.Not.Null);
@@ -47,7 +47,7 @@ namespace Tests.TestTools
             // Inject Mock
             Mock<IDuckObjectContainer> duckBackPackMock = new Mock<IDuckObjectContainer>(MockBehavior.Strict);
             duckBackPackMock.Setup(x => x.NbSlot).Returns(12);
-            Assert.Throws<TestInjecterException>(() => testInjecter.InjectMock(duckBackPackMock.Object));
+            Assert.Throws<TestInjecterException>(() => testInjecter.InjectField(duckBackPackMock.Object));
         }
 
         [Test]
@@ -65,12 +65,12 @@ namespace Tests.TestTools
             // Inject pocket Mock
             Mock<IDuckObjectContainer> duckPocketMock = new Mock<IDuckObjectContainer>(MockBehavior.Strict);
             duckPocketMock.Setup(x => x.NbSlot).Returns(12);
-            testInjecter.InjectMock(duckPocketMock.Object, "pocket");
+            testInjecter.InjectField(duckPocketMock.Object, "pocket");
 
             // Inject duckCompanyBackPack Mock
             Mock<IDuckObjectContainer> duckCompanyBackPackMock = new Mock<IDuckObjectContainer>(MockBehavior.Strict);
             duckCompanyBackPackMock.Setup(x => x.NbSlot).Returns(256);
-            testInjecter.InjectMock(duckCompanyBackPackMock.Object, "duckCompanyBackPack");
+            testInjecter.InjectField(duckCompanyBackPackMock.Object, "duckCompanyBackPack");
 
             // Verify
             Assert.That(duck.Pocket, Is.Not.Null);

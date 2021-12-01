@@ -1,7 +1,6 @@
 ﻿using ScriptExample.Menu;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Tests.Builders
 {

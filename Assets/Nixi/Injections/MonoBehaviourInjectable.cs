@@ -44,10 +44,12 @@ namespace Nixi.Injections
     /// </summary>
     public abstract class MonoBehaviourInjectable : MonoBehaviour
     {
+        protected virtual NixInjectOptions NixInjectOptions => null;
+
         [ExcludeFromCodeCoverage] // Cannot be tested, protected Awake
         protected virtual void Awake()
         {
-            new NixInjecter(this).CheckAndInjectAll();
+            new NixInjecter(this, NixInjectOptions).CheckAndInjectAll();
         }
     }
 }

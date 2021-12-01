@@ -1,6 +1,4 @@
-﻿using ScriptExample.Characters;
-using Nixi.Injections.Injecters;
-using NixiTestTools;
+﻿using Nixi.Injections.Injecters;
 using ScriptExample.Characters;
 using UnityEngine;
 

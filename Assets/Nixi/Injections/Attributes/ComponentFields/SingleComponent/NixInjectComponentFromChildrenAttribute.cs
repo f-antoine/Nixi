@@ -26,7 +26,7 @@ namespace Nixi.Injections.Attributes
         /// </summary>
         /// <param name="gameObjectName">Name of the GameObject to find</param>
         /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>
-        public NixInjectComponentFromChildrenAttribute(string gameObjectName, bool includeInactive = true)
+        public NixInjectComponentFromChildrenAttribute(string gameObjectName = null, bool includeInactive = true)
             : base(gameObjectName, includeInactive)
         {
         }

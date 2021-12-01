@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace Nixi.Injections.Injecters
 {
@@ -11,6 +12,11 @@ namespace Nixi.Injections.Injecters
     /// </summary>
     public abstract class NixInjecterBase
     {
+        /// <summary>
+        /// Allow to parameterized the injections options
+        /// </summary>
+        private NixInjectOptions nixInjectOptions;
+
         /// <summary>
         /// Instance of the class derived from MonoBehaviourInjectable on which all fields with Nixi inject attributes will be injected
         /// </summary>
@@ -32,12 +38,12 @@ namespace Nixi.Injections.Injecters
         protected Func<FieldInfo, bool> NixiComponentFieldPredicate => x => x.CustomAttributes.Any(componentFieldsPredicate);
 
         /// <summary>
-        /// Predicate to identify a NixInjectAttribute on a CustomAttributeData
+        /// Predicate to identify a NixInjectAttribute on a CustomAttributeData (nonComponent fields)
         /// </summary>
-        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType);
+        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType) || typeof(SerializeField).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
-        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribute on a CustomAttributeData
+        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribute on a CustomAttributeData (component fields)
         /// </summary>
         private Func<CustomAttributeData, bool> componentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
 
@@ -45,15 +51,22 @@ namespace Nixi.Injections.Injecters
         /// Combination of nonComponentFieldsPredicate and componentFieldsPredicate
         /// </summary>
         protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType)
-                                                                            || typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
+                                                                                || typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
+
+        /// <summary>
+        /// Predicate to identify fields decorated with SerializeField attribute
+        /// </summary>
+        private Func<CustomAttributeData, bool> serializeFieldsPredicate => y => typeof(SerializeField).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
         /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviourInjectable
         /// </summary>
         /// <param name="objectToLink">Instance of the class derived from MonoBehaviourInjectable on which all injections will be triggered</param>
-        public NixInjecterBase(MonoBehaviourInjectable objectToLink)
+        /// <param name="nixInjectOptions">Allow to parameterized the injections options</param>
+        public NixInjecterBase(MonoBehaviourInjectable objectToLink, NixInjectOptions nixInjectOptions = null)
         {
             this.objectToLink = objectToLink;
+            this.nixInjectOptions = nixInjectOptions ?? new NixInjectOptions();
         }
 
         /// <summary>
@@ -89,7 +102,7 @@ namespace Nixi.Injections.Injecters
                 // BindingFlags.DeclaredOnly to get only fields at the level scanned and avoid inheritance duplication on public and protected fields
                 foreach (FieldInfo element in currentType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
                 {
-                    CheckDecoratedWithOnlyOneNixiAttribute(element);
+                    CheckDecoratedWithOnlyOneNixiAttributeOrSerializeField(element);
                     fieldsToReturn.Add(element);
                 }
 
@@ -104,11 +117,16 @@ namespace Nixi.Injections.Injecters
         /// <para/>If there is more than one attribute, it throws an exception
         /// </summary>
         /// <param name="fieldInfo">Field info to check</param>
-        protected void CheckDecoratedWithOnlyOneNixiAttribute(FieldInfo fieldInfo)
+        protected void CheckDecoratedWithOnlyOneNixiAttributeOrSerializeField(FieldInfo fieldInfo)
         {
-            IEnumerable<CustomAttributeData> nbNixAttributes = fieldInfo.CustomAttributes.Where(AllNixiFieldsPredicate);
+            int nbTargetedAttributes = fieldInfo.CustomAttributes.Count(AllNixiFieldsPredicate);
 
-            if (nbNixAttributes.Count() > 1)
+            if (!nixInjectOptions.AuthorizeSerializedFieldWithNixiAttributes)
+            {
+                nbTargetedAttributes += fieldInfo.CustomAttributes.Count(serializeFieldsPredicate);
+            }
+
+            if (nbTargetedAttributes > 1)
             {
                 string attributeElementsDetailed = string.Join(", ", fieldInfo.CustomAttributes.Select(x => x.AttributeType.Name));
                 throw new NixInjecterException($"Cannot inject {fieldInfo.Name} because there is more than one Nixi attribute decorating it, list of attributes decorating this field : {attributeElementsDetailed}", objectToLink);

@@ -1,12 +1,12 @@
-﻿using ScriptExample.Genericity.Classes;
+﻿using Nixi.Injections;
+using NixiTestTools;
+using NUnit.Framework;
+using ScriptExample.Genericity.Classes;
 using ScriptExample.Genericity.Classes.SecondLevel;
 using ScriptExample.Genericity.Interfaces;
 using ScriptExample.Genericity.Interfaces.SecondLevel;
-using Tests.Builders;
-using Nixi.Injections;
-using NixiTestTools;
-using NUnit.Framework;
 using System;
+using Tests.Builders;
 using UnityEngine;
 
 namespace Tests.TestTools
