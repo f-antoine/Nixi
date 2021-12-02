@@ -58,7 +58,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         /// Check if a FieldInfo.FieldType is an IEnumerable and has exactly one generic argument (genericField must be check about field.FieldType.IsGenericType = true before)
         /// </summary>
         /// <param name="genericField">Generic field to check</param>
-        /// <returns>True if this a generic field is an IEnumerable with exactly one generic argument</exception>
+        /// <returns>True if this a generic field is an IEnumerable with exactly one generic argument</returns>
         private static bool CheckIfGenericEnumerableWithOnlyOneGenericArgument(FieldInfo genericField)
         {
             if (!genericField.FieldType.IsGenericType)

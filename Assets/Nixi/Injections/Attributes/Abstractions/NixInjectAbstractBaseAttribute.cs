@@ -13,7 +13,7 @@ namespace Nixi.Injections.Attributes.Abstractions
         /// Check if a type is a Component
         /// </summary>
         /// <param name="typeToCheck">Type to check</param>
-        /// <returns>True if this is a component</exception>
+        /// <returns>True if this is a component</returns>
         protected static bool IsComponent(Type typeToCheck)
         {
             return typeof(Component).IsAssignableFrom(typeToCheck);

@@ -1,5 +1,8 @@
 ﻿namespace Nixi.Injections.Injecters
 {
+    /// <summary>
+    /// Allow to parameterized the injections options
+    /// </summary>
     public sealed class NixInjectOptions
     {
         /// <summary>

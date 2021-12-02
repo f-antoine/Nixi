@@ -44,8 +44,14 @@ namespace Nixi.Injections
     /// </summary>
     public abstract class MonoBehaviourInjectable : MonoBehaviour
     {
+        /// <summary>
+        /// Allow to parameterized the injections options
+        /// </summary>
         protected virtual NixInjectOptions NixInjectOptions => null;
 
+        /// <summary>
+        /// Awake method from Unity
+        /// </summary>
         [ExcludeFromCodeCoverage] // Cannot be tested, protected Awake
         protected virtual void Awake()
         {

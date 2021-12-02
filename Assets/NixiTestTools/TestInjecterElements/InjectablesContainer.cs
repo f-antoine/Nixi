@@ -79,148 +79,114 @@ namespace NixiTestTools.TestInjecterElements
         }
         #endregion Managing MonoBehaviourInjectableData 
 
-        #region Mock injection and Get Component
-        // TODO : Factorisation of all ReadField / InjectField / GetComponent ?
-
-        // TODO : Comment
-        internal T ReadField<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        #region Field injection/reading and Get Component
+        /// <summary>
+        /// Return field content into a non component field with T Type in a MonoBehaviourInjectable
+        /// <para/>It can only be used on field decorated with NixInjectFromContainerAttribute or UnityEngine.SerializeField
+        /// </summary>
+        /// <typeparam name="T">Targeted field type</typeparam>
+        /// <param name="injectable">Targeted injectable</param>
+        internal T ReadField<T>(MonoBehaviourInjectable injectable)
         {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            SimpleFieldInfo fieldHandler = injectableHandler.FieldHandler.GetFieldInfoHandler(typeof(T));
 
-            IEnumerable<SimpleFieldInfo> fieldSelecteds = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-
-            if (!fieldSelecteds.Any())
-                throw new InjectablesContainerException($"no field with type {typeToFind.Name} was found");
-
-            if (fieldSelecteds.Count() > 1)
-                throw new InjectablesContainerException($"multiple fields with type {typeToFind.Name} were found, cannot define which one use, please use ReadField<T>(T mockToInject, string fieldName) instead");
-            
-            return (T)fieldSelecteds.Single().FieldInfo.GetValue(injectableHandler.Instance);
-        }
-
-        // TODO : Comment
-        internal T ReadField<T>(string fieldName, MonoBehaviourInjectable monoBehaviourInjectableToFind)
-        {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
-
-            Type typeToFind = typeof(T);
-
-            IEnumerable<SimpleFieldInfo> fieldsWithType = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-            if (!fieldsWithType.Any())
-                throw new InjectablesContainerException($"no field with type {typeToFind.Name}");
-
-            IEnumerable<SimpleFieldInfo> fieldsWithTypeAndName = fieldsWithType.Where(x => x.FieldInfo.Name == fieldName);
-            if (!fieldsWithTypeAndName.Any())
-                throw new InjectablesContainerException($"field with type {typeToFind.Name} was/were found, but none with fieldName {fieldName}");
-
-            return (T)fieldsWithTypeAndName.Single().FieldInfo.GetValue(injectableHandler.Instance);
+            return (T)fieldHandler.FieldInfo.GetValue(injectableHandler.Instance);
         }
 
         /// <summary>
-        /// Inject manually a mock into the Non-Component field with T Type in a MonoBehaviourInjectable
+        /// Return field content into a non component field with T Type and with the fieldName passed as a parameter in a MonoBehaviourInjectable
+        /// <para/>It can only be used on field decorated with NixInjectFromContainerAttribute or UnityEngine.SerializeField
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
-        /// <param name="mockToInject">Mock to inject into field</param>
-        /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectField<T>(T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        /// <param name="fieldName">Name of the field</param>
+        /// <param name="injectable">Targeted injectable</param>
+        internal T ReadField<T>(string fieldName, MonoBehaviourInjectable injectable)
         {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            SimpleFieldInfo fieldHandler = injectableHandler.FieldHandler.GetFieldInfoHandler(typeof(T), fieldName);
 
-            IEnumerable<SimpleFieldInfo> fieldSelecteds = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-
-            if (!fieldSelecteds.Any())
-                throw new InjectablesContainerException($"no field with type {typeToFind.Name} was found");
-
-            if (fieldSelecteds.Count() > 1)
-                throw new InjectablesContainerException($"multiple fields with type {typeToFind.Name} were found, cannot define which one use, please use InjectField<T>(T mockToInject, string fieldName) instead");
-
-            fieldSelecteds.Single().FieldInfo.SetValue(injectableHandler.Instance, mockToInject);
+            return (T)fieldHandler.FieldInfo.GetValue(injectableHandler.Instance);
         }
 
         /// <summary>
-        /// Inject manually a mock into the Non-Component field with T Type and with the fieldName passed as a parameter in a MonoBehaviourInjectable
+        /// Inject value into field with T Type in a MonoBehaviourInjectable
+        /// <para/>It can only be used on field decorated with NixInjectFromContainerAttribute or UnityEngine.SerializeField
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
-        /// <param name="fieldName">Name of the field to mock</param>
-        /// <param name="mockToInject">Mock to inject into field</param>
-        /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
-        internal void InjectField<T>(string fieldName, T mockToInject, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        /// <param name="valueToInject">Value to inject into field</param>
+        /// <param name="injectable">Targeted injectable</param>
+        internal void InjectField<T>(T valueToInject, MonoBehaviourInjectable injectable)
         {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            SimpleFieldInfo fieldHandler = injectableHandler.FieldHandler.GetFieldInfoHandler(typeof(T));
 
-            IEnumerable<SimpleFieldInfo> fieldsWithType = injectableHandler.FieldHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-            if (!fieldsWithType.Any())
-                throw new InjectablesContainerException($"no field with type {typeToFind.Name}");
+            fieldHandler.FieldInfo.SetValue(injectableHandler.Instance, valueToInject);
+        }
 
-            IEnumerable<SimpleFieldInfo> fieldsWithTypeAndName = fieldsWithType.Where(x => x.FieldInfo.Name == fieldName);
-            if (!fieldsWithTypeAndName.Any())
-                throw new InjectablesContainerException($"field with type {typeToFind.Name} was/were found, but none with fieldName {fieldName}");
+        /// <summary>
+        /// Inject value into field with T Type and with the fieldName passed as a parameter in a MonoBehaviourInjectable
+        /// <para/>It can only be used on field decorated with NixInjectFromContainerAttribute or UnityEngine.SerializeField
+        /// </summary>
+        /// <typeparam name="T">Targeted field type</typeparam>
+        /// <param name="fieldName">Name of the field</param>
+        /// <param name="valueToInject">Value to inject into field</param>
+        /// <param name="injectable">Targeted injectable</param>
+        internal void InjectField<T>(string fieldName, T valueToInject, MonoBehaviourInjectable injectable)
+        {
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            fieldsWithTypeAndName.Single().FieldInfo.SetValue(injectableHandler.Instance, mockToInject);
+            SimpleFieldInfo fieldHandler = injectableHandler.FieldHandler.GetFieldInfoHandler(typeof(T), fieldName);
+
+            fieldHandler.FieldInfo.SetValue(injectableHandler.Instance, valueToInject);
         }
 
         /// <summary>
         /// Return the only component with Component type T field from a MonoBehaviourInjectable
-        /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
+        /// <para/>If multiple type T fields are found, you must use GetComponent&lt;T&gt;(string fieldName) 
+        /// <para/>It can only be used on field decorated with attribute derived from NixInjectSingleComponentBaseAttribute
         /// </summary>
         /// <typeparam name="T">Type of Component searched</typeparam>
-        /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
+        /// <param name="injectable">Targeted injectable</param>
         /// <returns>Single component which corresponds to the type T field</returns>
-        internal T GetComponent<T>(MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal T GetComponent<T>(MonoBehaviourInjectable injectable)
             where T : Component
         {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            ComponentWithFieldInfo fieldHandler = injectableHandler.ComponentRelationHandler.GetFieldInfoHandler(typeof(T));
 
-            IEnumerable<ComponentWithFieldInfo> componentsWithType = injectableHandler.ComponentRelationHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-
-            if (!componentsWithType.Any())
-                throw new InjectablesContainerException($"no component with type {typeToFind.Name} was found");
-
-            if (componentsWithType.Count() > 1)
-                throw new InjectablesContainerException($"multiple components with type {typeToFind.Name} were found, cannot define which one use, please use GetComponent(fieldName)");
-
-            return (T)componentsWithType.Single().Component;
+            return (T)fieldHandler.Component;
         }
 
         /// <summary>
         /// Return the only component with Component type T field and with fieldName passed as parameter from a MonoBehaviourInjectable
-        /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
+        /// <para/>If multiple type T fields are found, you must use GetComponent&lt;T&gt;(string fieldName)
+        /// <para/>It can only be used on field decorated with attribute derived from NixInjectSingleComponentBaseAttribute
         /// </summary>
         /// <typeparam name="T">Type of Component searched</typeparam>
-        /// <param name="monoBehaviourInjectableToFind">Targeted injectable</param>
+        /// <param name="injectable">Targeted injectable</param>
         /// <param name="fieldName">Name of the component field</param>
         /// <returns>Single component which corresponds to the type T field</returns>
-        internal T GetComponent<T>(string fieldName, MonoBehaviourInjectable monoBehaviourInjectableToFind)
+        internal T GetComponent<T>(string fieldName, MonoBehaviourInjectable injectable)
             where T : Component
         {
-            InjectableHandler injectableHandler = GetInjectableHandler(monoBehaviourInjectableToFind);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            ComponentWithFieldInfo fieldHandler = injectableHandler.ComponentRelationHandler.GetFieldInfoHandler(typeof(T), fieldName);
 
-            IEnumerable<ComponentWithFieldInfo> componentsWithFieldType = injectableHandler.ComponentRelationHandler.Fields.Where(x => x.FieldInfo.FieldType == typeToFind);
-            if (!componentsWithFieldType.Any())
-                throw new InjectablesContainerException($"no component with type {typeToFind.Name} was found");
-
-            IEnumerable <ComponentWithFieldInfo> componentsWithFieldTypeAndFieldName = componentsWithFieldType.Where(x => x.FieldInfo.Name == fieldName);
-            if (!componentsWithFieldTypeAndFieldName.Any())
-                throw new InjectablesContainerException($"component with type {typeToFind.Name} was/were found, but none with field name {fieldName}");
-
-            return (T)componentsWithFieldTypeAndFieldName.Single().Component;
+            return (T)fieldHandler.Component;
         }
-        #endregion Mock injection and Get Component
+        #endregion Field injection/reading and Get Component
 
         #region EnumerableComponent
         /// <summary>
         /// Init an enumerable component field and fill it with "nbAdded" components instantiated that match type of T (apply on all enumerable of same EnumerableType and same GameObjectLevel)
         /// <para/>Throw exception if already initiliazed once
+        /// <para/>It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
         /// </summary>
         /// <typeparam name="T">Enumerable type searched inherited from Component)</typeparam>
         /// <param name="gameObjectLevel">Precise method to use to target list (children, parents or current component level list)</param>
@@ -230,15 +196,10 @@ namespace NixiTestTools.TestInjecterElements
         internal IEnumerable<T> InitEnumerableComponents<T>(GameObjectLevel gameObjectLevel, int nbAdded, MonoBehaviourInjectable injectable)
             where T : Component
         {
-            IEnumerable<ComponentListWithFieldInfo> enumerableFieldsData = GetComponentListsWithCriteria<T>(injectable, gameObjectLevel);
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            CheckEnumerableComponentNotAlreadyInitiated<T>(enumerableFieldsData, injectable);
-
-            List<T> components = new List<T>();
-            for (int i = 0; i < nbAdded; i++)
-            {
-                components.Add(BuildComponentForEnumerableComponentFields<T>(gameObjectLevel, injectable));
-            }
+            IEnumerable<ComponentListWithFieldInfo> enumerableFieldsData = injectableHandler.EnumerableComponentRelationHandler.GetAllEnumerableComponentsWithCriteria<T>(gameObjectLevel, injectable);
+            List<T> components = injectableHandler.EnumerableComponentRelationHandler.BuildManyEnumerableComponents<T>(gameObjectLevel, nbAdded, injectable);
 
             foreach (ComponentListWithFieldInfo enumerableFieldData in enumerableFieldsData)
             {
@@ -251,6 +212,7 @@ namespace NixiTestTools.TestInjecterElements
         /// <summary>
         /// Init an enumerable component field and fill it with as many instances of component (instantiated in this method) as typeDeriveds (apply on all enumerable of same EnumerableType and same GameObjectLevel)
         /// <para/>Throw exception if already initiliazed once
+        /// <para/>It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
         /// </summary>
         /// <typeparam name="T">Enumerable type searched inherited from Component)</typeparam>
         /// <param name="gameObjectLevel">Precise method to use to target list (children, parents or current component level list)</param>
@@ -263,21 +225,10 @@ namespace NixiTestTools.TestInjecterElements
             if (typeDeriveds.Length == 0)
                 throw new InjectablesContainerException("no typeDerived was passed as parameter");
 
-            IEnumerable<ComponentListWithFieldInfo> enumerableFieldsData = GetComponentListsWithCriteria<T>(injectable, gameObjectLevel);
-
-            CheckEnumerableComponentNotAlreadyInitiated<T>(enumerableFieldsData, injectable);
-
-            List<T> components = new List<T>();
-
-            Type baseType = typeof(T);
-            foreach (Type typeDerived in typeDeriveds)
-            {
-                if (!baseType.IsAssignableFrom(typeDerived))
-                    throw new InjectablesContainerException($"{baseType.Name} is not assignable from {typeDerived.Name}");
-
-                Component componentBuilded = BuildComponentForEnumerableComponentFields(gameObjectLevel, injectable, typeDerived);
-                components.Add((T)componentBuilded);
-            }
+            InjectableHandler injectableHandler = GetInjectableHandler(injectable);
+            
+            IEnumerable<ComponentListWithFieldInfo> enumerableFieldsData = injectableHandler.EnumerableComponentRelationHandler.GetAllEnumerableComponentsWithCriteria<T>(gameObjectLevel, injectable);
+            List<T> components = injectableHandler.EnumerableComponentRelationHandler.BuildEnumerableComponentsWithTypes<T>(gameObjectLevel, injectable, typeDeriveds);
 
             foreach (ComponentListWithFieldInfo enumerableFieldData in enumerableFieldsData)
             {
@@ -288,7 +239,27 @@ namespace NixiTestTools.TestInjecterElements
         }
 
         /// <summary>
+        /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, if many found, use GetEnumerableComponents(fieldName)
+        /// <para/> It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
+        /// </summary>
+        /// <typeparam name="T">Generic type of enumerable</typeparam>
+        /// <param name="targetedInjectable">Targeted injectable</param>
+        /// <returns>Enumerable values of the enumerable component field</returns>
+        internal IEnumerable<T> GetEnumerableComponents<T>(MonoBehaviourInjectable targetedInjectable)
+            where T : Component
+        {
+            InjectableHandler injectableHandler = GetInjectableHandler(targetedInjectable);
+
+            ComponentListWithFieldInfo fieldHandler = injectableHandler.EnumerableComponentRelationHandler.GetFieldInfoHandler(typeof(T));
+
+            object result = fieldHandler.FieldInfo.GetValue(targetedInjectable);
+
+            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableFromObject<T>(result);
+        }
+
+        /// <summary>
         /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, otherwise throw an exception
+        /// <para/> It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
         /// </summary>
         /// <typeparam name="T">Generic type of enumerable</typeparam>
         /// <param name="fieldName">Name of the fields targeted</param>
@@ -299,170 +270,11 @@ namespace NixiTestTools.TestInjecterElements
         {
             InjectableHandler injectableHandler = GetInjectableHandler(injectable);
 
-            Type typeToFind = typeof(T);
+            ComponentListWithFieldInfo fieldHandler = injectableHandler.EnumerableComponentRelationHandler.GetFieldInfoHandler(typeof(T), fieldName);
 
-            IEnumerable<ComponentListWithFieldInfo> componentsListWithType = injectableHandler.EnumerableComponentRelationHandler.Fields.Where(x => x.EnumerableType.IsAssignableFrom(typeToFind));
+            object result = fieldHandler.FieldInfo.GetValue(injectable);
 
-            if (!componentsListWithType.Any())
-                throw new InjectablesContainerException($"no EnumerableComponent with type {typeToFind.Name} was found");
-
-            IEnumerable<ComponentListWithFieldInfo> componentsListWithTypeMethodAndName = componentsListWithType.Where(x => x.FieldInfo.Name == fieldName);
-
-            if (!componentsListWithTypeMethodAndName.Any())
-                throw new InjectablesContainerException($"EnumerableComponent(s) with type {typeToFind.Name} was/were found, but none with fieldName {fieldName}");
-
-            // Convert to IEnumerable
-            object result = componentsListWithTypeMethodAndName.Single().FieldInfo.GetValue(injectable);
-            return GetEnumerableFromObject<T>(result);
-        }
-
-        /// <summary>
-        /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, if many found, use GetEnumerableComponents(fieldName)
-        /// </summary>
-        /// <typeparam name="T">Generic type of enumerable</typeparam>
-        /// <param name="targetedInjectable">Targeted injectable</param>
-        /// <returns>Enumerable values of the enumerable component field</returns>
-        internal IEnumerable<T> GetEnumerableComponents<T>(MonoBehaviourInjectable targetedInjectable)
-            where T : Component
-        {
-            InjectableHandler injectableHandler = GetInjectableHandler(targetedInjectable);
-
-            Type typeToFind = typeof(T);
-
-            IEnumerable<ComponentListWithFieldInfo> componentsListWithType = injectableHandler.EnumerableComponentRelationHandler.Fields.Where(x => x.EnumerableType.IsAssignableFrom(typeToFind));
-                
-            if (!componentsListWithType.Any())
-                throw new InjectablesContainerException($"no EnumerableComponent with type {typeToFind.Name} was found");
-
-            if (componentsListWithType.Count() > 1)
-                throw new InjectablesContainerException($"multiple EnumerableComponents with type {typeToFind.Name} were found, cannot define which one use, please use GetEnumerableComponent(fieldName)");
-
-            object result = componentsListWithType.Single().FieldInfo.GetValue(targetedInjectable);
-            return GetEnumerableFromObject<T>(result);
-        }
-
-        /// <summary>
-        /// Get all ComponentListWithFieldInfo instantiated in a MonoBehaviourInjectable field which match an enumerable of type T (inherited from Component) and a GameObjectLevel
-        /// </summary>
-        /// <typeparam name="T">Enumerable type searched inherited from Component)</typeparam>
-        /// <param name="targetedInjectable">Targeted injectable</param>
-        /// <param name="gameObjectLevel">Precise method to use to target list (children, parents or current component level list)</param>
-        /// <returns>List of component instantiated which corresponds to type T field</returns>
-        private IEnumerable<ComponentListWithFieldInfo> GetComponentListsWithCriteria<T>(MonoBehaviourInjectable targetedInjectable, GameObjectLevel gameObjectLevel)
-            where T : Component
-        {
-            InjectableHandler injectableHandler = GetInjectableHandler(targetedInjectable);
-
-            Type typeToFind = typeof(T);
-
-            IEnumerable<ComponentListWithFieldInfo> componentsListWithType = injectableHandler.EnumerableComponentRelationHandler.Fields.Where(x => x.EnumerableType.IsAssignableFrom(typeToFind));
-
-            if (!componentsListWithType.Any())
-                throw new InjectablesContainerException($"no EnumerableComponent with type {typeToFind.Name} was found");
-
-            IEnumerable<ComponentListWithFieldInfo> componentWithCriteria = componentsListWithType.Where(x => x.EnumerableType == typeToFind && x.GameObjectLevel == gameObjectLevel);
-            if (!componentWithCriteria.Any())
-                throw new InjectablesContainerException($"no EnumerableComponent with type {typeToFind.Name} and GameObjectLevel {gameObjectLevel} was found");
-
-            return componentWithCriteria;
-        }
-
-        /// <summary>
-        ///  Check if a component field enumerable (or a set of component field enumerable) has already been initiliazed (FieldInfo.GetValue is not empty it throws an exception)
-        /// </summary>
-        /// <typeparam name="T">IEnumerable type to find for the cast into IEnumerable</typeparam>
-        /// <param name="componentsWithCriteria">All ComponentListWithFieldInfo tested</param>
-        /// <param name="injectable">Injectable on which we are looking for the fieldInfo value contained</param>
-        private void CheckEnumerableComponentNotAlreadyInitiated<T>(IEnumerable<ComponentListWithFieldInfo> componentsWithCriteria, MonoBehaviourInjectable injectable)
-            where T : Component
-        {
-            foreach (var element in componentsWithCriteria)
-            {
-                if (element.EnumerableType == typeof(T))
-                {
-                    object value = element.FieldInfo.GetValue(injectable);
-
-                    IEnumerable<T> enumerableValue = GetEnumerableFromObject<T>(value);
-
-                    if (enumerableValue.Any())
-                        throw new InjectablesContainerException($"Cannot init list of type {typeof(T).Name} twice");
-                }   
-            }
-        }
-
-        /// <summary>
-        /// Create a component of type targetType, if this is at same level of the injectable instance, this is directly added to his gameObject, if not, a new gameObject is built
-        /// </summary>
-        /// <typeparam name="T">Type of component wanted (inherited from Component)</typeparam>
-        /// <param name="gameObjectLevel">Precise method to use to target list (children, parents or current component level list)</param>
-        /// <param name="injectable">Injectable for which we are adding a component</param>
-        /// <returns>New component</returns>
-        private static T BuildComponentForEnumerableComponentFields<T>(GameObjectLevel gameObjectLevel, MonoBehaviourInjectable injectable)
-            where T : Component
-        {
-            T newComponent;
-
-            if (gameObjectLevel == GameObjectLevel.Current)
-            {
-                // This is the same gameObject of monoBehaviourInjectableToFind and we only AddComponent of type wanted
-                newComponent = injectable.gameObject.AddComponent<T>();
-            }
-            else
-            {
-                // Other cases, we create a new GameObject and AddComponent of type wanted
-                newComponent = new GameObject().AddComponent<T>();
-            }
-
-            return newComponent;
-        }
-
-        /// <summary>
-        /// Create a component of type targetType, if this is at same level of the injectable instance, this is directly added to his gameObject, if not, a new gameObject is built
-        /// </summary>
-        /// <param name="gameObjectLevel">Precise method to use to target list (children, parents or current component level list)</param>
-        /// <param name="injectable">Injectable for which we are adding a component</param>
-        /// <param name="targetedType">Type of component wanted (inherited from Component)</param>
-        /// <returns>New component</returns>
-        private static Component BuildComponentForEnumerableComponentFields(GameObjectLevel gameObjectLevel, MonoBehaviourInjectable injectable, Type targetedType)
-        {
-            Component newComponent;
-
-            if (gameObjectLevel == GameObjectLevel.Current)
-            {
-                // This is the same gameObject of monoBehaviourInjectableToFind and we only AddComponent of type wanted
-                newComponent = injectable.gameObject.AddComponent(targetedType);
-            }
-            else
-            {
-                // Other cases, we create a new GameObject and AddComponent of type wanted
-                newComponent = new GameObject().AddComponent(targetedType);
-            }
-
-            return newComponent;
-        }
-
-        /// <summary>
-        /// Transpose an object into a IEnumerable with generic type T derived from Component
-        /// </summary>
-        /// <typeparam name="T">Enumerable generic type</typeparam>
-        /// <param name="value">Object to convert</param>
-        /// <returns>IEnumerable with generic type T</returns>
-        private static IEnumerable<T> GetEnumerableFromObject<T>(object value)
-            where T : Component
-        {
-            if (value.GetType().IsArray)
-            {
-                var valueEnumerable = (System.Collections.IEnumerable)value;
-
-                List<T> objectsToConvert = new List<T>();
-                foreach (var element in valueEnumerable)
-                {
-                    objectsToConvert.Add((T)element);
-                }
-
-                return objectsToConvert.ToArray();
-            }
-            return (IEnumerable<T>)value;
+            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableFromObject<T>(result);
         }
         #endregion EnumerableComponent
 
@@ -488,7 +300,8 @@ namespace NixiTestTools.TestInjecterElements
         /// and refresh link between childs and parent gameObjects
         /// </summary>
         /// <param name="componentToAdd">Component to link to new or updated parent</param>
-        /// <param name="parentName">Name of the parent relation root</param>
+        /// <param name="parentName">Name of the parent in relation root</param>
+        /// <param name="childName">Name of the child in relation root</param>
         public void AddOrUpdateRootRelation(Component componentToAdd, string parentName, string childName)
         {
             if (string.IsNullOrEmpty(childName))

@@ -84,6 +84,7 @@ namespace NixiTestTools.TestInjecterElements
         /// Initialize the content of the list fieldInfo as empty
         /// </summary>
         /// <param name="enumerableFieldInfo">FieldInfo of the enumerable</param>
+        /// <param name="enumerableType">Type of enumerable associated to the FieldInfo of the enumerable/param>
         private void InitEnumerableComponentField(FieldInfo enumerableFieldInfo, Type enumerableType)
         {
             object value;
@@ -134,6 +135,7 @@ namespace NixiTestTools.TestInjecterElements
         /// Build a component of type contained in componentField and link it to the componentField with the new instance
         /// </summary>
         /// <param name="componentField">Component field</param>
+        /// <param name="componentName">Name of the component</param>
         /// <returns>Component instantiated</returns>
         internal Component BuildAndInjectComponent(FieldInfo componentField, string componentName)
         {

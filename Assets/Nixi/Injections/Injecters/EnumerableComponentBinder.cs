@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
+// Ignore warnings on not implemented methods when generating xml documentation
+#pragma warning disable 1591
 namespace Nixi.Injections.Injecters
 {
     public sealed class EnumerableComponentBinder : Binder
@@ -20,6 +22,14 @@ namespace Nixi.Injections.Injecters
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// If object is an array, it converts his data into an array
+        /// <para/>If not, return the object directly because it is already an IEnumerable
+        /// </summary>
+        /// <param name="value">Object to convert into array or return if not an array</param>
+        /// <param name="type">Type of object</param>
+        /// <param name="culture">Culture info</param>
+        /// <returns>Value as array if its type is array, value directly otherwise</returns>
         public override object ChangeType(object value, Type type, CultureInfo culture)
         {
             // Enumerable into array, we have to force the cast
@@ -60,3 +70,4 @@ namespace Nixi.Injections.Injecters
         }
     }
 }
+#pragma warning restore 1591

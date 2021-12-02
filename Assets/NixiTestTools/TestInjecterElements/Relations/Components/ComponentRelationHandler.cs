@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections.Attributes;
-using Nixi.Injections.Attributes.Abstractions;
 using NixiTestTools.TestInjecterElements.Relations.Abstractions;
 using System;
 using System.Linq;
@@ -13,6 +12,11 @@ namespace NixiTestTools.TestInjecterElements.Relations.Components
     /// </summary>
     internal sealed class ComponentRelationHandler : RelationHandlerBase<Component, ComponentWithFieldInfo>
     {
+        /// <summary>
+        /// Name to use in exception thrown to be more precise about the type of field targeted
+        /// </summary>
+        protected override string fieldTypeName => "component";
+
         /// <summary>
         /// Add a field to the list of fields of type ComponentWithFieldInfo and add a relation with his component at top parent if this is NixInjectComponentAttribute
         /// </summary>

@@ -16,7 +16,6 @@ namespace NixiTestTools.TestInjecterElements.Relations.Components
         /// </summary>
         internal Type EnumerableType { get; set; }
 
-        // TODO : Check if delete "Components" field, because we are just adding or reading after init
         /// <summary>
         /// List of components passed in the field
         /// </summary>

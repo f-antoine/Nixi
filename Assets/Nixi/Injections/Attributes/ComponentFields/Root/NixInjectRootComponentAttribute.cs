@@ -112,7 +112,7 @@ namespace Nixi.Injections.Attributes
         /// <summary>
         /// Get the method associated to the RootParameters (SubComponentRootName filled or not) and call it to get Components from the root GameObject targeted
         /// </summary>
-        /// <param name="targetedRootGameObject">Root GameObject targeted</param>
+        /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
         /// <param name="gameObjectTypeToFind">GameObject type to find</param>
         /// <returns>All components returned from the method call</returns>
         private Component[] GetComponentsFromRootParameters(GameObject targetedRootGameObject, Type gameObjectTypeToFind)
@@ -127,6 +127,7 @@ namespace Nixi.Injections.Attributes
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection method call
         /// </summary>
+        /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
         /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
@@ -145,6 +146,7 @@ namespace Nixi.Injections.Attributes
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection GetComponentsInChildren call
         /// </summary>
+        /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
         /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
@@ -165,6 +167,7 @@ namespace Nixi.Injections.Attributes
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection GetComponent call
         /// </summary>
+        /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
         /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>

@@ -100,7 +100,7 @@ namespace NixiTestTools
         /// Check if all field of a monoBehaviourInjectable does not have different kind of Transform implemented at the same level of his instance
         /// <para/> e.g : exception will be thrown if Transform and RectTransform are at top level (same level) of the monoBehaviourInjectable instance
         /// </summary>
-        /// <param name="allFields">All fields to check</param>
+        /// <param name="fields">Fields to check</param>
         private void CheckNotDifferentTransformOnInjectable(List<FieldInfo> fields)
         {
             List<FieldInfo> transformFields = fields.Where(x => typeof(Transform).IsAssignableFrom(x.FieldType)).ToList();
@@ -410,8 +410,14 @@ namespace NixiTestTools
         }
         #endregion Recursion
 
-        #region Mock injection and Get Component
-        // TODO : Comment
+        #region Field injection/reading and Get Component
+        /// <summary>
+        /// Read value from a non component field with type T
+        /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
+        /// </summary>
+        /// <typeparam name="T">Targeted field type</typeparam>
+        /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
+        /// <returns>Targeted field value</returns>
         public T ReadField<T>(MonoBehaviourInjectable targetInjectable = null)
         {
             try
@@ -424,7 +430,14 @@ namespace NixiTestTools
             }
         }
 
-        // TODO : Comment
+        /// <summary>
+        /// Read value from a non component field with type T and with the fieldName passed as a parameter
+        /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
+        /// </summary>
+        /// <typeparam name="T">Targeted field type</typeparam>
+        /// <param name="fieldName">Name of the field</param>
+        /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
+        /// <returns>Targeted field value</returns>
         public T ReadField<T>(string fieldName, MonoBehaviourInjectable targetInjectable = null)
         {
             try
@@ -438,20 +451,20 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Inject manually a mock into the Non-Component type T field
+        /// Inject value into non component field with type T
         /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
-        /// <para/>If multiple type T fields are found, you must use InjectField(Mock mockToInject, string fieldName)
+        /// <para/>If multiple type T fields are found, you must use InjectField(T valueToInject, string fieldName)
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
-        /// <param name="mockToInject">Mock to inject into field</param>
+        /// <param name="valueToInject">Value to inject into field</param>
         /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
-        /// <returns>Mock injected, it can help simplify test readilibity</returns>
-        public T InjectField<T>(T mockToInject, MonoBehaviourInjectable targetInjectable = null)
+        /// <returns>Value injected, it can help simplify test readilibity</returns>
+        public T InjectField<T>(T valueToInject, MonoBehaviourInjectable targetInjectable = null)
         {
             try
             {
-                injectablesContainer.InjectField(mockToInject, targetInjectable ?? objectToLink);
-                return mockToInject;
+                injectablesContainer.InjectField(valueToInject, targetInjectable ?? objectToLink);
+                return valueToInject;
             }
             catch (InjectablesContainerException e)
             {
@@ -460,20 +473,20 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Inject manually a mock into the Non-Component type T field and with the fieldName passed as a parameter
+        /// Inject value into non component field with type T and with the fieldName passed as a parameter
         /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
         /// </summary>
         /// <typeparam name="T">Targeted field type</typeparam>
-        /// <param name="fieldName">Name of the field to mock</param>
-        /// <param name="mockToInject">Mock to inject into field</param>
+        /// <param name="fieldName">Name of the field</param>
+        /// <param name="valueToInject">Value to inject into field</param>
         /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
-        /// <returns>Mock injected, it can help simplify test readilibity</returns>
-        public T InjectField<T>(T mockToInject, string fieldName, MonoBehaviourInjectable targetInjectable = null)
+        /// <returns>Value injected, it can help simplify test readilibity</returns>
+        public T InjectField<T>(T valueToInject, string fieldName, MonoBehaviourInjectable targetInjectable = null)
         {
             try
             {
-                injectablesContainer.InjectField(fieldName, mockToInject, targetInjectable ?? objectToLink);
-                return mockToInject;
+                injectablesContainer.InjectField(fieldName, valueToInject, targetInjectable ?? objectToLink);
+                return valueToInject;
             }
             catch (InjectablesContainerException e)
             {
@@ -484,7 +497,7 @@ namespace NixiTestTools
         /// <summary>
         /// Return the only component with Component type T field
         /// <para/>If no targetInjectable precised, it targets top MonoBehaviourInjectable by default
-        /// <para/>If multiple type T fields are found, you must use GetComponent<T>(string fieldName) 
+        /// <para/>If multiple type T fields are found, you must use GetComponent&lt;T&gt;(string fieldName) 
         /// </summary>
         /// <typeparam name="T">Type of Component searched</typeparam>
         /// <param name="targetInjectable">Optional parameter, if null it targets top MonoBehaviourInjectable by default, if filled it must be a MonoBehaviourInjectable recursively injected and obtained from GetComponent</param>
@@ -522,7 +535,7 @@ namespace NixiTestTools
                 throw new TestInjecterException($"Cannot GetComponent because {e.Message}", objectToLink);
             }
         }
-        #endregion Mock injection and Get Component
+        #endregion Field injection/reading and Get Component
 
         #region EnumerableComponent
 
@@ -725,14 +738,14 @@ namespace NixiTestTools
         /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, if many found, use GetEnumerableComponents(fieldName)
         /// </summary>
         /// <typeparam name="T">Generic type of enumerable</typeparam>
-        /// <param name="targetedInjectable">Targeted injectable</param>
+        /// <param name="injectable">Targeted injectable</param>
         /// <returns>Enumerable values of the enumerable component field</returns>
-        public IEnumerable<T> GetEnumerableComponents<T>(MonoBehaviourInjectable targetInjectable = null)
+        public IEnumerable<T> GetEnumerableComponents<T>(MonoBehaviourInjectable injectable = null)
             where T : Component
         {
             try
             {
-                return injectablesContainer.GetEnumerableComponents<T>(targetInjectable ?? objectToLink);
+                return injectablesContainer.GetEnumerableComponents<T>(injectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {
@@ -747,12 +760,12 @@ namespace NixiTestTools
         /// <param name="fieldName">Name of the fields targeted</param>
         /// <param name="injectable">Targeted injectable</param>
         /// <returns>Enumerable values of the enumerable component field</returns>
-        public IEnumerable<T> GetEnumerableComponents<T>(string fieldName, MonoBehaviourInjectable targetInjectable = null)
+        public IEnumerable<T> GetEnumerableComponents<T>(string fieldName, MonoBehaviourInjectable injectable = null)
             where T : Component
         {
             try
             {
-                return injectablesContainer.GetEnumerableComponents<T>(fieldName, targetInjectable ?? objectToLink);
+                return injectablesContainer.GetEnumerableComponents<T>(fieldName, injectable ?? objectToLink);
             }
             catch (InjectablesContainerException e)
             {

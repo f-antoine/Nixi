@@ -56,6 +56,7 @@ namespace Nixi.Containers
         /// </summary>
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
+        /// <typeparam name="TypeOfMapping">ContainerElement which correspond to the of mapping (transient or singleton)</typeparam>
         private static TypeOfMapping Map<TInterface, TImplementation, TypeOfMapping>(params object[] constructorParameters)
             where TImplementation : class, TInterface
             where TypeOfMapping : ContainerElement, new()

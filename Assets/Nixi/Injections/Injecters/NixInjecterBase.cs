@@ -27,36 +27,37 @@ namespace Nixi.Injections.Injecters
         /// </summary>
         public bool IsInjected { get; private set; } = false;
 
+        #region Predicates
         /// <summary>
         /// Predicate to find all NixInjectAttribute on a Non-Component field in a MonoBehaviourInjectable
         /// </summary>
-        protected Func<FieldInfo, bool> NixiFieldPredicate => x => x.CustomAttributes.Any(nonComponentFieldsPredicate);
+        protected Func<FieldInfo, bool> NixiFieldPredicate => 
+            x => x.CustomAttributes.Any(y =>
+            {
+                return typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType) || typeof(SerializeField).IsAssignableFrom(y.AttributeType);
+            }
+        );
 
         /// <summary>
         /// Predicate to find all attributes derived from NixInjectComponentBaseAttribute on a Component field in a MonoBehaviourInjectable
         /// </summary>
-        protected Func<FieldInfo, bool> NixiComponentFieldPredicate => x => x.CustomAttributes.Any(componentFieldsPredicate);
+        protected Func<FieldInfo, bool> NixiComponentFieldPredicate =>
+            x => x.CustomAttributes.Any(y =>
+            {
+                return typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
+            }
+        );
 
         /// <summary>
-        /// Predicate to identify a NixInjectAttribute on a CustomAttributeData (nonComponent fields)
+        /// Predicate to find all NixiAttribute (component and non component fields)
         /// </summary>
-        private Func<CustomAttributeData, bool> nonComponentFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType) || typeof(SerializeField).IsAssignableFrom(y.AttributeType);
+        protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => typeof(NixInjectAbstractBaseAttribute).IsAssignableFrom(y.AttributeType);
 
         /// <summary>
-        /// Predicate to identify all attributes derived from NixInjectComponentBaseAttribute on a CustomAttributeData (component fields)
-        /// </summary>
-        private Func<CustomAttributeData, bool> componentFieldsPredicate => y => typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
-
-        /// <summary>
-        /// Combination of nonComponentFieldsPredicate and componentFieldsPredicate
-        /// </summary>
-        protected Func<CustomAttributeData, bool> AllNixiFieldsPredicate => y => typeof(NixInjectBaseAttribute).IsAssignableFrom(y.AttributeType)
-                                                                                || typeof(NixInjectComponentBaseAttribute).IsAssignableFrom(y.AttributeType);
-
-        /// <summary>
-        /// Predicate to identify fields decorated with SerializeField attribute
+        /// Predicate to identify fields decorated with UnityEngine.SerializeField attribute
         /// </summary>
         private Func<CustomAttributeData, bool> serializeFieldsPredicate => y => typeof(SerializeField).IsAssignableFrom(y.AttributeType);
+        #endregion Predicates
 
         /// <summary>
         /// Base injector used to fill fields decorated with Nixi attributes of a MonoBehaviourInjectable
