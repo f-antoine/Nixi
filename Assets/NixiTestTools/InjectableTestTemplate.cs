@@ -1,4 +1,5 @@
 ﻿using Nixi.Injections;
+using NixiTestTools.TestInjecterElements.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -30,6 +31,24 @@ namespace NixiTestTools
         protected virtual string InstanceName => "";
 
         /// <summary>
+        /// Each mapping added into this container force a type to be used by his derived form during tests using TestInjecter, useful when working on abstract component injected with Nixi
+        /// </summary>
+        private AbstractComponentMappingContainer ComponentMappingContainer = null;
+
+        /// <summary>
+        /// Map a component type with a derived type into ComponentMappingContainer
+        /// </summary>
+        /// <typeparam name="TAbstract">Component key type</typeparam>
+        /// <typeparam name="TImplementation">Implementation type</typeparam>
+        protected void AddAbstractComponentMapping<TAbstract, TImplementation>()
+            where TAbstract : Component
+            where TImplementation : class, TAbstract
+        {
+            ComponentMappingContainer ??= new AbstractComponentMappingContainer();
+            ComponentMappingContainer.Map<TAbstract, TImplementation>();
+        }
+
+        /// <summary>
         /// Create an instance of the test MonoBehaviourInjectable that we want to test as well as its TestInjecter which allows to expose the fields to test / mock with the Nixi approach
         /// </summary>
         [SetUp]
@@ -37,7 +56,7 @@ namespace NixiTestTools
         {
             MainTested = new GameObject().AddComponent<T>();
 
-            MainInjecter = new TestInjecter(MainTested, InstanceName);
+            MainInjecter = new TestInjecter(MainTested, InstanceName, ComponentMappingContainer);
 
             MainInjecter.CheckAndInjectAll();
         }

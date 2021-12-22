@@ -5,6 +5,7 @@ using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements;
 using NixiTestTools.TestInjecterElements.Relations.Components;
+using NixiTestTools.TestInjecterElements.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,12 @@ namespace NixiTestTools
         /// <summary>
         /// Top MonoBehaviourInjectable instance name to used in GetRootInjectable and avoid duplicate if there is mutual injection
         /// </summary>
-        private string InstanceName = "";
+        private string instanceName = "";
+
+        /// <summary>
+        /// Each mapping added into this container force a type to be used by his derived form during tests using TestInjecter, useful when working on abstract component injected with Nixi
+        /// </summary>
+        private AbstractComponentMappingContainer componentMappingContainer;
 
         /// <summary>
         /// Test way to handle all injections of fields decorated with Nixi inject attributes of a class derived from MonoBehaviourInjectable during test execution
@@ -57,10 +63,13 @@ namespace NixiTestTools
         /// </summary>
         /// <param name="objectToLink">Instance of the class derived from MonoBehaviourInjectable on which all injections will be triggered (top MonoBehaviourInjectable)</param>
         /// <param name="instanceName">Top MonoBehaviourInjectable instance name to used in GetRootInjectable and avoid duplicate if there is mutual injection</param>
-        public TestInjecter(MonoBehaviourInjectable objectToLink, string instanceName = "")
+        /// <param name="componentMappingContainer">If filled, each mapping added into this container force a type to be used by his derived form during tests using TestInjecter, useful when working on abstract component injected with Nixi</param>
+        public TestInjecter(MonoBehaviourInjectable objectToLink, string instanceName = "",
+                            AbstractComponentMappingContainer componentMappingContainer = null)
             : base(objectToLink)
         {
-            InstanceName = instanceName;
+            this.instanceName = instanceName;
+            this.componentMappingContainer = componentMappingContainer;
         }
 
         /// <summary>
@@ -69,7 +78,7 @@ namespace NixiTestTools
         /// <exception cref="TestInjecterException">Thrown if this method has already been called</exception>
         protected override void InjectAll()
         {
-            InjectMonoBehaviourInjectable(objectToLink, InstanceName);
+            InjectMonoBehaviourInjectable(objectToLink, instanceName);
         }
 
         /// <summary>
@@ -284,7 +293,8 @@ namespace NixiTestTools
 
             if (baseAttribute is NixInjectComponentAttribute)
             {
-                InjectableComponentState state = newInjectableHandler.InjectOrBuildComponentAtTopComponentLevel(componentField);
+                Type typeResolved = componentMappingContainer?.TryResolve(componentField.FieldType);
+                InjectableComponentState state = newInjectableHandler.InjectOrBuildComponentAtTopComponentLevel(componentField, typeResolved);
                 if (state == InjectableComponentState.NeedToBeInjectedIfInjectable)
                 {
                     InjectAndStoreIfIsMonoBehaviourInjectable(componentField, newInjectableHandler);
@@ -340,7 +350,8 @@ namespace NixiTestTools
         {
             // GameObject is the same for every components of this rootRelation (match rootAttribute data)
             GameObject gameObject = componentsInRootRelation.First().gameObject;
-            return gameObject.AddComponent(componentFieldType);
+            Type typeResolved = componentMappingContainer?.TryResolve(componentFieldType);
+            return gameObject.AddComponent(typeResolved ?? componentFieldType);
         }
 
         /// <summary>
@@ -351,7 +362,10 @@ namespace NixiTestTools
         private void PopulateAndRegisterComponentField(FieldInfo componentField, InjectableHandler injectableHandler)
         {
             string componentName = GetComponentNameIfExists(componentField);
-            Component componentAdded = injectableHandler.BuildAndInjectComponent(componentField, componentName);
+
+            Type typeResolved = componentMappingContainer?.TryResolve(componentField.FieldType);
+
+            Component componentAdded = injectableHandler.BuildComponent(componentField, componentName, typeResolved);
             UpdateRootRelationIfRootComponent(componentField, componentAdded);
         }
 

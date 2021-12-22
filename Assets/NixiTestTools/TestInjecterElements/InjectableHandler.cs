@@ -136,8 +136,9 @@ namespace NixiTestTools.TestInjecterElements
         /// </summary>
         /// <param name="componentField">Component field</param>
         /// <param name="componentName">Name of the component</param>
+        /// <param name="forcedType">If filled it will use an inherited type forced by AbstractComponentMappingContainer</param>
         /// <returns>Component instantiated</returns>
-        internal Component BuildAndInjectComponent(FieldInfo componentField, string componentName)
+        internal Component BuildComponent(FieldInfo componentField, string componentName, Type forcedType = null)
         {
             Component componentAdded;
 
@@ -149,7 +150,7 @@ namespace NixiTestTools.TestInjecterElements
             else
             {
                 // Standard GameObject build
-                componentAdded = new GameObject(componentName).AddComponent(componentField.FieldType);
+                componentAdded = new GameObject(componentName).AddComponent(forcedType ?? componentField.FieldType);
             }
 
             FillFieldWithComponentAndStore(componentField, componentAdded);
@@ -177,8 +178,9 @@ namespace NixiTestTools.TestInjecterElements
         /// <para/>Lastly, it means this is a new type to add on injectable.gameObject, it's linked to componentField and return this as NeededToBeInjected
         /// </summary>
         /// <param name="componentField">Component Field</param>
+        /// <param name="forcedType">If filled it will use an inherited type forced by AbstractComponentMappingContainer</param>
         /// <returns>State returned by InjectableHandler when linking or creating a new Component</returns>
-        public InjectableComponentState InjectOrBuildComponentAtTopComponentLevel(FieldInfo componentField)
+        public InjectableComponentState InjectOrBuildComponentAtTopComponentLevel(FieldInfo componentField, Type forcedType = null)
         {
             // Case where we have same level instance
             Component sameLevelComponent = ComponentRelationHandler.GetSameLevelComponent(componentField.FieldType);
@@ -200,7 +202,7 @@ namespace NixiTestTools.TestInjecterElements
                 else
                 {
                     // AddComponent, the new component need to be injected
-                    Component newComponent = Instance.gameObject.AddComponent(componentField.FieldType);
+                    Component newComponent = Instance.gameObject.AddComponent(forcedType ?? componentField.FieldType);
                     FillFieldWithComponentAndStore(componentField, newComponent);
                     return InjectableComponentState.NeedToBeInjectedIfInjectable;
                 }
