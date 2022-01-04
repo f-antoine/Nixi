@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using Nixi.Injections.Injecters;
 using UnityEngine;
 using UnityEngine.UI;

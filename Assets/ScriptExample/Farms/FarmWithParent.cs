@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using System.Collections.Generic;
 
 namespace ScriptExample.Farms

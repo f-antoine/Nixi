@@ -44,7 +44,7 @@ namespace NixiTestTools
             where TAbstract : Component
             where TImplementation : class, TAbstract
         {
-            ComponentMappingContainer ??= new AbstractComponentMappingContainer();
+            ComponentMappingContainer = ComponentMappingContainer ?? new AbstractComponentMappingContainer();
             ComponentMappingContainer.Map<TAbstract, TImplementation>();
         }
 

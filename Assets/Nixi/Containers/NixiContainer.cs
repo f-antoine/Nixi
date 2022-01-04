@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Nixi.Containers
 {
@@ -23,6 +24,7 @@ namespace Nixi.Containers
         public static void MapTransient<TInterface, TImplementation>(params object[] constructorParameters)
             where TImplementation : class, TInterface
         {
+            CheckImplementationIsNotComponent<TImplementation>();
             Map<TInterface, TImplementation, TransientContainerElement>(constructorParameters);
         }
 
@@ -34,7 +36,20 @@ namespace Nixi.Containers
         public static void MapSingle<TInterface, TImplementation>(params object[] constructorParameters)
             where TImplementation : class, TInterface
         {
+            CheckImplementationIsNotComponent<TImplementation>();
             Map<TInterface, TImplementation, SingleContainerElement>(constructorParameters);
+        }
+
+        /// <summary>
+        /// Check if implementation type is not derived from Component/MonoBehaviour
+        /// </summary>
+        /// <typeparam name="TImplementation">Implementation value type</typeparam>
+        private static void CheckImplementationIsNotComponent<TImplementation>()
+            where TImplementation : class
+        {
+            if (typeof(Component).IsAssignableFrom(typeof(TImplementation)))
+                throw new NixiContainerException("Cannot construct a class derived from Component in NixiContainer directly, " +
+                    "it is only allowed when passing an implementation directly from the scene with MapSingle<TInterface, TImplementation>(TImplementation implementationToRegister) method");
         }
 
         /// <summary>

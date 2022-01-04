@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nixi.Injections.Attributes.Abstractions
+namespace Nixi.Injections.Abstractions
 {
     /// <summary>
     /// Base attribute to derive, used to trigger the injection in a non-component field in a class derived from MonoBehaviourInjectable

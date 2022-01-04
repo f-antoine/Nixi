@@ -1,7 +1,6 @@
 ﻿using Nixi.Containers;
-using Nixi.Injections.Attributes;
-using Nixi.Injections.Attributes.Abstractions;
-using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections.Abstractions;
+using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -109,7 +108,7 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents...Attribute
+        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents[...]Attribute
         /// </summary>
         /// <param name="componentField">Component or interface field</param>
         /// <param name="componentsAttribute">Nixi component (or interface) list attribute which decorate componentField</param>
@@ -120,7 +119,7 @@ namespace Nixi.Injections.Injecters
         }
 
         /// <summary>
-        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents...Attribute
+        /// Fill a component or interface (retrievable from Unity dependency injection methods) field in the objectToLink using the Unity dependency injection method which corresponds NixInjectComponents[...]Attribute
         /// </summary>
         /// <param name="componentField">Component or interface field</param>
         /// <param name="injectAttribute">Nixi component (or interface) attribute which decorate componentField</param>

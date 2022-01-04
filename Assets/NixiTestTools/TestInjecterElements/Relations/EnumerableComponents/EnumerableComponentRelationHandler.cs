@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using NixiTestTools.TestInjecterElements.Relations.Abstractions;
 using NixiTestTools.TestInjecterElements.Relations.Components;
 using System;
@@ -59,7 +58,7 @@ namespace NixiTestTools.TestInjecterElements.Relations.EnumerableComponents
             IEnumerable<ComponentListWithFieldInfo> componentWithCriteria = componentsListWithType.Where(x => x.EnumerableType == typeToFind && x.GameObjectLevel == gameObjectLevel);
             
             if (!componentWithCriteria.Any())
-                throw new InjectablesContainerException($"no {fieldTypeName} with type {typeToFind.Name} and GameObjectLevel {gameObjectLevel} was found");
+                throw new InjectablesContainerException($"no {fieldTypeName} with type {typeToFind.Name} and GameObjectLevel equals to {gameObjectLevel} was found");
 
             CheckEnumerableComponentNotAlreadyInitiated<T>(componentWithCriteria, injectable);
 
@@ -163,27 +162,60 @@ namespace NixiTestTools.TestInjecterElements.Relations.EnumerableComponents
         }
 
         /// <summary>
+        /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, if many found, use GetEnumerableComponents(fieldName)
+        /// <para/> It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
+        /// </summary>
+        /// <typeparam name="T">Generic type of enumerable</typeparam>
+        /// <param name="targetedInjectable">Targeted injectable</param>
+        /// <returns>Enumerable values of the enumerable component field</returns>
+        internal IEnumerable<T> GetEnumerableComponents<T>(MonoBehaviourInjectable targetedInjectable)
+            where T : Component
+        {
+            ComponentListWithFieldInfo fieldHandler = GetFieldInfoHandler(typeof(T));
+
+            object result = fieldHandler.FieldInfo.GetValue(targetedInjectable);
+
+            return GetEnumerableFromObject<T>(result);
+        }
+
+        /// <summary>
+        /// Get all values contained in an enumerable component field which match enumerable generic type, if only one is found, it returned it, otherwise throw an exception
+        /// <para/> It can only be used on field decorated with attribute derived from NixInjectMultiComponentsBaseAttribute
+        /// </summary>
+        /// <typeparam name="T">Generic type of enumerable</typeparam>
+        /// <param name="fieldName">Name of the fields targeted</param>
+        /// <param name="injectable">Targeted injectable</param>
+        /// <returns>Enumerable values of the enumerable component field</returns>
+        internal IEnumerable<T> GetEnumerableComponents<T>(string fieldName, MonoBehaviourInjectable injectable)
+            where T : Component
+        {
+            ComponentListWithFieldInfo fieldHandler = GetFieldInfoHandler(typeof(T), fieldName);
+
+            object result = fieldHandler.FieldInfo.GetValue(injectable);
+
+            return GetEnumerableFromObject<T>(result);
+        }
+
+        /// <summary>
         /// Transpose an object into a IEnumerable with generic type T derived from Component
         /// </summary>
         /// <typeparam name="T">Enumerable generic type</typeparam>
         /// <param name="value">Object to convert</param>
         /// <returns>IEnumerable with generic type T</returns>
-        internal IEnumerable<T> GetEnumerableFromObject<T>(object value)
+        private IEnumerable<T> GetEnumerableFromObject<T>(object value)
             where T : Component
         {
+            List<T> objectsToConvert = new List<T>();
+            foreach (object element in (System.Collections.IEnumerable)value)
+            {
+                objectsToConvert.Add((T)element);
+            }
+
             if (value.GetType().IsArray)
             {
-                var valueEnumerable = (System.Collections.IEnumerable)value;
-
-                List<T> objectsToConvert = new List<T>();
-                foreach (var element in valueEnumerable)
-                {
-                    objectsToConvert.Add((T)element);
-                }
-
                 return objectsToConvert.ToArray();
             }
-            return (IEnumerable<T>)value;
+            return objectsToConvert;
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using ScriptExample.FieldReading;
-using Moq;
+﻿using Moq;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.ComponentsWithEnumerable;
 using ScriptExample.Containers;
+using ScriptExample.FieldReading;
 using System;
 using Tests.Builders;
 using UnityEngine;

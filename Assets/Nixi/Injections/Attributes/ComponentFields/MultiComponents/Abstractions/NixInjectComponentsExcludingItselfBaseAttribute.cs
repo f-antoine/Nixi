@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions
+namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
 {
     /// <summary>
     /// Attribute to represent a dependency injection on an enumerable of component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
@@ -37,8 +37,8 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         {
             Component[] components = MethodToGetComponents(injectable);
 
-            // Ignore itself, ToList cover all cases (thanks to ComponentBinder)
-            return components.Where(x => x.gameObject.GetInstanceID() != injectable.gameObject.GetInstanceID()).ToList();
+            // Ignore itself
+            return components.Where(x => x.gameObject.GetInstanceID() != injectable.gameObject.GetInstanceID());
         }
     }
 }

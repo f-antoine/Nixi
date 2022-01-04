@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Nixi.Injections.Attributes.Abstractions
+namespace Nixi.Injections.Abstractions
 {
     /// <summary>
     /// Base attribute to represent a dependency injection in a component (or interface) field of an instance of a class derived from MonoBehaviourInjectable

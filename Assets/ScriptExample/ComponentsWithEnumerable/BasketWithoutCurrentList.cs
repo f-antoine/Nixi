@@ -1,7 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ScriptExample.ComponentsWithEnumerable
 {

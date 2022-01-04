@@ -1,6 +1,7 @@
 ﻿using Nixi.Containers;
 using NUnit.Framework;
 using ScriptExample.Characters;
+using ScriptExample.ComponentsWithInterface;
 using ScriptExample.Containers;
 using ScriptExample.ContainersWithParameters;
 using Tests.Builders;
@@ -22,6 +23,14 @@ namespace Tests.Containers
             NixiContainer.RemoveMap<ITestInterface>();
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapSingle<TestImplementation, TestImplementation>());
             Assert.Throws<NixiContainerException>(() => NixiContainer.MapTransient<TestImplementation, TestImplementation>());
+        }
+
+        [Test]
+        public void ContainerShould_ThrowExceptionWhenImplementationIsMonoBehaviour_ButWithoutImplementationPassed()
+        {
+            NixiContainer.RemoveMap<IFlyBehavior>();
+            Assert.Throws<NixiContainerException>(() => NixiContainer.MapTransient<IFlyBehavior, DuckWings>());
+            Assert.Throws<NixiContainerException>(() => NixiContainer.MapSingle<IFlyBehavior, DuckWings>());
         }
 
         [Test]

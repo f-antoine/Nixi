@@ -1,7 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using ScriptExample.Containers;
-using UnityEngine;
 
 namespace ScriptExample.Characters
 {

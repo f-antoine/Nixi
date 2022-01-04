@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Attributes.Abstractions;
+﻿using Nixi.Injections.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

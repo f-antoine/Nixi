@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using UnityEngine.UI;
 
 namespace ScriptExample.RootComponents

@@ -1,7 +1,6 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
-using Nixi.Injections.Attributes.Abstractions;
-using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections.Abstractions;
+using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements;
 using NixiTestTools.TestInjecterElements.Relations.Components;
@@ -568,7 +567,7 @@ namespace NixiTestTools
         {
             try
             {
-                targetInjectable ??= objectToLink;
+                targetInjectable = targetInjectable ?? objectToLink;
 
                 IEnumerable<T> components = injectablesContainer.InitEnumerableComponents<T>(gameObjectLevel, nbAdded, targetInjectable);
 
@@ -579,7 +578,7 @@ namespace NixiTestTools
             catch (InjectablesContainerException e)
             {
                 throw new TestInjecterException($"Cannot InitEnumerableComponent with nbAdded : {nbAdded} on TargetedInjectable with name {targetInjectable.name} and {targetInjectable.GetType().Name} " +
-                    $"with {gameObjectLevel}, because {e.Message}", objectToLink);
+                    $"at {gameObjectLevel} gameObject level, because {e.Message}", objectToLink);
             }
         }
 
@@ -597,7 +596,7 @@ namespace NixiTestTools
         {
             try
             {
-                targetInjectable ??= objectToLink;
+                targetInjectable = targetInjectable ?? objectToLink;
 
                 IEnumerable<T> components = injectablesContainer.InitEnumerableComponentsWithType<T>(gameObjectLevel, targetInjectable, typeDeriveds);
 
@@ -609,7 +608,7 @@ namespace NixiTestTools
             {
                 string typeJoined = string.Join(",", typeDeriveds.ToList());
                 throw new TestInjecterException($"Cannot InitEnumerableComponent with typeDeriveds ({typeJoined}) on TargetedInjectable with name {targetInjectable.name} and {targetInjectable.GetType().Name} " +
-                    $"with {gameObjectLevel}, because {e.Message}", objectToLink);
+                    $"at {gameObjectLevel} gameObject level, because {e.Message}", objectToLink);
             }
         }
         #endregion Generic

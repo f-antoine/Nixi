@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -32,23 +33,57 @@ namespace Nixi.Injections.Injecters
         /// <returns>Value as array if its type is array, value directly otherwise</returns>
         public override object ChangeType(object value, Type type, CultureInfo culture)
         {
-            // Enumerable into array, we have to force the cast
             if (type.IsArray)
-            {
-                if (typeof(System.Collections.IEnumerable).IsAssignableFrom(value.GetType()))
-                {
-                    var valueEnumerable = (System.Collections.IEnumerable)value;
+                return ConvertObjectToObjectList(value).ToArray();
 
-                    List<object> objectsToConvert = new List<object>();
-                    foreach (var element in valueEnumerable)
-                    {
-                        objectsToConvert.Add(element);
-                    }
-                    return objectsToConvert.ToArray();
-                }
+            if (type.IsGenericType)
+            {
+                // Had to made this because value is always an IEnumerable (stored like this in TestInjecter to match all kinds of collection used in Nixi).
+                // If it was not rebuilt, this won't fill field correctly with list type during enumerable component injection.
+                // (If a list has an IEnumerable setted and we try to do AsReadOnly() call, it will crash Unity)
+                if (typeof(List<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+                    return RebuildListOfType(value, type);
+
+                if (value is IEnumerable)
+                    return value;
             }
 
-            return value;
+            throw new NotImplementedException($"Cannot change object {value} of type {value.GetType().Name} with type parameter {type.Name}");
+        }
+
+        /// <summary>
+        /// Rebuild a list of type from an object (value must be a list that match type)
+        /// </summary>
+        /// <param name="value">Object which should be represented as a list</param>
+        /// <param name="type">Type of list</param>
+        /// <returns>Object which match list type</returns>
+        private static object RebuildListOfType(object value, Type type)
+        {
+            MethodInfo addMethod = type.GetMethod("Add");
+
+            object secondList = Activator.CreateInstance(type);
+
+            foreach (var element in ConvertObjectToObjectList(value))
+            {
+                addMethod.Invoke(secondList, new object[] { element });
+            }
+
+            return secondList;
+        }
+
+        /// <summary>
+        /// Convert an object to a list of object (value must be a list)
+        /// </summary>
+        /// <param name="value">Object which should be represented as a list</param>
+        /// <returns>Object converted</returns>
+        private static List<object> ConvertObjectToObjectList(object value)
+        {
+            List<object> objectsToConvert = new List<object>();
+            foreach (object element in (IEnumerable)value)
+            {
+                objectsToConvert.Add(element);
+            }
+            return objectsToConvert;
         }
 
         [ExcludeFromCodeCoverage] // No reason to override or test

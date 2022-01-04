@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Attributes.Abstractions
+﻿namespace Nixi.Injections.Abstractions
 {
     /// <summary>
     /// Interface for handling property ComponentNameToFind on attribute derived from NixInjectComponentBaseAttribute.
@@ -9,6 +9,6 @@
         /// <summary>
         /// Name of the component to find
         /// </summary>
-        public string ComponentNameToFind { get; }
+        string ComponentNameToFind { get; }
     }
 }

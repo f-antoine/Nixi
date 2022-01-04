@@ -1,8 +1,6 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using ScriptExample.Players;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ScriptExample.PlayerGroups
 {

@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements.Relations.Abstractions;
 using NixiTestTools.TestInjecterElements.Relations.Components;
@@ -249,12 +248,7 @@ namespace NixiTestTools.TestInjecterElements
             where T : Component
         {
             InjectableHandler injectableHandler = GetInjectableHandler(targetedInjectable);
-
-            ComponentListWithFieldInfo fieldHandler = injectableHandler.EnumerableComponentRelationHandler.GetFieldInfoHandler(typeof(T));
-
-            object result = fieldHandler.FieldInfo.GetValue(targetedInjectable);
-
-            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableFromObject<T>(result);
+            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableComponents<T>(targetedInjectable);
         }
 
         /// <summary>
@@ -269,12 +263,7 @@ namespace NixiTestTools.TestInjecterElements
             where T : Component
         {
             InjectableHandler injectableHandler = GetInjectableHandler(injectable);
-
-            ComponentListWithFieldInfo fieldHandler = injectableHandler.EnumerableComponentRelationHandler.GetFieldInfoHandler(typeof(T), fieldName);
-
-            object result = fieldHandler.FieldInfo.GetValue(injectable);
-
-            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableFromObject<T>(result);
+            return injectableHandler.EnumerableComponentRelationHandler.GetEnumerableComponents<T>(fieldName, injectable);
         }
         #endregion EnumerableComponent
 

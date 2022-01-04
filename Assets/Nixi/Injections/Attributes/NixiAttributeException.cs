@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nixi.Injections.Attributes
+namespace Nixi.Injections
 {
     /// <summary>
     /// Errors reported when there is an exception thrown during the usage of nixi attribute methods

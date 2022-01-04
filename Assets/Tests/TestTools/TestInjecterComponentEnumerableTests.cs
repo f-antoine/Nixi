@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.AllParentsCases;
@@ -9,7 +8,7 @@ using ScriptExample.Characters;
 using ScriptExample.Characters.ScriptableObjects;
 using ScriptExample.ComponentsWithEnumerable;
 using ScriptExample.Fallen.AllComponentAttributes;
-using ScriptExample.Fallen.List;
+using ScriptExample.Fallen.Enumerables;
 using ScriptExample.Farms;
 using ScriptExample.PlayerGroups;
 using ScriptExample.Players;
@@ -808,10 +807,15 @@ namespace Tests.TestTools
         #endregion GetEnumerable Exceptions
 
         #region Error decorator
-        [TestCase(typeof(FallenCompoListClass))]
-        [TestCase(typeof(FallenCompoListComponent))]
-        [TestCase(typeof(FallenCompoListInjectable))]
-        [TestCase(typeof(FallenCompoListInterface))]
+        [TestCase(typeof(FallenEnumerablesComponent))]
+        [TestCase(typeof(FallenEnumerablesEmptyClass))]
+        [TestCase(typeof(FallenEnumerablesInjectable))]
+        [TestCase(typeof(FallenEnumerablesInterface))]
+        [TestCase(typeof(FallenEnumerablesIReadOnlyList))]
+        [TestCase(typeof(FallenEnumerablesNonComponentArray))]
+        [TestCase(typeof(FallenEnumerablesNonComponentEnumerable))]
+        [TestCase(typeof(FallenEnumerablesNonComponentList))]
+        [TestCase(typeof(FallenEnumerablesReadOnlyCollection))]
         public void TestInjecter_InjectComponentList_OnWrongFieldType_ShouldThrowException(Type injectableTypeToBuild)
         {
             Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);

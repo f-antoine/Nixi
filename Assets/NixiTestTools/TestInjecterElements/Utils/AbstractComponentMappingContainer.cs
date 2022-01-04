@@ -39,7 +39,7 @@ namespace NixiTestTools.TestInjecterElements.Utils
         /// Return implementation type based on abstract type added with Map method
         /// </summary>
         /// <typeparam name="TAbstract">Component key type</typeparam>
-        /// <returns>Type mapped with TAbstract</returns>
+        /// <returns>Type derived/mapped with TAbstract</returns>
         public Type TryResolve<TAbstract>()
         {
             return TryResolve(typeof(TAbstract));
@@ -48,8 +48,8 @@ namespace NixiTestTools.TestInjecterElements.Utils
         /// <summary>
         /// Return implementation type based on abstract type added with Map method
         /// </summary>
-        /// <typeparam name="TAbstract">Component key type</typeparam>
-        /// <returns>Type mapped with TAbstract</returns>
+        /// <param name="abstractType">Component key type</param>
+        /// <returns>Type derived/mapped with TAbstract</returns>
         public Type TryResolve(Type abstractType)
         {
             if (!abstractMappings.ContainsKey(abstractType))

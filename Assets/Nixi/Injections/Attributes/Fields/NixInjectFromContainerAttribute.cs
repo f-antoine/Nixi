@@ -1,8 +1,9 @@
-﻿using Nixi.Injections.Attributes.Abstractions;
+﻿using Nixi.Injections.Abstractions;
 using System;
 using System.Reflection;
+using UnityEngine;
 
-namespace Nixi.Injections.Attributes
+namespace Nixi.Injections
 {
     /// <summary>
     /// Used to trigger the injection in a non-component field in a class derived from MonoBehaviourInjectable
@@ -19,7 +20,7 @@ namespace Nixi.Injections.Attributes
         /// <param name="field">Field info to check</param>
         public override void CheckIsValidAndBuildDataFromField(FieldInfo field)
         {
-            if (IsComponent(field.FieldType))
+            if (typeof(Component).IsAssignableFrom(field.FieldType))
                 throw new NixiAttributeException($"Cannot register field with name {field.Name} with a NixInjectAttribute because it is a Component field, you must use NixInjectComponentAttribute instead");
 
             if (!field.FieldType.IsInterface)

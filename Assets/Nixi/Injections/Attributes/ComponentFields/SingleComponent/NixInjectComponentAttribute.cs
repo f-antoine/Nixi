@@ -1,10 +1,10 @@
-﻿using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
+﻿using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
 using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes
+namespace Nixi.Injections
 {
     /// <summary>
     /// Attribute to represent a dependency injection on  a component (or interface) field of an instance of a class derived from MonoBehaviourInjectable

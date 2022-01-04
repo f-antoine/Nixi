@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Attributes
+﻿namespace Nixi.Injections
 {
     /// <summary>
     /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)

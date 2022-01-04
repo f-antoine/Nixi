@@ -1,20 +1,21 @@
-﻿using ScriptExample.ComponentFromMethodWithoutName;
-using ScriptExample.SpecialOptions;
-using Nixi.Containers;
+﻿using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injecters;
 using NUnit.Framework;
 using ScriptExample.Audio;
 using ScriptExample.CannotFindFromMethods;
 using ScriptExample.Characters;
+using ScriptExample.ComponentFromMethodWithoutName;
 using ScriptExample.ComponentsWithEnumerable;
 using ScriptExample.ComponentsWithEnumerable.BadBasket;
 using ScriptExample.ComponentsWithInterface;
 using ScriptExample.ComponentsWithInterface.BadDucks;
 using ScriptExample.Containers;
+using ScriptExample.EnumerableCrashTests;
 using ScriptExample.Fallen.AllComponentAttributes;
-using ScriptExample.Fallen.List;
+using ScriptExample.Fallen.Enumerables;
 using ScriptExample.Menu;
+using ScriptExample.SpecialOptions;
 using System;
 using System.Linq;
 using Tests.Builders;
@@ -835,31 +836,100 @@ namespace Tests.Injections
         }
         #endregion EnumerableFromMethod Injections
 
-        #region NixInjectOptions
+        #region Enumerable Crash Tests
         [Test]
-        public void AuthorizeSerializedFieldWithNixiAttributesOption_ShouldAllowSerializeWithNixiAttribute_OnCheckAndInjectAll()
+        public void EnumerableCrashers_FromList_ShouldNotThrowException_WhenInjected()
         {
-            AuthorizeSerializeField injectable = InjectableBuilder<AuthorizeSerializeField>.Create().Build();
-            injectable.gameObject.AddComponent<Slider>();
-            Assert.Null(injectable.Slider);
+            // Prepare
+            EnumerableCrashTesters crasher = InjectableBuilder<EnumerableCrashTesters>.Create().Build();
+            Fruit fruit = new GameObject("FirstFruit").AddComponent<Fruit>();
+            Fruit secondFruit = new GameObject("SecondFruit").AddComponent<Fruit>();
+            fruit.transform.SetParent(crasher.transform);
+            secondFruit.transform.SetParent(crasher.transform);
 
             // Act
-            NixInjecter injecter = new NixInjecter(injectable, new NixInjectOptions
-            {
-                AuthorizeSerializedFieldWithNixiAttributes = true
-            });
+            NixInjecter injecter = new NixInjecter(crasher);
             injecter.CheckAndInjectAll();
 
-            // Check
-            Assert.NotNull(injectable.Slider);
+            // Checks
+            Assert.AreEqual(crasher.ReadOnlyFruitsChildren[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ReadOnlyFruitsChildren[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.FruitsChildren[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.FruitsChildren[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.ArrayFruitsChildren[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ArrayFruitsChildren[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.EnumerableFruitsChildren.First().GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.EnumerableFruitsChildren.Skip(1).First().GetInstanceID(), secondFruit.GetInstanceID());
         }
-        #endregion NixInjectOptions
+
+        [Test]
+        public void EnumerableCrashers_FromEnumerable_ShouldNotThrowException_WhenInjected()
+        {
+            // Prepare
+            EnumerableCrashTesters crasher = InjectableBuilder<EnumerableCrashTesters>.Create().Build();
+            Fruit fruit = crasher.gameObject.AddComponent<Fruit>();
+            Fruit secondFruit = crasher.gameObject.AddComponent<Fruit>();
+
+            // Act
+            NixInjecter injecter = new NixInjecter(crasher);
+            injecter.CheckAndInjectAll();
+
+            // Checks
+            Assert.AreEqual(crasher.ReadOnlyFruits[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ReadOnlyFruits[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.Fruits[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.Fruits[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.ArrayFruits[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ArrayFruits[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.EnumerableFruits.First().GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.EnumerableFruits.Skip(1).First().GetInstanceID(), secondFruit.GetInstanceID());
+        }
+
+        [Test]
+        public void EnumerableCrashers_FromArray_ShouldNotThrowException_WhenInjected()
+        {
+            // Prepare
+            EnumerableCrashTesters crasher = InjectableBuilder<EnumerableCrashTesters>.Create().Build();
+            Fruit fruit = new GameObject("FirstFruit").AddComponent<Fruit>();
+            Fruit secondFruit = new GameObject("SecondFruit").AddComponent<Fruit>();
+            crasher.transform.SetParent(fruit.transform);
+            fruit.transform.SetParent(secondFruit.transform);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(crasher);
+            injecter.CheckAndInjectAll();
+
+            // Checks
+            Assert.AreEqual(crasher.ReadOnlyFruitsParent[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ReadOnlyFruitsParent[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.FruitsParent[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.FruitsParent[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.ArrayFruitsParent[0].GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.ArrayFruitsParent[1].GetInstanceID(), secondFruit.GetInstanceID());
+
+            Assert.AreEqual(crasher.EnumerableFruitsParent.First().GetInstanceID(), fruit.GetInstanceID());
+            Assert.AreEqual(crasher.EnumerableFruitsParent.Skip(1).First().GetInstanceID(), secondFruit.GetInstanceID());
+        }
+        #endregion Enumerable Crash Tests
 
         #region Error decorator
-        [TestCase(typeof(FallenCompoListClass))]
-        [TestCase(typeof(FallenCompoListComponent))]
-        [TestCase(typeof(FallenCompoListInjectable))]
-        [TestCase(typeof(FallenCompoListInterface))]
+        [TestCase(typeof(FallenEnumerablesComponent))]
+        [TestCase(typeof(FallenEnumerablesEmptyClass))]
+        [TestCase(typeof(FallenEnumerablesInjectable))]
+        [TestCase(typeof(FallenEnumerablesInterface))]
+        [TestCase(typeof(FallenEnumerablesIReadOnlyList))]
+        [TestCase(typeof(FallenEnumerablesNonComponentArray))]
+        [TestCase(typeof(FallenEnumerablesNonComponentEnumerable))]
+        [TestCase(typeof(FallenEnumerablesNonComponentList))]
+        [TestCase(typeof(FallenEnumerablesReadOnlyCollection))]
         public void NixInjecter_InjectComponentList_OnWrongFieldType_ShouldThrowException(Type injectableTypeToBuild)
         {
             Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);
@@ -1022,5 +1092,25 @@ namespace Tests.Injections
             Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
         }
         #endregion NixInjectComponentFromMethod should ignore itself
+
+        #region NixInjectOptions
+        [Test]
+        public void AuthorizeSerializedFieldWithNixiAttributesOption_ShouldAllowSerializeWithNixiAttribute_OnCheckAndInjectAll()
+        {
+            AuthorizeSerializeField injectable = InjectableBuilder<AuthorizeSerializeField>.Create().Build();
+            injectable.gameObject.AddComponent<Slider>();
+            Assert.Null(injectable.Slider);
+
+            // Act
+            NixInjecter injecter = new NixInjecter(injectable, new NixInjectOptions
+            {
+                AuthorizeSerializedFieldWithNixiAttributes = true
+            });
+            injecter.CheckAndInjectAll();
+
+            // Check
+            Assert.NotNull(injectable.Slider);
+        }
+        #endregion NixInjectOptions
     }
 }

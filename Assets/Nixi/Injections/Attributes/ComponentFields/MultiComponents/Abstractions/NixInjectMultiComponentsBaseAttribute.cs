@@ -1,9 +1,10 @@
-﻿using Nixi.Injections.Attributes.Abstractions;
+﻿using Nixi.Injections.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
-namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions
+namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
 {
     /// <summary>
     /// Base attribute to represent a dependency injection on an enumerable of component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
@@ -15,11 +16,6 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)
         /// </summary>
         public abstract GameObjectLevel GameObjectLevel { get; }
-
-        /// <summary>
-        /// Lock the generation of the enumerableType to only one call
-        /// </summary>
-        private bool enumerableTypeGenerated = false;
 
         /// <summary>
         /// If the decorated field is an IEnumerable or a list, this represents his single generic type,
@@ -34,23 +30,19 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         /// <param name="componentField">Component field</param>
         public override void CheckIsValidAndBuildDataFromField(FieldInfo componentField)
         {
-            if (!componentField.FieldType.IsArray && !CheckIfGenericEnumerableWithOnlyOneGenericArgument(componentField))
+            if (!componentField.FieldType.IsArray
+                && !CheckIfGenericEnumerableOrList(componentField))
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, " +
-                                                 $"because it is not an array or IEnumerable/List (with a single generic argument) type while using decorator {GetType().Name}");
+                                                 $"because it is not an array or IEnumerable/List type while using decorator {GetType().Name}");
             }
 
-            // Generate and check EnumerableType
-            if (!enumerableTypeGenerated)
+            EnumerableType = GetEnumerableType(componentField);
+
+            if (!typeof(Component).IsAssignableFrom(EnumerableType)
+                && !EnumerableType.IsInterface)
             {
-                EnumerableType = GetEnumerableUniqueGenericInterfaceOrComponentTypeIfExist(componentField);
-
-                if (!IsComponent(EnumerableType) && !EnumerableType.IsInterface)
-                {
-                    throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, because enumerable type is not a component or an interface while using decorator {GetType().Name}");
-                }
-
-                enumerableTypeGenerated = true;
+                throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, because enumerable type is not a component or an interface while using decorator {GetType().Name}");
             }
         }
 
@@ -59,12 +51,9 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         /// </summary>
         /// <param name="genericField">Generic field to check</param>
         /// <returns>True if this a generic field is an IEnumerable with exactly one generic argument</returns>
-        private static bool CheckIfGenericEnumerableWithOnlyOneGenericArgument(FieldInfo genericField)
+        private static bool CheckIfGenericEnumerableOrList(FieldInfo genericField)
         {
             if (!genericField.FieldType.IsGenericType)
-                return false;
-
-            if (genericField.FieldType.GetGenericArguments().Length != 1)
                 return false;
 
             Type genericType = genericField.FieldType.GetGenericTypeDefinition();
@@ -78,7 +67,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstraction
         /// </summary>
         /// <param name="field">Field to check</param>
         /// <returns>Generic type of the enumerable if exists</returns>
-        private static Type GetEnumerableUniqueGenericInterfaceOrComponentTypeIfExist(FieldInfo field)
+        private static Type GetEnumerableType(FieldInfo field)
         {
             if (field.FieldType.IsArray)
                 return field.FieldType.GetElementType();

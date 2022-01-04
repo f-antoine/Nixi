@@ -1,5 +1,5 @@
-﻿using Nixi.Injections.Attributes.Abstractions;
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
+﻿using Nixi.Injections.Abstractions;
+using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Nixi.Injections.Attributes
+namespace Nixi.Injections
 {
     /// <summary>
     /// Attribute used to define a dependency injection in a component (or interface) field of a class instance derived from MonoBehaviourInjectable

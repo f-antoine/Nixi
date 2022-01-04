@@ -57,7 +57,7 @@ namespace Tests.TestTools
             Assert.That(warrior.Parasite, Is.Null);
 
             // Check not a component registered but a field
-            Assert.Throws<TestInjecterException>(() => testInjecter.GetComponent<Warrior>());
+            Assert.Throws<TestInjecterException>(() => testInjecter.GetComponent<Parasite>());
 
             Parasite parasite = ParasiteBuilder.Create().Build();
             testInjecter.InjectField(parasite);

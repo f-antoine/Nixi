@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 using System.Collections.Generic;

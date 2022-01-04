@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using Nixi.Injections.Injecters;
 using NixiTestTools.TestInjecterElements.Relations.Abstractions;
 using NixiTestTools.TestInjecterElements.Relations.Components;
@@ -7,7 +6,6 @@ using NixiTestTools.TestInjecterElements.Relations.EnumerableComponents;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -84,50 +82,32 @@ namespace NixiTestTools.TestInjecterElements
         /// Initialize the content of the list fieldInfo as empty
         /// </summary>
         /// <param name="enumerableFieldInfo">FieldInfo of the enumerable</param>
-        /// <param name="enumerableType">Type of enumerable associated to the FieldInfo of the enumerable/param>
+        /// <param name="enumerableType">Type of enumerable associated to the FieldInfo of the enumerable</param>
         private void InitEnumerableComponentField(FieldInfo enumerableFieldInfo, Type enumerableType)
         {
-            object value;
+            object value = null;
 
-            if (IsGenericList(enumerableFieldInfo.FieldType))
-            {
-                Type genericListType = typeof(List<>).MakeGenericType(enumerableType);
-                value = Activator.CreateInstance(genericListType);
-            }
-            else if (enumerableFieldInfo.FieldType.IsArray)
+            if (enumerableFieldInfo.FieldType.IsArray)
             {
                 value = Array.CreateInstance(enumerableType, 0);
             }
-            else if (IsEnumerable(enumerableFieldInfo.FieldType))
+            else if (enumerableFieldInfo.FieldType.IsGenericType)
             {
-                value = Enumerable.Empty<Component>();
+                Type genericTypeDefinition = enumerableFieldInfo.FieldType.GetGenericTypeDefinition();
+
+                // Build List for Enumerable or Enumerable
+                if (genericTypeDefinition == typeof(List<>)
+                    || genericTypeDefinition == typeof(IEnumerable<>))
+                {
+                    Type genericListType = typeof(List<>).MakeGenericType(enumerableType);
+                    value = Activator.CreateInstance(genericListType);
+                }
             }
-            else
-            {
+
+            if (value == null)
                 throw new NotImplementedException($"Cannot inject field with name {enumerableFieldInfo.Name}, type {enumerableFieldInfo.FieldType.Name} on an enumerable field with enumerable type {enumerableType.Name}");
-            }
 
             enumerableFieldInfo.SetValue(Instance, value, BindingFlags.InvokeMethod, new EnumerableComponentBinder(), CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// Check if type is a list
-        /// </summary>
-        /// <param name="type">Type to check</param>
-        /// <returns>True if this is a list</returns>
-        private static bool IsGenericList(Type type)
-        {
-            return (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>)));
-        }
-
-        /// <summary>
-        /// Check if type is an enumerable
-        /// </summary>
-        /// <param name="type">Type to check</param>
-        /// <returns>True if this is an enumerable</returns>
-        private static bool IsEnumerable(Type type)
-        {
-            return typeof(System.Collections.IEnumerable).IsAssignableFrom(type);
         }
 
         #region Component building

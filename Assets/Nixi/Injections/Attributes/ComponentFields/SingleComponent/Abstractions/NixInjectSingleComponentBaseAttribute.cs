@@ -1,7 +1,8 @@
-﻿using Nixi.Injections.Attributes.Abstractions;
+﻿using Nixi.Injections.Abstractions;
 using System.Reflection;
+using UnityEngine;
 
-namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions
+namespace Nixi.Injections.ComponentFields.SingleComponent.Abstractions
 {
     /// <summary>
     /// Base attribute to represent a dependency injection on a component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
@@ -22,7 +23,8 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstraction
                                                  $"it is only possible with NixInjectComponentsAttribute on an IEnumerable, List or array");
             }
 
-            if (!IsComponent(field.FieldType) && !field.FieldType.IsInterface)
+            if (!typeof(Component).IsAssignableFrom(field.FieldType)
+                && !field.FieldType.IsInterface)
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {field.Name} and type {field.FieldType.Name}, because it not a component or an interface while using decorator {GetType().Name}");
             }

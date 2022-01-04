@@ -1,5 +1,4 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Attributes;
 using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
 using ScriptExample.Game;

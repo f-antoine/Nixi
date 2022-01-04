@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Attributes;
+﻿using Nixi.Injections;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.AllParentsCases;
