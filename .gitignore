@@ -63,7 +63,6 @@ crashlytics-build.properties
 
 # Nixi DLL
 /DLL/*Nixi*
-/DLL/DLLUpdater/bin
-/DLL/DLLUpdater/obj
+/DLL/DLLUpdater/*
 /DLL/ScriptExample
 /DLL/Tests/
