@@ -17,6 +17,12 @@ namespace Tests.Injections
 {
     internal sealed class RecursiveInjectionTests : InjectableTestTemplate<GameHost>
     {
+        [SetUp]
+        public void InitTests()
+        {
+            ResetTemplate();
+        }
+
         [Test]
         public void RecursiveInjectionTests_ShouldGetGameObjectAtTwoLevels()
         {

@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections;
 using NixiTestTools.TestInjecterElements.Utils;
-using NUnit.Framework;
 using UnityEngine;
 
 namespace NixiTestTools
@@ -31,12 +30,21 @@ namespace NixiTestTools
         protected virtual string InstanceName => "";
 
         /// <summary>
+        /// If true (default value), constructor call will set once MainTested and MainInjecter (with method ResetTemplate())
+        /// <para/>It was made to avoid NUnit dependency with SetUp decorator
+        /// <para/>If you want to ResetTemplate() at each test with NUnit by example,
+        /// you have to create a method decorated with [SetUp] and call ResetTemplate() in it
+        /// </summary>
+        protected virtual bool SetTemplateWithConstructor => true;
+
+        /// <summary>
         /// Each mapping added into this container force a type to be used by his derived form during tests using TestInjecter, useful when working on abstract component injected with Nixi
         /// </summary>
         private AbstractComponentMappingContainer ComponentMappingContainer = null;
 
         /// <summary>
         /// Map a component type with a derived type into ComponentMappingContainer
+        /// <seealso cref="AbstractComponentMappingContainer"/>
         /// </summary>
         /// <typeparam name="TAbstract">Component key type</typeparam>
         /// <typeparam name="TImplementation">Implementation type</typeparam>
@@ -49,16 +57,30 @@ namespace NixiTestTools
         }
 
         /// <summary>
-        /// Create an instance of the test MonoBehaviourInjectable that we want to test as well as its TestInjecter which allows to expose the fields to test / mock with the Nixi approach
+        /// Create an instance of the MonoBehaviourInjectable that we want to test as well as its TestInjecter which allows to expose the fields to test / mock with the Nixi approach
+        /// <para/>If you want to ResetTemplate() at each test with NUnit by example,
+        /// you have to create a method decorated with [SetUp] and call ResetTemplate() in it
         /// </summary>
-        [SetUp]
-        public virtual void InitTests()
+        public void ResetTemplate()
         {
             MainTested = new GameObject().AddComponent<T>();
 
             MainInjecter = new TestInjecter(MainTested, InstanceName, ComponentMappingContainer);
 
             MainInjecter.CheckAndInjectAll();
+        }
+
+        /// <summary>
+        /// This constructor was made to avoid NUnit dependency, it will set MainTested instance and his TestInjecter
+        /// named MainInjecter using ResetTemplate() method only once.
+        /// <para/>If you want to ResetTemplate() at each test with NUnit by example,
+        /// you have to create a method decorated with [SetUp] and call ResetTemplate() in it
+        /// You can suppress the first call on ResetTemplate (in this constructor) by setting value on SetTemplateWithConstructor to false
+        /// </summary>
+        public InjectableTestTemplate()
+        {
+            if (SetTemplateWithConstructor)
+                ResetTemplate();
         }
     }
 }

@@ -7,10 +7,13 @@ namespace Tests.TestTools
 {
     internal sealed class AbstractComponentMappingContainerWithAttributesTests : InjectableTestTemplate<ExamplesWithAbstractComponent>
     {
-        public override void InitTests()
+        protected override bool SetTemplateWithConstructor => false;
+
+        [SetUp]
+        public void InitTests()
         {
             AddAbstractComponentMapping<AbstractComponentBase, ImplementationFromAbstract>();
-            base.InitTests();
+            ResetTemplate();
         }
 
         [Test]
