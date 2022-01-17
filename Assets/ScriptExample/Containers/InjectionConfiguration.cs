@@ -16,7 +16,7 @@ namespace ScriptExample.Containers
         private static void LinkFieldInjections()
         {
             NixiContainer.MapTransient<ITestInterface, TestImplementation>();
-            NixiContainer.MapSingle<ILifeBar, LifeBar>();
+            NixiContainer.MapSingleton<ILifeBar, LifeBar>();
         }
     }
 }

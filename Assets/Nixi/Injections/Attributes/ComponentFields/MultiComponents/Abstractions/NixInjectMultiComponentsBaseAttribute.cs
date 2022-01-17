@@ -7,24 +7,48 @@ using UnityEngine;
 namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
 {
     /// <summary>
-    /// Base attribute to represent a dependency injection on an enumerable of component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
-    /// <para/>It handles IEnumerable, arrays and Lists of components/interfaces
+    /// Attribute used to represent an Unity dependency injection to get an enumerable of UnityEngine.Component
+    /// (or to target multiple components that implement an interface type)
+    /// <para/>It handles IEnumerable, array and List
+    /// <para/>Attributes derived from this attribute must be used on a field in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
+    /// <para/>In tests, a component is created and you can get it with GetComponent
     /// </summary>
     public abstract class NixInjectMultiComponentsBaseAttribute : NixInjectComponentBaseAttribute
     {
         /// <summary>
-        /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)
+        /// Used to identify at which level the enumerable field of UnityEngine.Component (or interface attached 
+        /// to these components) are injected : current (on gameObject), parent (excluding current) or child (excluding current)
         /// </summary>
         public abstract GameObjectLevel GameObjectLevel { get; }
 
         /// <summary>
-        /// If the decorated field is an IEnumerable or a list, this represents his single generic type,
+        /// If the decorated field is an IEnumerable or a list, this represents its single generic type,
         /// if this is an array it returns element type
         /// </summary>
         public Type EnumerableType { get; private set; } = null;
 
         /// <summary>
-        /// Check if attribute decorate the right field.FieldType and setup data from component field into the nixi attribute component decorator
+        /// Define which Unity dependency injection method has to be called in order to get the components at the targeted level (current, child, parent)
+        /// <para/><see cref="GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
+        /// </summary>
+        protected abstract Func<MonoBehaviourInjectable, IEnumerable<Component>> MethodToGetComponents { get; }
+
+        /// <summary>
+        /// Find all the components which exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute 
+        /// using the corresponding Unity dependency injection method
+        /// </summary>
+        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
+        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
+        /// <returns>Components which exactly matches criteria of a NixInjectComponent injection using the corresponding
+        /// Unity dependency injection method</returns>
+        public override object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField)
+        {
+            return MethodToGetComponents(injectable);
+        }
+
+        /// <summary>
+        /// Check if the field decorated by this attribute (derived from NixInjectAbstractBaseAttribute) is valid and fill it
         /// <para/>This one prevents from decorating fields that aren't IEnumerable, List or array
         /// </summary>
         /// <param name="componentField">Component field</param>
@@ -42,15 +66,17 @@ namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
             if (!typeof(Component).IsAssignableFrom(EnumerableType)
                 && !EnumerableType.IsInterface)
             {
-                throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, because enumerable type is not a component or an interface while using decorator {GetType().Name}");
+                throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type " +
+                                                 $"{componentField.FieldType.Name}, because enumerable type is not a component or an " +
+                                                 $"interface while using decorator {GetType().Name}");
             }
         }
 
         /// <summary>
-        /// Check if a FieldInfo.FieldType is an IEnumerable and has exactly one generic argument (genericField must be check about field.FieldType.IsGenericType = true before)
+        /// Check if a FieldInfo.FieldType is an IEnumerable or a list
         /// </summary>
         /// <param name="genericField">Generic field to check</param>
-        /// <returns>True if this a generic field is an IEnumerable with exactly one generic argument</returns>
+        /// <returns>True if this a generic field is an IEnumerable or a List</returns>
         private static bool CheckIfGenericEnumerableOrList(FieldInfo genericField)
         {
             if (!genericField.FieldType.IsGenericType)
@@ -63,7 +89,8 @@ namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
         }
 
         /// <summary>
-        /// If field.FieldType is an array or an IEnumerable and his unique generic argument is an Interface or a Component, it returns this unique generic argument or array type, null if not
+        /// If field.FieldType is is an IEnumerable or a list, it returns its single generic type,
+        /// if this is an array it returns element type
         /// </summary>
         /// <param name="field">Field to check</param>
         /// <returns>Generic type of the enumerable if exists</returns>

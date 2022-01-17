@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injecters;
+﻿using Nixi.Injections.Injectors;
 using ScriptExample.Characters;
 using UnityEngine;
 
@@ -24,9 +24,9 @@ namespace Tests.Builders
             return parasite;
         }
 
-        internal NixInjecter BuildDefaultInjecter()
+        internal NixInjector BuildDefaultInjector()
         {
-            return new NixInjecter(parasite);
+            return new NixInjector(parasite);
         }
 
         internal ParasiteBuilder WithParentSorcerer()

@@ -1,42 +1,42 @@
-﻿using Nixi.Injections.Injecters;
-using System.Diagnostics.CodeAnalysis;
+﻿using Nixi.Injections.Injectors;
 using UnityEngine;
 
 namespace Nixi.Injections
 {
     /// <summary>
-    /// MonoBehaviour derived class created to use Nixi dependency injection on fields decorated with Nixi attributes
+    /// MonoBehaviour derived class created to use Nixi dependency injection and Unity dependency injection on fields decorated with Nixi attributes
     /// <list type="table">
     ///     <item>
-    ///         <term>Play mode usage</term>
-    ///         <description>NixInjecter passed in BuildInjections</description>
+    ///         <term>Play mode scene usage</term>
+    ///         <description>NixInjector passed in BuildInjections</description>
     ///     </item>
     ///     <item>
     ///         <list type="bullet">
     ///             <item>
     ///                 <term>Component fields</term>
-    ///                 <description>Marked with NixInjectComponentAttribute will be populated with Unity dependency injection</description>
+    ///                 <description>Marked with attributes derived from NixInjectComponentBaseAttribute will be populated with Unity dependency injection</description>
     ///             </item>
     ///             <item>
     ///                 <term>Non-Component fields</term>
-    ///                 <description>Marked with NixInjectAttribute will be populated with NixiContainer</description>
+    ///                 <description>Marked with attributes derived from NixInjectBaseAttribute will be populated with NixiContainer</description>
     ///             </item>
     ///         </list>
     ///     </item>
     ///     
     ///     <item>
-    ///         <term>InjectionTestTemplate usage</term>
-    ///         <description>TestInjecter passed in BuildInjections</description>
+    ///         <term>Tests usage (via InjectionTestTemplate)</term>
+    ///         <description>TestInjector passed in BuildInjections</description>
     ///     </item>
     ///     <item>
     ///         <list type="bullet">
     ///             <item>
     ///                 <term>Component fields</term>
-    ///                 <description>Marked with NixInjectComponentAttribute will be created, used to populate the field and registered in TestInjecter property of InjectionTestTemplate</description>
+    ///                 <description>Marked with attributes derived from NixInjectComponentBaseAttribute will be created, 
+    ///                 used to populate the field and registered in TestInjector property of InjectionTestTemplate</description>
     ///             </item>
     ///             <item>
     ///                 <term>Non-Component fields</term>
-    ///                 <description>Marked with NixInjectAttribute will be mockable, you can inject mock in it</description>
+    ///                 <description>Marked with attributes derived from NixInjectBaseAttribute will be mockable, you can inject mock in it</description>
     ///             </item>
     ///         </list>
     ///     </item>
@@ -45,17 +45,16 @@ namespace Nixi.Injections
     public abstract class MonoBehaviourInjectable : MonoBehaviour
     {
         /// <summary>
-        /// Allow to parameterized the injections options
+        /// Options available to parameterized the injections, default 
         /// </summary>
         protected virtual NixInjectOptions NixInjectOptions => null;
 
         /// <summary>
-        /// Awake method from Unity
+        /// Awake method from Unity will do the injection in Unity play mode scene
         /// </summary>
-        [ExcludeFromCodeCoverage] // Cannot be tested, protected Awake
         protected virtual void Awake()
         {
-            new NixInjecter(this, NixInjectOptions).CheckAndInjectAll();
+            new NixInjector(this, NixInjectOptions).CheckAndInjectAll();
         }
     }
 }

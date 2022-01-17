@@ -1,15 +1,18 @@
 ﻿using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
 using System;
-using System.Linq;
-using System.Reflection;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Nixi.Injections
 {
     /// <summary>
-    /// Attribute to represent a dependency injection on an enumerable of component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
+    /// Attribute used to represent an Unity dependency injection to get an enumerable of UnityEngine.Component
+    /// (or to target multiple components that implement an interface type)
     /// <para/>This one has logic using GetComponents from current gameObject
     /// <para/>It handles IEnumerable, arrays and Lists
+    /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
+    /// <para/>In tests, a component is created and you can get it with GetComponent
     /// <para/><see cref="NixInjectComponentsFromParentAttribute">Use NixInjectComponentsFromParentAttribute to handle parent only (excluding current gameObject)</see>
     /// <para/><see cref="NixInjectComponentsFromChildrenAttribute">Use NixInjectComponentsFromChildrenAttribute to handle children only (excluding current gameObject)</see>
     /// </summary>
@@ -17,22 +20,15 @@ namespace Nixi.Injections
     public sealed class NixInjectComponentsAttribute : NixInjectMultiComponentsBaseAttribute
     {
         /// <summary>
-        /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)
+        /// Used to identify at which level the fields are injected, this is one is at current level
         /// </summary>
         public override GameObjectLevel GameObjectLevel => GameObjectLevel.Current;
 
         /// <summary>
-        /// Find all the components which exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the Unity dependency injection method
+        /// Unity dependency injection method called for this attribute is : GetComponents
+        /// <para/><see cref="Injections.GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
-        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
-        /// <returns>Component(s) which exactly matches criteria of a NixInjectComponent injection using the Unity dependency injection method</returns>
-        public override object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField)
-        {
-            Component[] components = injectable.GetComponents(EnumerableType);
-
-            // ToList cover all cases (thanks to ComponentBinder)
-            return components.ToList();
-        }
+        protected override Func<MonoBehaviourInjectable, IEnumerable<Component>> MethodToGetComponents
+            => (injectable) => injectable.GetComponents(EnumerableType);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Nixi.Injections;
-using Nixi.Injections.Injecters;
+using Nixi.Injections.Injectors;
 using NixiTestTools;
 using UnityEngine;
 
@@ -18,14 +18,14 @@ namespace Tests.Builders
             return new GameObject($"{typeof(T).Name}Name").AddComponent<T>();
         }
 
-        internal NixInjecter BuildNixInjecter()
+        internal NixInjector BuildNixInjector()
         {
-            return new NixInjecter(new GameObject($"{typeof(T).Name}Name").AddComponent<T>());
+            return new NixInjector(new GameObject($"{typeof(T).Name}Name").AddComponent<T>());
         }
 
-        internal TestInjecter BuildTestInjecter()
+        internal TestInjector BuildTestInjector()
         {
-            return new TestInjecter(new GameObject($"{typeof(T).Name}Name").AddComponent<T>());
+            return new TestInjector(new GameObject($"{typeof(T).Name}Name").AddComponent<T>());
         }
     }
 }

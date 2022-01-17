@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injecters;
+﻿using Nixi.Injections.Injectors;
 using NixiTestTools;
 using ScriptExample.Characters;
 using UnityEngine;
@@ -24,14 +24,14 @@ namespace Tests.Builders
             return sorcerer;
         }
 
-        internal NixInjecter BuildNixInjecter()
+        internal NixInjector BuildNixInjector()
         {
-            return new NixInjecter(sorcerer);
+            return new NixInjector(sorcerer);
         }
 
-        internal TestInjecter BuildTestInjecter()
+        internal TestInjector BuildTestInjector()
         {
-            return new TestInjecter(sorcerer);
+            return new TestInjector(sorcerer);
         }
 
         internal SorcererBuilder WithSkill()

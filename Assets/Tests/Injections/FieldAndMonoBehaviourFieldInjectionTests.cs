@@ -24,7 +24,7 @@ namespace Tests.Injections
             fieldMock.SetupGet(x => x.ValueToRetrieve).Returns(1).Verifiable();
 
             // Act
-            MainInjecter.InjectField(fieldMock.Object, fieldName);
+            MainInjector.InjectField(fieldMock.Object, fieldName);
 
             // Assert
             Assert.That(MainTested.GetInterfaceFieldFromName(fieldName), Is.Not.Null);
@@ -40,7 +40,7 @@ namespace Tests.Injections
         [TestCase("publicChildSkill")]
         public void ComponentFieldInjection_ShouldBeFilledAndAccessible_WhatEverVisibilityLevel(string fieldName)
         {
-            Skill skillToFind = MainInjecter.GetComponent<Skill>(fieldName);
+            Skill skillToFind = MainInjector.GetComponent<Skill>(fieldName);
             Assert.That(skillToFind, Is.Not.Null);
             Assert.That(skillToFind.name, Is.EqualTo(fieldName));
         }

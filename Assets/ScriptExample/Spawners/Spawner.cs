@@ -11,7 +11,7 @@ namespace ScriptExample.Spawners
             if (!gameObjectLevel.HasValue)
                 return mobEnumerable;
             else if (gameObjectLevel.Value == GameObjectLevel.Children)
-                return mobEnumerableChilds;
+                return mobEnumerableChildren;
             else
                 return mobEnumerableParent;
         }
@@ -22,7 +22,7 @@ namespace ScriptExample.Spawners
             if (!gameObjectLevel.HasValue)
                 return mobList;
             else if (gameObjectLevel.Value == GameObjectLevel.Children)
-                return mobListChilds;
+                return mobListChildren;
             else
                 return mobListParent;
         }
@@ -33,7 +33,7 @@ namespace ScriptExample.Spawners
             if (!gameObjectLevel.HasValue)
                 return mobArray;
             else if (gameObjectLevel.Value == GameObjectLevel.Children)
-                return mobArrayChilds;
+                return mobArrayChildren;
             else
                 return mobArrayParent;
         }
@@ -71,19 +71,19 @@ namespace ScriptExample.Spawners
         public Mob[] MobArray => mobArray;
         #endregion Current
 
-        #region Childs
+        #region Children
         [NixInjectComponentsFromChildren]
-        private List<Mob> mobListChilds;
-        public List<Mob> MobListChilds => mobListChilds;
+        private List<Mob> mobListChildren;
+        public List<Mob> MobListChildren => mobListChildren;
 
         [NixInjectComponentsFromChildren]
-        private IEnumerable<Mob> mobEnumerableChilds;
-        public IEnumerable<Mob> MobEnumerableChilds => mobEnumerableChilds;
+        private IEnumerable<Mob> mobEnumerableChildren;
+        public IEnumerable<Mob> MobEnumerableChildren => mobEnumerableChildren;
 
         [NixInjectComponentsFromChildren]
-        private Mob[] mobArrayChilds;
-        public Mob[] MobArrayChilds => mobArrayChilds;
-        #endregion Childs
+        private Mob[] mobArrayChildren;
+        public Mob[] MobArrayChildren => mobArrayChildren;
+        #endregion Children
 
         public void SpawnOnParent()
         {
@@ -100,7 +100,7 @@ namespace ScriptExample.Spawners
         public void SpawnOnChild()
         {
             Mob newMob = Instantiate(mobPrefab);
-            mobListChilds.Add(newMob);
+            mobListChildren.Add(newMob);
         }
     }
 }

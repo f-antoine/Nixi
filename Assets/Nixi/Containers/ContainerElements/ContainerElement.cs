@@ -3,7 +3,7 @@
 namespace Nixi.Containers.ContainerElements
 {
     /// <summary>
-    /// Represent a container element, this aims to associate in a one way direction a KeyType with a ValueType
+    /// Represents a container element, this is intended to associate in a one way direction a KeyType with a ValueType
     /// </summary>
     internal abstract class ContainerElement
     {

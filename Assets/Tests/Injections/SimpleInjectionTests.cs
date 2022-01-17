@@ -1,5 +1,5 @@
 using Moq;
-using Nixi.Injections.Injecters;
+using Nixi.Injections.Injectors;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
@@ -14,8 +14,8 @@ namespace Tests.Injections
         [Test]
         public void GameObjectInjection_ShouldRetrieveGameObjectElements()
         {
-            Skill sorcererSkill = MainInjecter.GetComponent<Skill>("magicSkill");
-            Skill characterSkill = MainInjecter.GetComponent<Skill>("attackSkill");
+            Skill sorcererSkill = MainInjector.GetComponent<Skill>("magicSkill");
+            Skill characterSkill = MainInjector.GetComponent<Skill>("attackSkill");
 
             Assert.That(sorcererSkill.name, Is.EqualTo("SorcererChildGameObjectName"));
             Assert.That(characterSkill.name, Is.EqualTo(MainTested.name));
@@ -24,7 +24,7 @@ namespace Tests.Injections
         [Test]
         public void GameObjectInjection_ShouldThrowExceptionWhenReBuildInjections()
         {   
-            Assert.Throws<NixInjecterException>(() => MainInjecter.CheckAndInjectAll());
+            Assert.Throws<NixInjectorException>(() => MainInjector.CheckAndInjectAll());
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace Tests.Injections
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
 
             // Act + check value returned is same as injected
-            ITestInterface interfaceMockInjected = MainInjecter.InjectField(testMock.Object);
+            ITestInterface interfaceMockInjected = MainInjector.InjectField(testMock.Object);
 
             // Assert
             Assert.That(MainTested.TestInterface.ValueToRetrieve, Is.EqualTo(4));
@@ -53,7 +53,7 @@ namespace Tests.Injections
             testMock.SetupGet(x => x.ValueToRetrieve).Returns(4).Verifiable();
 
             // Act + check value returned is same as injected
-            ITestInterface interfaceMockInjected = MainInjecter.InjectField(testMock.Object, "testInterface");
+            ITestInterface interfaceMockInjected = MainInjector.InjectField(testMock.Object, "testInterface");
 
             // Assert
             Assert.That(MainTested.TestInterface.ValueToRetrieve, Is.EqualTo(4));
@@ -72,7 +72,7 @@ namespace Tests.Injections
             soInfosToInject.CharaName = "TestCharaName";
             soInfosToInject.ManaMax = 20;
 
-            MainInjecter.InjectField(soInfosToInject);
+            MainInjector.InjectField(soInfosToInject);
 
             Assert.That(MainTested.SOInfos, Is.Not.Null);
             Assert.That(MainTested.SOInfos.CharaName, Is.EqualTo(soInfosToInject.CharaName));
@@ -89,7 +89,7 @@ namespace Tests.Injections
             soInventoryBag.BagName = "Pocket";
             soInventoryBag.NbSlot = 9;
 
-            MainInjecter.InjectField(soInventoryBag, "firstInventoryBagInfos");
+            MainInjector.InjectField(soInventoryBag, "firstInventoryBagInfos");
 
             Assert.That(MainTested.SecondInventoryBagInfos, Is.Null);
             Assert.That(MainTested.FirstInventoryBagInfos, Is.Not.Null);

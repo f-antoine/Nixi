@@ -1,4 +1,4 @@
-﻿using NixiTestTools.TestInjecterElements.Utils;
+﻿using NixiTestTools.TestInjectorElements.Utils;
 using NUnit.Framework;
 using ScriptExample.AbstractMapping;
 using System;

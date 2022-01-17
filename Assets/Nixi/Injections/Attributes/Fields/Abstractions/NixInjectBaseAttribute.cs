@@ -3,7 +3,11 @@
 namespace Nixi.Injections.Abstractions
 {
     /// <summary>
-    /// Base attribute to derive, used to trigger the injection in a non-component field in a class derived from MonoBehaviourInjectable
+    /// Base attribute thats represent a classic dependency injection from NixiContainer
+    /// <para/>All attributes derived from this base attribute must be used on a non-component field
+    /// in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses NixiContainer to fill it
+    /// <para/>In tests, make the field mockable with TestInjector.InjectField 
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public abstract class NixInjectBaseAttribute : NixInjectAbstractBaseAttribute

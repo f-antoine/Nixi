@@ -9,16 +9,16 @@ namespace Tests.TestTools.InjectableTestTemplateCases
         protected override bool SetTemplateWithConstructor => false;
 
         [Test]
-        public void Constructor_ShouldNot_LoadMainTestedAndMainInjecter()
+        public void Constructor_ShouldNot_LoadMainTestedAndMainInjector()
         {
             Assert.Null(MainTested);
-            Assert.Null(MainInjecter);
+            Assert.Null(MainInjector);
 
             // Fill for the first time
             ResetTemplate();
 
             Assert.NotNull(MainTested);
-            Assert.NotNull(MainInjecter);
+            Assert.NotNull(MainInjector);
             Assert.NotNull(MainTested.AttackSkill); // Check injected
         }
     }

@@ -6,9 +6,13 @@ using UnityEngine;
 namespace Nixi.Injections
 {
     /// <summary>
-    /// Attribute to represent a dependency injection on a component (or interface) field of an instance of a class derived from MonoBehaviourInjectable
-    /// <para/>This one has logic using GetComponentsInChildren from current gameObject (excluding itself)
-    /// <para/>It handles single component/interface field
+    /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component
+    /// (or to target a component that implement an interface type)
+    /// <para/>This one is used to retrieve all the UnityEngine.Component from GetComponentsInChildren call on current GameObject (excluding itself)
+    /// and get the one that matches the type and gameObjectName
+    /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
+    /// <para/>In tests, a component is created and you can get it with GetComponent
     /// <para/><see cref="NixInjectComponentAttribute">Use NixInjectComponentAttribute to use GetComponents from current gameObject</see>
     /// <para/><see cref="NixInjectComponentFromParentAttribute">Use NixInjectComponentFromParentAttribute to handle parent only (excluding current gameObject)</see>
     /// </summary>
@@ -16,13 +20,21 @@ namespace Nixi.Injections
     public sealed class NixInjectComponentFromChildrenAttribute : NixInjectComponentExcludingItselfBaseAttribute
     {
         /// <summary>
-        /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)
+        /// Define which Unity dependency injection method has to be called in order to get the components at the targeted level (current, child, parent)
+        /// <para/>This one is at child level (executing GetComponentsInChildren from current GameObject excluding itself)
+        /// <para/><see cref="GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
         protected override Func<MonoBehaviourInjectable, FieldInfo, Component[]> MethodToGetComponents
             => (injectable, componentFieldInfo) => injectable.GetComponentsInChildren(componentFieldInfo.FieldType, IncludeInactive);
 
         /// <summary>
-        /// Target single component that match gameObjectNameToFind and type returned from Unity method : GetComponentsInChildren, it excludes itself
+        /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component
+        /// (or to target a component that implement an interface type)
+        /// <para/>This one is used to retrieve all the UnityEngine.Component from GetComponentsInChildren call on current GameObject (excluding itself)
+        /// and get the one that matches the type and gameObjectName
+        /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+        /// <para/><see cref="NixInjectComponentAttribute">Use NixInjectComponentAttribute to use GetComponents from current gameObject</see>
+        /// <para/><see cref="NixInjectComponentFromParentAttribute">Use NixInjectComponentFromParentAttribute to handle parent only (excluding current gameObject)</see>
         /// </summary>
         /// <param name="gameObjectName">Name of the GameObject to find</param>
         /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>

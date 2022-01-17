@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injecters;
+﻿using Nixi.Injections.Injectors;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters.Broken;
@@ -9,53 +9,53 @@ namespace Tests.Injections
     internal sealed class WrongNixiAttributesTests
     {
         [Test]
-        public void TestInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
+        public void TestInjector_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
         {
             SorcererWithWrongNixInjectComponent wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectComponent>();
 
-            TestInjecter injecter = new TestInjecter(wrongSorcerer);
+            TestInjector Injector = new TestInjector(wrongSorcerer);
 
-            Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
+            Assert.Throws<TestInjectorException>(() => Injector.CheckAndInjectAll());
         }
 
         [Test]
-        public void TestInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttribute()
+        public void TestInjector_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttribute()
         {
             SorcererWithWrongNixInject wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInject>();
 
-            TestInjecter injecter = new TestInjecter(wrongSorcerer);
+            TestInjector Injector = new TestInjector(wrongSorcerer);
 
-            Assert.Throws<TestInjecterException>(() => injecter.CheckAndInjectAll());
+            Assert.Throws<TestInjectorException>(() => Injector.CheckAndInjectAll());
         }
 
         [Test]
-        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
+        public void NixInjector_ShouldThrowExceptionWhen_Injecting_WrongNixInjectComponentAttribute()
         {
             SorcererWithWrongNixInjectComponent wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectComponent>();
 
-            NixInjecter injecter = new NixInjecter(wrongSorcerer);
+            NixInjector Injector = new NixInjector(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+            Assert.Throws<NixInjectorException>(() => Injector.CheckAndInjectAll());
         }
 
         [Test]
-        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnComponent()
+        public void NixInjector_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnComponent()
         {
             SorcererWithWrongNixInject wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInject>();
 
-            NixInjecter injecter = new NixInjecter(wrongSorcerer);
+            NixInjector Injector = new NixInjector(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+            Assert.Throws<NixInjectorException>(() => Injector.CheckAndInjectAll());
         }
 
         [Test]
-        public void NixInjecter_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnNotInterface()
+        public void NixInjector_ShouldThrowExceptionWhen_Injecting_WrongNixInjectAttributeOnNotInterface()
         {
             SorcererWithWrongNixInjectNotInterface wrongSorcerer = new GameObject().AddComponent<SorcererWithWrongNixInjectNotInterface>();
 
-            NixInjecter injecter = new NixInjecter(wrongSorcerer);
+            NixInjector Injector = new NixInjector(wrongSorcerer);
 
-            Assert.Throws<NixInjecterException>(() => injecter.CheckAndInjectAll());
+            Assert.Throws<NixInjectorException>(() => Injector.CheckAndInjectAll());
         }
     }
 }

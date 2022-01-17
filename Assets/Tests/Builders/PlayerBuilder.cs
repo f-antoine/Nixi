@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injecters;
+﻿using Nixi.Injections.Injectors;
 using NixiTestTools;
 using ScriptExample.Characters;
 using ScriptExample.Players;
@@ -25,14 +25,14 @@ namespace Tests.Builders
             return player;
         }
 
-        internal NixInjecter BuildDefaultInjecter()
+        internal NixInjector BuildDefaultInjector()
         {
-            return new NixInjecter(player);
+            return new NixInjector(player);
         }
 
-        internal TestInjecter BuildTestInjecter()
+        internal TestInjector BuildTestInjector()
         {
-            return new TestInjecter(player);
+            return new TestInjector(player);
         }
 
         internal PlayerBuilder WithSorcerer(Sorcerer sorcerer)

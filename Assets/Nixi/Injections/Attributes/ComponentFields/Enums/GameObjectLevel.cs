@@ -1,7 +1,8 @@
 ﻿namespace Nixi.Injections
 {
     /// <summary>
-    /// Used to identify at which level the fields are injected : current, parent (excluding current) or child (excluding current)
+    /// Used to identify at which level the enumerable field of UnityEngine.Component (or interface attached 
+    /// to these components) are injected : current (on gameObject), parent (excluding current) or child (excluding current)
     /// </summary>
     public enum GameObjectLevel
     {
