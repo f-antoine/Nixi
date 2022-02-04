@@ -28,7 +28,7 @@ There are specific field decorators (named Nixi attributes), with which it is po
 
 The Nixi attributes are intended to be used during **play mode scene** and can also be reused in tests to follow the evolution of these fields and/or mock where it is useful, including non-public fields.
 
-These reuses and accesses during testing are intended to simulate and verify Unity context (GetComponent, GetComponentInChildren, etc.), as well as to simulate interfaces that have been decorated for injection from NixiContainer (or decorated with SerializeField). This is only allowed for these cases, no others.
+These reuses and accesses during testing are intended to simulate and verify Unity context (GetComponent, GetComponentInChildren, etc.), as well as to mock interfaces that have been decorated for the injections from NixiContainer or to mock any field decorated with SerializeField. This is only allowed for these cases, no others.
 
 # License
 

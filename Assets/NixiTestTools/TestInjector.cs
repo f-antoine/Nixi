@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace NixiTestTools
 {
+    // TODO : Check if this must be derived from NixInjectorMonoBehaviour
     /// <summary>
     /// Test way to handle all injections of fields decorated with Nixi attributes from a class derived from MonoBehaviourInjectable during 
     /// test execution
@@ -33,7 +34,7 @@ namespace NixiTestTools
     /// will be stored into the InjectablesContainer.
     /// <para/>This is done recursively.
     /// </summary>
-    public sealed class TestInjector : NixInjectorBase
+    public sealed class TestInjector : NixInjector
     {
         /// <summary>
         /// Container to handle TestInjector instances, it is used to inject fields or GetComponent from fields/root instantiated during the tests injections
@@ -171,6 +172,7 @@ namespace NixiTestTools
             }
         }
 
+        // TODO : Check to merge InjectFields (TestInjector, and other ?)
         /// <summary>
         /// Registers all Non-Component fields (decorated with attributes derived from NixInjectBaseAttribute or with UnityEngine.SerializeField)
         /// into fieldInjectionHandler to expose them as mockable
@@ -472,7 +474,7 @@ namespace NixiTestTools
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjectorException($"Cannot ReadExposedField because {e.Message}", mainInjectable);
+                throw new TestInjectorException($"Cannot ReadField because {e.Message}", mainInjectable);
             }
         }
 
@@ -494,7 +496,7 @@ namespace NixiTestTools
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjectorException($"Cannot ReadExposedField because {e.Message}", mainInjectable);
+                throw new TestInjectorException($"Cannot ReadField because {e.Message}", mainInjectable);
             }
         }
 

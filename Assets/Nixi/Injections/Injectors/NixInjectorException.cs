@@ -10,8 +10,8 @@ namespace Nixi.Injections.Injectors
     {
         internal NixInjectorException() { }
 
-        internal NixInjectorException(string reason, MonoBehaviourInjectable injectable)
-            : base($"Error during nixi injection resolution on GameObject named {injectable.name} (with type {injectable.GetType().Name})." +
+        internal NixInjectorException(string reason, string injectableName, Type injectableType)
+            : base($"Error during nixi injection resolution on injectable with name {injectableName} and with type {injectableType.Name}." +
                    $"{Environment.NewLine}Reason : {reason}")
         {
         }
