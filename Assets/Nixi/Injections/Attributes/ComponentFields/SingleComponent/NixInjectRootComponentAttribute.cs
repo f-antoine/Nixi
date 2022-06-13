@@ -3,7 +3,6 @@ using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -27,7 +26,7 @@ namespace Nixi.Injections
         /// <summary>
         /// True if constructor with subGameObjectName is used, it means we are targeting a child gameObject from RootGameObject
         /// </summary>
-        private bool isTargetingChildFromRoot => !string.IsNullOrEmpty(SubGameObjectName);
+        private bool IsTargetingChildFromRoot => !string.IsNullOrEmpty(SubGameObjectName);
 
         /// <summary>
         /// Name of the root GameObject to find
@@ -48,6 +47,24 @@ namespace Nixi.Injections
         /// Define if GetComponentsInChildren method calls with Unity dependency injection way include inactive GameObject in the search or not
         /// </summary>
         public bool IncludeInactive { get; private set; }
+
+        /// <summary>
+        /// TargetName composed with RootGameObjectName and SubGameObjectName if this parameters was passed from constructor
+        /// </summary>
+        private string FullTargetName
+        {
+            get
+            {
+                string targetName = $"Root = {RootGameObjectName}";
+
+                if (!string.IsNullOrEmpty(SubGameObjectName))
+                {
+                    targetName += $", Child = {SubGameObjectName}";
+                }
+
+                return targetName;
+            }
+        }
 
         /// <summary>
         /// Attribute used to represent an Unity dependency injection on a single UnityEngine.Component
@@ -84,23 +101,21 @@ namespace Nixi.Injections
         }
 
         /// <summary>
-        /// Finds the component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method
+        /// Finds the component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method and parameters previously registered
         /// <para/>This one retrieves all the root GameObjects of the current scene, then tries to find the one whose name matches
         /// the values contained in RootGameObjectName
         /// <para/>If SubGameObjectName is filled, then it executes GetComponentsInChildren method on the RootGameObject found (excluding itself).
         /// The result is filtered to find the GameObject that has the correct GameObjectType and SubGameObjectName and is used to fill the field
         /// <para/>If not, the RootGameObject found must match GameObjectType and this is the one used to fill the field
         /// </summary>
-        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <returns>Unique component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
-        public override object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField)
+        protected override object GetComponentResultFromParameters()
         {
             GameObject targetedRootGameObject = GetTargetedRootGameObject();
 
-            IEnumerable<Component> componentsFound = GetComponentsFromRootParameters(targetedRootGameObject, componentField.FieldType);
+            IEnumerable<Component> componentsFound = GetComponentsFromRootParameters(targetedRootGameObject);
 
-            return CheckAndGetSingleComponent(targetedRootGameObject, componentField, componentsFound);
+            return CheckAndGetSingleComponent(targetedRootGameObject, componentsFound);
         }
 
         /// <summary>
@@ -116,13 +131,13 @@ namespace Nixi.Injections
 
             if (nbRootGameObjectWithNameFound == 0)
             {
-                throw new NixiAttributeException($"No root GameObject with name {RootGameObjectName} was found in the root GameObjects");
+                throw new NixiAttributeException($"No root GameObject with name {RootGameObjectName} was found in the root GameObjects", typeof(GameObject), FullTargetName);
             }
 
             if (nbRootGameObjectWithNameFound > 1)
             {
                 throw new NixiAttributeException($"Multiple GameObjects with name {RootGameObjectName} were found in the root GameObjects, " +
-                                                 $"cannot define which one to use");
+                                                 $"cannot define which one to use", typeof(GameObject), FullTargetName);
             }
 
             return rootGameObjectsWithName.Single();
@@ -135,63 +150,72 @@ namespace Nixi.Injections
         /// <para/>If not, the RootGameObject found must match GameObjectType and this is the one used to fill the field
         /// </summary>
         /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
-        /// <param name="gameObjectTypeToFind">GameObject type to find</param>
         /// <returns>All components returned from the method associated</returns>
-        private IEnumerable<Component> GetComponentsFromRootParameters(GameObject targetedRootGameObject, Type gameObjectTypeToFind)
+        private IEnumerable<Component> GetComponentsFromRootParameters(GameObject targetedRootGameObject)
         {
-            if (isTargetingChildFromRoot)
+            // TODO : Separation in two methods for here and CheckAndGetSingleComponent at line if (isTargetingChildFromRoot)
+            if (IsTargetingChildFromRoot)
             {
-                return targetedRootGameObject.GetComponentsInChildren(gameObjectTypeToFind, IncludeInactive)
+                return targetedRootGameObject.GetComponentsInChildren(FieldType, IncludeInactive)
                                              .Where(x => x.gameObject.GetInstanceID() != targetedRootGameObject.GetInstanceID());
             }
-            return targetedRootGameObject.GetComponents(gameObjectTypeToFind);
+            return targetedRootGameObject.GetComponents(FieldType);
         }
 
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection method call
         /// </summary>
         /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
-        private Component CheckAndGetSingleComponent(GameObject targetedRootGameObject, FieldInfo componentField, IEnumerable<Component> componentsFound)
+        private Component CheckAndGetSingleComponent(GameObject targetedRootGameObject, IEnumerable<Component> componentsFound)
         {
-            if (!componentsFound.Any())
+            
+
+            // TODO : Separation in two methods for here and CheckAndGetSingleComponent at line if (isTargetingChildFromRoot)
+            if (IsTargetingChildFromRoot)
             {
-                throw new NixiAttributeException($"No component with type {componentField.FieldType.Name} was found on root GameObject with " +
-                                                 $"name {targetedRootGameObject.name} to fill field with name {componentField.Name}");
+                if (!componentsFound.Any())
+                {
+                    throw new NixiAttributeException($"No component with type {FieldType.Name} was found on root GameObject with " +
+                                                     $"name {RootGameObjectName} and child name {SubGameObjectName} to fill field with name {FieldName}",
+                                                     FieldType, FullTargetName);
+                }
+
+                return CheckAndGetUniqueResultFromChildGameObjectNameFromRoot(targetedRootGameObject, componentsFound);
             }
 
-            if (isTargetingChildFromRoot)
+            if (!componentsFound.Any())
             {
-                return CheckAndGetUniqueResultFromChildGameObjectNameFromRoot(targetedRootGameObject, componentField, componentsFound);
+                throw new NixiAttributeException($"No component with type {FieldType.Name} was found on root GameObject with " +
+                                                 $"name {RootGameObjectName} to fill field with name {FieldName}", FieldType, FullTargetName);
             }
-            return CheckAndGetUniqueResultTypeFromRoot(targetedRootGameObject, componentField, componentsFound);
+
+            return CheckAndGetUniqueResultTypeFromRoot(targetedRootGameObject, componentsFound);
         }
 
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection GetComponentsInChildren call
         /// </summary>
         /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
-        private Component CheckAndGetUniqueResultFromChildGameObjectNameFromRoot(GameObject targetedRootGameObject, FieldInfo componentField, IEnumerable<Component> componentsFound)
+        private Component CheckAndGetUniqueResultFromChildGameObjectNameFromRoot(GameObject targetedRootGameObject, IEnumerable<Component> componentsFound)
         {
             IEnumerable<Component> componentsWithName = componentsFound.Where(x => x.name == SubGameObjectName);
 
             if (!componentsWithName.Any())
             {
-                throw new NixiAttributeException($"Components were found with type {componentField.FieldType.Name} but not with gameObject" +
-                    $" name {SubGameObjectName} on root GameObject with name {targetedRootGameObject.name} to fill field with name {componentField.Name}");
+                throw new NixiAttributeException($"Components were found with type {FieldType.Name} but not with gameObject " +
+                                                 $"name {SubGameObjectName} on root GameObject with name {targetedRootGameObject.name} to fill field with name {FieldName}", FieldType, FullTargetName); ;
             }
 
             int nbFound = componentsWithName.Count();
             if (nbFound > 1)
             {
-                throw new NixiAttributeException($"Multiple components were found with type {componentField.FieldType.Name} and with " +
-                    $"gameObject name {SubGameObjectName} on root GameObject with name {targetedRootGameObject.name} to fill field with " +
-                    $"name {componentField.Name}, could not define which one should be used ({nbFound} found instead of just one)");
+                throw new NixiAttributeException($"Multiple components were found with type {FieldType.Name} and with " +
+                                                 $"gameObject name {SubGameObjectName} on root GameObject with name {targetedRootGameObject.name} to fill field with " +
+                                                 $"name {FieldName}, could not define which one should be used ({nbFound} found instead of just one)", FieldType, FullTargetName);
             }
 
             return componentsWithName.Single();
@@ -201,17 +225,16 @@ namespace Nixi.Injections
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection GetComponent call
         /// </summary>
         /// <param name="targetedRootGameObject">Unique root GameObject named with the value from RootGameObjectName</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
-        private Component CheckAndGetUniqueResultTypeFromRoot(GameObject targetedRootGameObject, FieldInfo componentField, IEnumerable<Component> componentsFound)
+        private Component CheckAndGetUniqueResultTypeFromRoot(GameObject targetedRootGameObject, IEnumerable<Component> componentsFound)
         {
             int nbFound = componentsFound.Count();
             if (nbFound > 1)
             {
-                throw new NixiAttributeException($"Multiple components were found with type {componentField.FieldType.Name} on root " +
-                                                 $"GameObject with name {targetedRootGameObject.name} to fill field with name {componentField.Name}, " +
-                                                 $"could not define which one should be used ({nbFound} found instead of just one)");
+                throw new NixiAttributeException($"Multiple components were found with type {FieldType.Name} on root " +
+                                                 $"GameObject with name {targetedRootGameObject.name} to fill field with name {FieldName}, " +
+                                                 $"could not define which one should be used ({nbFound} found instead of just one)", FieldType, FullTargetName);
             }
 
             return componentsFound.Single();

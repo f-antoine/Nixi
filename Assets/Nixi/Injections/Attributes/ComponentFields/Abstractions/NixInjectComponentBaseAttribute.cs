@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection;
+using UnityEngine;
 
 namespace Nixi.Injections.Abstractions
 {
@@ -17,12 +17,33 @@ namespace Nixi.Injections.Abstractions
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public abstract class NixInjectComponentBaseAttribute : NixInjectAbstractBaseAttribute
     {
+        protected Component Target { get; private set; }
+        protected Type FieldType { get; private set; }
+        protected string FieldName { get; private set; }
+
         /// <summary>
         /// Finds the component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method
         /// </summary>
-        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
+        /// <param name="target">Instance of the MonoBehaviourInjectable</param>
+        /// <param name="fieldType">Type of field</param>
+        /// <param name="fieldName">Name of field</param>
         /// <returns>Component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
-        public abstract object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField);
+        public object GetComponentResult(Component target, Type fieldType, string fieldName)
+        {
+            Target = target;
+            FieldType = fieldType;
+            FieldName = fieldName;
+
+            return GetComponentResultFromParameters();
+        }
+
+        /// <summary>
+        /// Finds the component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method and parameters previously registered
+        /// </summary>
+        /// <param name="target">Instance of the MonoBehaviourInjectable</param>
+        /// <param name="fieldType">Type of field</param>
+        /// <param name="fieldName">Name of field</param>
+        /// <returns>Component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
+        protected abstract object GetComponentResultFromParameters();
     }
 }

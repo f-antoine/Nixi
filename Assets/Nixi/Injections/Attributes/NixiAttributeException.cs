@@ -8,11 +8,19 @@ namespace Nixi.Injections
     [Serializable]
     public sealed class NixiAttributeException : Exception
     {
-        internal NixiAttributeException() { }
+        public string Reason { get; private set; }
+        public Type TargetType { get; private set; }
+        public string TargetName { get; private set; }
 
-        internal NixiAttributeException(string reason)
-            : base(reason)
+        public NixiAttributeException() { }
+
+        // TODO : Check if start every message with "cannot inject field..." ? With the Injector Name ?
+        public NixiAttributeException(string reason, Type targetType, string targetName)
+            : base($"{reason}. TargetType {targetType.Name}, TargetName : {targetName}")
         {
+            Reason = Message;
+            TargetType = targetType;
+            TargetName = targetName;
         }
     }
 }

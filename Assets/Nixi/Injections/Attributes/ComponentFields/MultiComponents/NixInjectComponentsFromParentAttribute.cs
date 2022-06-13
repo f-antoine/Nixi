@@ -35,7 +35,7 @@ namespace Nixi.Injections
         /// Unity dependency injection method called for this attribute is : GetComponentsInParent (excluding itself)
         /// <para/><see cref="Injections.GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
-        protected override Func<MonoBehaviourInjectable, IEnumerable<Component>> MethodToGetComponents
+        protected override Func<Component, IEnumerable<Component>> MethodToGetComponents
             => (injectable) => injectable.GetComponentsInParent(EnumerableType, IncludeInactive)
                                          .Where(x => x.gameObject.GetInstanceID() != injectable.gameObject.GetInstanceID());
     }

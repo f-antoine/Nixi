@@ -3,8 +3,11 @@ using System;
 
 namespace NixiTestTools
 {
+    // TODO : How to pass data if constructor require a call on a NixInjectFromContainer component in TestInjector ?
     // TODO : Pass to v1.1.0 (dll metadata + unity file)
+    // TODO : Rename MainTestedConstructionMethod / ForceMainTestedConstructionMethod, not easy to use when MainTested is written
     // TODO : Comment
+    // TODO : Update script on documentation for protected set MainTested / MainInjector
     public abstract class InjectableOnlyFromContainerTestTemplate<T>
         where T : OnlyFromContainerInjectable
     {
@@ -13,10 +16,10 @@ namespace NixiTestTools
         protected Func<T> ForceMainTestedConstructionMethod = null;
 
         // TODO : Comment
-        protected T MainTested { get; private set; }
+        protected T MainTested { get; set; }
 
         // TODO : Comment
-        protected TestInjectorOnlyFromContainer MainInjector { get; private set; }
+        protected TestInjectorOnlyFromContainer MainInjector { get; set; }
 
         // TODO : Comment
         protected virtual bool SetTemplateWithConstructor => true;

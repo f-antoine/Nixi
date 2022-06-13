@@ -24,7 +24,7 @@ namespace Nixi.Injections
             if (typeof(Component).IsAssignableFrom(field.FieldType))
             {
                 throw new NixiAttributeException($"Cannot register field with name {field.Name} with a NixInjectAttribute because " +
-                                                 $"it is a Component field, you must use NixInjectComponentAttribute instead");
+                                                 $"it is a Component field, you must use NixInjectComponentAttribute instead", field.FieldType, field.Name);
             }
 
             if (!field.FieldType.IsInterface)
@@ -32,7 +32,7 @@ namespace Nixi.Injections
                 throw new NixiAttributeException($"The field with the name {field.Name} with a NixInjectAttribute must be an interface " +
                                                  $"because the container works only with interfaces as a key for injection, " +
                                                  $"if you don't want to use the container and only expose for the tests from template, " +
-                                                 $"you can use NixInjectTestMockAttribute");
+                                                 $"you can use NixInjectTestMockAttribute", field.FieldType, field.Name);
             }
         }
     }

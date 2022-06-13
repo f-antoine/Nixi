@@ -1,7 +1,6 @@
 ﻿using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
 using System;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace Nixi.Injections
@@ -21,38 +20,35 @@ namespace Nixi.Injections
     public sealed class NixInjectComponentAttribute : NixInjectSingleComponentBaseAttribute
     {
         /// <summary>
-        /// Finds the component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method
+        /// Finds the component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method and parameters previously registered
         /// <para/>This one is used to retrieve all the UnityEngine.Component attached on current GameObject with GetComponents
         /// and get the one that matches the type
         /// </summary>
-        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <returns>Unique component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
-        public override object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField)
+        protected override object GetComponentResultFromParameters()
         {
-            Component[] componentsFound = injectable.GetComponents(componentField.FieldType);
-            return CheckAndGetSingleComponentAtInjectableLevel(componentField, componentsFound);
+            Component[] componentsFound = Target.GetComponents(FieldType);
+            return CheckAndGetSingleComponentAtInjectableLevel(componentsFound);
         }
 
         /// <summary>
         /// Check if there is only one component that match criteria from the result of the Unity dependency injection method call
         /// </summary>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <param name="componentsFound">All the components returned by Unity dependency injection method</param>
         /// <returns>Unique component which exactly matches criteria</returns>
-        private Component CheckAndGetSingleComponentAtInjectableLevel(FieldInfo componentField, Component[] componentsFound)
+        private Component CheckAndGetSingleComponentAtInjectableLevel(Component[] componentsFound)
         {
             if (!componentsFound.Any())
             {
-                throw new NixiAttributeException($"No component with type {componentField.FieldType.Name} was found to fill field with name " +
-                                                 $"{componentField.Name}");
+                throw new NixiAttributeException($"No component with type {FieldType.Name} was found to fill field with name " +
+                                                 $"{FieldName}", FieldType, FieldName);
             }
 
             if (componentsFound.Length > 1)
             {
-                throw new NixiAttributeException($"Multiple components were found with type {componentField.FieldType.Name} to fill field " +
-                                                 $"with name {componentField.Name}, could not define which one should be used " +
-                                                 $"({componentsFound.Length} found instead of just one, please use NixInjectComponentsAttribute)");
+                throw new NixiAttributeException($"Multiple components were found with type {FieldType.Name} to fill field " +
+                                                 $"with name {FieldName}, could not define which one should be used " +
+                                                 $"({componentsFound.Length} found instead of just one, please use NixInjectComponentsAttribute)", FieldType, FieldName);
             }
 
             return componentsFound.Single();

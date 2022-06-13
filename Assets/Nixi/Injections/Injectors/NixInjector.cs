@@ -29,7 +29,7 @@ namespace Nixi.Injections.Injectors
         /// <summary>
         /// Options available to parameterized the injections
         /// </summary>
-        private NixInjectOptions nixInjectOptions;
+        private readonly NixInjectOptions nixInjectOptions;
 
         /// <summary>
         /// Default way to handle all injections of fields decorated with Nixi attributes from a class derived from MonoBehaviourInjectable 
@@ -157,7 +157,7 @@ namespace Nixi.Injections.Injectors
         /// <param name="componentsAttribute">Nixi component (or interface) list attribute which decorate componentField</param>
         private void InjectEnumerableComponentField(FieldInfo componentField, NixInjectComponentBaseAttribute componentsAttribute)
         {
-            object componentResult = componentsAttribute.GetComponentResult(mainInjectable, componentField);
+            object componentResult = componentsAttribute.GetComponentResult(mainInjectable, componentField.FieldType, componentField.Name);
             componentField.SetValue(mainInjectable, componentResult, BindingFlags.SetProperty, new EnumerableComponentBinder(), CultureInfo.InvariantCulture);
         }
 
@@ -169,7 +169,7 @@ namespace Nixi.Injections.Injectors
         /// <param name="injectAttribute">Nixi component (or interface) attribute which decorate componentField</param>
         private void InjectComponentField(FieldInfo componentField, NixInjectComponentBaseAttribute injectAttribute)
         {
-            object componentResult = injectAttribute.GetComponentResult(mainInjectable, componentField);
+            object componentResult = injectAttribute.GetComponentResult(mainInjectable, componentField.FieldType, componentField.Name);
             componentField.SetValue(mainInjectable, componentResult);
         }
         #endregion Component Injections

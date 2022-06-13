@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace NixiTestTools
 {
+    // TODO : Update script on documentation for protected set MainTested / MainInjector
     /// <summary>
     /// Test template for MonoBehaviourInjectable, it creates an instance of the MonoBehaviourInjectable and use TestInjector 
     /// to specially handle dependency injection for testing
@@ -16,14 +17,14 @@ namespace NixiTestTools
         /// <summary>
         /// Instance of the tested MonoBehaviourInjectable
         /// </summary>
-        protected T MainTested { get; private set; }
+        protected T MainTested { get; set; }
 
         /// <summary>
         /// Injector implemented for tests, it handle all injections of fields decorated with Nixi inject attributes 
         /// of a class derived from MonoBehaviourInjectable during test execution
         /// <para/>His purpose is to simplify access to fields inexposed and make these fields testables/mockables
         /// </summary>
-        protected TestInjector MainInjector { get; private set; }
+        protected TestInjector MainInjector { get; set; }
 
         /// <summary>
         /// Name of the instance, mainly modified to consider MainTested as a root component

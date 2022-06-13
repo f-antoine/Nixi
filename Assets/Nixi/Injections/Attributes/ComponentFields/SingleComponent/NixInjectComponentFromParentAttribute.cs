@@ -1,6 +1,5 @@
 ﻿using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
 using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace Nixi.Injections
@@ -24,8 +23,8 @@ namespace Nixi.Injections
         /// <para/>This one is at parent level (executing GetComponentsInParent from current GameObject excluding itself)
         /// <para/><see cref="GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
-        protected override Func<MonoBehaviourInjectable, FieldInfo, Component[]> MethodToGetComponents
-            => (injectable, componentFieldInfo) => injectable.GetComponentsInParent(componentFieldInfo.FieldType, IncludeInactive);
+        protected override Func<Component, Component[]> MethodToGetComponents
+            => (injectable) => injectable.GetComponentsInParent(FieldType, IncludeInactive);
 
         /// <summary>
         /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component

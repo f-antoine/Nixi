@@ -28,7 +28,7 @@ namespace Nixi.Injections
         /// Unity dependency injection method called for this attribute is : GetComponents
         /// <para/><see cref="Injections.GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
-        protected override Func<MonoBehaviourInjectable, IEnumerable<Component>> MethodToGetComponents
+        protected override Func<Component, IEnumerable<Component>> MethodToGetComponents
             => (injectable) => injectable.GetComponents(EnumerableType);
     }
 }

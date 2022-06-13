@@ -592,7 +592,6 @@ namespace NixiTestTools
         #endregion Field injection/reading and Get Component
 
         #region EnumerableComponent
-
         #region Generic
         /// <summary>
         /// Init an enumerable component field and fill it with "nbAdded" components instantiated that match type of T 
