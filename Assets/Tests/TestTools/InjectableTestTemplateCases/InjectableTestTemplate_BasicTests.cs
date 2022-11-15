@@ -17,7 +17,7 @@ namespace Tests.TestTools.InjectableTestTemplateCases
             int attackSkillId = MainTested.AttackSkill.GetInstanceID();
 
             // Refill with other values
-            ResetTemplate();
+            InitTests();
 
             Assert.AreNotEqual(instanceId, MainTested.GetInstanceID());
             Assert.AreNotEqual(injectorHash, MainInjector.GetHashCode());

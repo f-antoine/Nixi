@@ -7,6 +7,7 @@ namespace Nixi.Injections
     public abstract class OnlyFromContainerInjectable
     {
         // TODO : Comment
+        // TODO : Readonly if ok
         private NixInjectorOnlyFromContainer injector;
 
         public OnlyFromContainerInjectable(bool autoInject)
