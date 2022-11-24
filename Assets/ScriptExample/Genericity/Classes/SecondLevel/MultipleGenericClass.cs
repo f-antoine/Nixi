@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Genericity.Classes.SecondLevel
+namespace ScriptExample.Genericity.Classes.SecondLevel
 {
     public class MultipleGenericClass<T, R>
     {

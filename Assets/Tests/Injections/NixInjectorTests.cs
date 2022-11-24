@@ -1,4 +1,4 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injectors;
 using NUnit.Framework;
@@ -12,7 +12,11 @@ using ScriptExample.ComponentsWithInterface;
 using ScriptExample.ComponentsWithInterface.BadDucks;
 using ScriptExample.Containers;
 using ScriptExample.EnumerableCrashTests;
-using ScriptExample.Fallen.AllComponentAttributes;
+using ScriptExample.Fallen.AllComponentAttributes.Component;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentChild;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentParent;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentRoot;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentRootChild;
 using ScriptExample.Fallen.Enumerables;
 using ScriptExample.Menu;
 using ScriptExample.SpecialOptions;

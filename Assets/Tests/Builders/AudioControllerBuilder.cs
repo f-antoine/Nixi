@@ -1,4 +1,4 @@
-﻿using ScriptExample.Audio;
+using ScriptExample.Audio;
 using UnityEngine;
 using UnityEngine.UI;
 

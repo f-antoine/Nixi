@@ -1,4 +1,4 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
 using Nixi.Injections;
 using Nixi.Injections.Injectors;
 using NUnit.Framework;

@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections
+namespace Nixi.Injections.Attributes.ComponentFields.Enums
 {
     /// <summary>
     /// Used to identify at which level the enumerable field of UnityEngine.Component (or interface attached 

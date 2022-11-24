@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Genericity.Interfaces.SecondLevel
+namespace ScriptExample.Genericity.Interfaces.SecondLevel
 {
     public interface IMultipleGenericInterface<T, R>
     {

@@ -1,4 +1,5 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
 using System.Collections;
 
 namespace ScriptExample.ComponentsWithInterface.BadDucks

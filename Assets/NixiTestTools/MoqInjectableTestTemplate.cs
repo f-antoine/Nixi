@@ -1,4 +1,4 @@
-using Assets.Tests.ZombuildCoreTestsUtils.Templates.Components;
+using NixiTestTools.Components;
 using Moq;
 using Nixi.Injections;
 using NixiTestTools;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates
+namespace NixiTestTools
 {
     // TODO3 : Separate MockBehavior from MockContainer, with a special base container ? One inject, other not
     // TODO3 : Test/check everything for Nixi v2

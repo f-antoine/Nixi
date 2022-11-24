@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Containers.Broken
+namespace ScriptExample.Containers.Broken
 {
     public class BrokenTestImplementation : IBrokenTestInterface
     {

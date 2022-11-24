@@ -1,6 +1,6 @@
-﻿using NixiTestTools;
+using NixiTestTools;
 using NUnit.Framework;
-using ScriptExample.OnlyFromContainer;
+using ScriptExample.OnlyFromContainer.TestInjector;
 using System;
 
 namespace Tests.TestTools.InjectableOnlyFromContainerTestTemplateCases

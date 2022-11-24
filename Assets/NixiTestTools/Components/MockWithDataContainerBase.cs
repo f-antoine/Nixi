@@ -2,7 +2,7 @@ using Moq;
 using System;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components
+namespace NixiTestTools.Components
 {
     internal abstract class MockWithDataContainerBase
     {

@@ -1,4 +1,4 @@
-﻿using Assets.Tests.ZombuildCoreTestsUtils.Templates.Components;
+using NixiTestTools.Components;
 using Moq;
 using Nixi.Injections;
 using NixiTestTools;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Assets.NixiTestTools
+namespace NixiTestTools
 {
     public abstract class MoqOnlyFromContainerTestTemplate<TInjectable> : InjectableOnlyFromContainerTestTemplate<TInjectable>
         where TInjectable : OnlyFromContainerInjectable

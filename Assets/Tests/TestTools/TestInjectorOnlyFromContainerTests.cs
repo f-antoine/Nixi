@@ -1,10 +1,10 @@
-﻿using Moq;
+using Moq;
 using Nixi.Containers;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.ComponentsWithEnumerable;
 using ScriptExample.Containers;
-using ScriptExample.OnlyFromContainer;
+using ScriptExample.OnlyFromContainer.TestInjector;
 using System;
 
 namespace Tests.TestTools

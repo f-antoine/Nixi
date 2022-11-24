@@ -1,4 +1,6 @@
-﻿using Nixi.Injections.Abstractions;
+using Nixi.Injections.Attributes.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+using Nixi.Injections.Attributes.Fields.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
 using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.Containers;

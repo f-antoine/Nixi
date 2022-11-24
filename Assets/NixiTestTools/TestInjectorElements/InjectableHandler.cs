@@ -1,4 +1,5 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements.Relations.Components;
 using NixiTestTools.TestInjectorElements.Relations.EnumerableComponents;

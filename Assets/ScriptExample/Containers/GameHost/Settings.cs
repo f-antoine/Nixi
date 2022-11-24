@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Containers.GameHost
+namespace ScriptExample.Containers.GameHost
 {
     public sealed class Settings : ISettings
     {

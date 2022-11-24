@@ -1,9 +1,9 @@
-using Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.DelegateHandlers;
+using NixiTestTools.Components.DelegateHandlers;
 using Moq;
 using System;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components
+namespace NixiTestTools.Components
 {
     internal class MockWithDataContainer<TMock> : MockWithDataContainerBase
         where TMock : class

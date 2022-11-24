@@ -1,4 +1,4 @@
-﻿namespace NixiTestTools.TestInjectorElements
+namespace NixiTestTools.TestInjectorElements
 {
     /// <summary>
     /// State returned by InjectableHandler when linking or creating a new Component

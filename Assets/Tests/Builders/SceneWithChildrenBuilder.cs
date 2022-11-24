@@ -1,4 +1,4 @@
-﻿using ScriptExample.Controllers;
+using ScriptExample.Controllers;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;

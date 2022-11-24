@@ -1,4 +1,6 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
+using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;

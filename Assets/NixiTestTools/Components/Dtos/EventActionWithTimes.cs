@@ -1,6 +1,6 @@
 using System;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.Dtos
+namespace NixiTestTools.Components.Dtos
 {
     internal sealed class EventActionWithTimes<T> : DtoWithTimesBase
     {

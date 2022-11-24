@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Reflection;
 
-namespace Nixi.Injections.Abstractions
+namespace Nixi.Injections.Attributes.Abstractions
 {
     /// <summary>
     /// Common abstract base attribute for all NixInjections

@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Containers;
 
 namespace ScriptExample.OnlyFromContainer

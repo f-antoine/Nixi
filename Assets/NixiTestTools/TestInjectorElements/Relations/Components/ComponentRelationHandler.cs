@@ -1,4 +1,4 @@
-﻿using NixiTestTools.TestInjectorElements.Relations.Abstractions;
+using NixiTestTools.TestInjectorElements.Relations.Abstractions;
 using System;
 using System.Linq;
 using UnityEngine;

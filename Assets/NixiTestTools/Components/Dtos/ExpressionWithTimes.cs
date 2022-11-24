@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.Dtos
+namespace NixiTestTools.Components.Dtos
 {
     internal sealed class ExpressionWithTimes<T> : DtoWithTimesBase
     {

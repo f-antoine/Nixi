@@ -1,10 +1,11 @@
-﻿using Nixi.Injections.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Enums;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
+namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions
 {
     /// <summary>
     /// Attribute used to represent an Unity dependency injection to get an enumerable of UnityEngine.Component

@@ -1,7 +1,8 @@
-﻿using System;
+using Nixi.Injections.Attributes.Abstractions;
+using System;
 using UnityEngine;
 
-namespace Nixi.Injections.Abstractions
+namespace Nixi.Injections.Attributes.ComponentFields.Abstractions
 {
     /// <summary>
     /// Base attribute thats represent a Unity dependency injection to retrieve a UnityEngine.Component

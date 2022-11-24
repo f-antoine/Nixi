@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.AbstractMapping
+namespace ScriptExample.AbstractMapping
 {
     public sealed class ImplementationFromAbstract : AbstractComponentBase
     {

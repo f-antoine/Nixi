@@ -1,4 +1,4 @@
-﻿using ScriptExample.CannotFindFromMethods;
+using ScriptExample.CannotFindFromMethods;
 using ScriptExample.Characters;
 using UnityEngine;
 

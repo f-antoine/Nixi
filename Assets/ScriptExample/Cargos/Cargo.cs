@@ -1,4 +1,6 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,9 +1,13 @@
-﻿using Nixi.Injections;
-using Nixi.Injections.Abstractions;
-using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections;
+using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Enums;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
+using Nixi.Injections.Attributes.Fields.Abstractions;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements;
-using NixiTestTools.TestInjectorElements.Relations.Components;
+using NixiTestTools.TestInjectorElements.Relations.EnumerableComponents;
 using NixiTestTools.TestInjectorElements.Utils;
 using System;
 using System.Collections.Generic;

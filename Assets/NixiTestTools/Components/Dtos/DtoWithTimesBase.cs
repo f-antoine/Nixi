@@ -1,6 +1,6 @@
 using Moq;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.Dtos
+namespace NixiTestTools.Components.Dtos
 {
     internal abstract class DtoWithTimesBase
     {

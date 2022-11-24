@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Extensions
+namespace NixiTestTools.Extensions
 {
     public static class MockEnumerableExtensions
     {

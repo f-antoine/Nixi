@@ -1,6 +1,6 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.Enums;
 using Nixi.Injections.Injectors;
-using NixiTestTools.TestInjectorElements.Relations.Components;
 using NixiTestTools.TestInjectorElements.Relations.EnumerableComponents.Tools;
 using System;
 using System.Collections.Generic;

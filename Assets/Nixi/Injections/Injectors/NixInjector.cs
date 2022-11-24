@@ -1,6 +1,9 @@
-﻿using Nixi.Containers;
-using Nixi.Injections.Abstractions;
-using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Containers;
+using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections.Attributes.Fields;
+using Nixi.Injections.Attributes.Fields.Abstractions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

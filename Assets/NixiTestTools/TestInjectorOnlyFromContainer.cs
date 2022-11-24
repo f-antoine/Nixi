@@ -1,4 +1,6 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.Fields;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements;
 using NixiTestTools.TestInjectorElements.Relations.Fields;

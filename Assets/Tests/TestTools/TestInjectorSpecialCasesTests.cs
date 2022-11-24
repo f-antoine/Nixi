@@ -1,4 +1,4 @@
-﻿using NixiTestTools;
+using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Geometrics;
 using ScriptExample.Geometrics.Inheritance;

@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
@@ -9,7 +9,7 @@ using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
 using ScriptExample.Containers.Player;
 using ScriptExample.Game;
-using ScriptExample.GameHost;
+using ScriptExample.Game;
 using ScriptExample.Players;
 using UnityEngine;
 

@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.Enums;
 using NixiTestTools.TestInjectorElements.Relations.Fields;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NixiTestTools.TestInjectorElements.Relations.Components
+namespace NixiTestTools.TestInjectorElements.Relations.EnumerableComponents
 {
     /// <summary>
     /// Wrap and handle an Enumerable, a List or an array of Component into a FieldInfo.

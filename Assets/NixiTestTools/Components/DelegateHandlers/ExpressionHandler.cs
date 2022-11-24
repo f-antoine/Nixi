@@ -1,12 +1,12 @@
-using Assets.Tests.ZombuildCoreTestsUtils.Extensions;
-using Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.Dtos;
+using NixiTestTools.Extensions;
+using NixiTestTools.Components.Dtos;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Assets.Tests.ZombuildCoreTestsUtils.Templates.Components.DelegateHandlers
+namespace NixiTestTools.Components.DelegateHandlers
 {
     internal sealed class ExpressionHandler<TMock>
         where TMock : class

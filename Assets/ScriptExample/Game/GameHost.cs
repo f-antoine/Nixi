@@ -1,11 +1,12 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
+using Nixi.Injections.Attributes.Fields;
 using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
-using ScriptExample.Game;
 using ScriptExample.Players;
 using UnityEngine;
 
-namespace ScriptExample.GameHost
+namespace ScriptExample.Game
 {
     public class GameHost : MonoBehaviourInjectable
     {

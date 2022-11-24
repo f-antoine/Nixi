@@ -1,4 +1,4 @@
-﻿namespace NixiTestTools.TestInjectorElements.Relations.Fields
+namespace NixiTestTools.TestInjectorElements.Relations.Fields
 {
     /// <summary>
     /// Contains/Handles all non-component fields

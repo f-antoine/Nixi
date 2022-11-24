@@ -1,6 +1,7 @@
-﻿using System;
+using Nixi.Injections.Attributes.Abstractions;
+using System;
 
-namespace Nixi.Injections.Abstractions
+namespace Nixi.Injections.Attributes.Fields.Abstractions
 {
     /// <summary>
     /// Base attribute thats represent a classic dependency injection from NixiContainer

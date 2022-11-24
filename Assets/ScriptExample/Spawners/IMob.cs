@@ -1,4 +1,4 @@
-﻿using ScriptExample.Characters;
+using ScriptExample.Characters;
 
 namespace ScriptExample.Spawners
 {

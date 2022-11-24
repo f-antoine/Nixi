@@ -1,8 +1,8 @@
-﻿using Nixi.Injections.ComponentFields.SingleComponent.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
 using System;
 using UnityEngine;
 
-namespace Nixi.Injections
+namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
 {
     /// <summary>
     /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component

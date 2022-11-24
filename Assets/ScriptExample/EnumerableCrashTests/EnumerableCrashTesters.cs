@@ -1,4 +1,5 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents;
 using ScriptExample.ComponentsWithEnumerable;
 using System.Collections.Generic;
 using System.Linq;

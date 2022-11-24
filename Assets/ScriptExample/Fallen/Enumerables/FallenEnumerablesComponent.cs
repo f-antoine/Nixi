@@ -1,4 +1,5 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents;
 using UnityEngine.UI;
 
 namespace ScriptExample.Fallen.Enumerables

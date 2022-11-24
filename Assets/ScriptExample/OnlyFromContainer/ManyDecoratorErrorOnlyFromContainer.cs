@@ -1,4 +1,6 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
+using Nixi.Injections.Attributes.Fields;
 using ScriptExample.Containers;
 
 namespace ScriptExample.OnlyFromContainer

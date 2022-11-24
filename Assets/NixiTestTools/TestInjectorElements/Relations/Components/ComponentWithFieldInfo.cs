@@ -1,4 +1,4 @@
-﻿using NixiTestTools.TestInjectorElements.Relations.Fields;
+using NixiTestTools.TestInjectorElements.Relations.Fields;
 using UnityEngine;
 
 namespace NixiTestTools.TestInjectorElements.Relations.Components

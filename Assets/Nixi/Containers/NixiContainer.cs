@@ -1,4 +1,4 @@
-﻿using Nixi.Containers.ContainerElements;
+using Nixi.Containers.ContainerElements;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,5 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
+using Nixi.Injections.Attributes.ComponentFields.Enums;
 using NixiTestTools.TestInjectorElements.Relations.Components;
 using NixiTestTools.TestInjectorElements.Relations.Fields;
 using NixiTestTools.TestInjectorElements.Relations.RootRelations;

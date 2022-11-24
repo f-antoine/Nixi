@@ -1,4 +1,4 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
 using ScriptExample.Containers.Player;
 using UnityEngine;
 
