@@ -3,6 +3,8 @@ using System;
 
 namespace NixiTestTools
 {
+    // TODO : Tests ?
+    // TODO : Comments
     /// <summary>
     /// Errors reported when there is an exception thrown during the usage of TestInjectorOnlyFromContainerException
     /// </summary>

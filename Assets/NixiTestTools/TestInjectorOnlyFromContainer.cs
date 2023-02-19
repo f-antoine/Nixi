@@ -11,8 +11,10 @@ using System.Reflection;
 
 namespace NixiTestTools
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
     // TODO : Check if this must be derived from NixInjectorOnlyFromContainer
-    // TODO : Comment
     public sealed class TestInjectorOnlyFromContainer : NixInjectorOnlyFromContainer
     {
         // TODO : Comment

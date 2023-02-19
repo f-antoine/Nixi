@@ -1,7 +1,6 @@
-using NixiTestTools.Components;
 using Moq;
 using Nixi.Injections;
-using NixiTestTools;
+using NixiTestTools.Components;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,10 @@ using System.Linq.Expressions;
 
 namespace NixiTestTools
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
+    // TODO : Check if useful
     public abstract class MoqOnlyFromContainerTestTemplate<TInjectable> : InjectableOnlyFromContainerTestTemplate<TInjectable>
         where TInjectable : OnlyFromContainerInjectable
     {

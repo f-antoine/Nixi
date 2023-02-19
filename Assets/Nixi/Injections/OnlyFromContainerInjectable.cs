@@ -2,6 +2,7 @@ using Nixi.Injections.Injectors;
 
 namespace Nixi.Injections
 {
+    // TODO : Check if useful
     // TODO : Update here
     // TODO : Comment
     public abstract class OnlyFromContainerInjectable

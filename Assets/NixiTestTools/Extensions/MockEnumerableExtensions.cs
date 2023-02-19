@@ -6,6 +6,10 @@ using System.Linq.Expressions;
 
 namespace NixiTestTools.Extensions
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
+    // TODO : Check if useful in this dll
     public static class MockEnumerableExtensions
     {
         public static List<T> ConvertToObjects<T>(this List<Mock<T>> mocks)

@@ -25,7 +25,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.Abstractions
         /// <summary>
         /// Finds the component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method
         /// </summary>
-        /// <param name="target">Instance of the MonoBehaviourInjectable</param>
+        /// <param name="target">Instance of the targeted component</param>
         /// <param name="fieldType">Type of field</param>
         /// <param name="fieldName">Name of field</param>
         /// <returns>Component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
@@ -41,9 +41,6 @@ namespace Nixi.Injections.Attributes.ComponentFields.Abstractions
         /// <summary>
         /// Finds the component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method and parameters previously registered
         /// </summary>
-        /// <param name="target">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="fieldType">Type of field</param>
-        /// <param name="fieldName">Name of field</param>
         /// <returns>Component(s) that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method</returns>
         protected abstract object GetComponentResultFromParameters();
     }

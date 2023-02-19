@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace NixiTestTools.Components.DelegateHandlers
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
     internal sealed class EventActionHandler<TMock>
         where TMock : class
     {

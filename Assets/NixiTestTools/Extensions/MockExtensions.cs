@@ -5,6 +5,10 @@ using System.Linq.Expressions;
 
 namespace NixiTestTools.Extensions
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
+    // TODO : Check is useful
     public static class MockExtensions
     {
         public static Mock<T> WithSetup<T>(this Mock<T> mockToSetup, Expression<Action<T>> expression)

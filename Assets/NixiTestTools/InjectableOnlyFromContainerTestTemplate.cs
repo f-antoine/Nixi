@@ -3,6 +3,9 @@ using System;
 
 namespace NixiTestTools
 {
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
     // TODO : How to pass data if constructor require a call on a NixInjectFromContainer component in TestInjector ?
     // TODO : Pass to v1.1.0 (dll metadata + unity file)
     // TODO : Rename MainTestedConstructionMethod / ForceMainTestedConstructionMethod, not easy to use when MainTested is written

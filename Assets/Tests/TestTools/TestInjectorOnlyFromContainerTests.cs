@@ -10,6 +10,9 @@ using System;
 namespace Tests.TestTools
 {
     // TODO : Update here
+    // TODO : Tests
+    // TODO : Refacto
+    // TODO : Comments
     internal sealed class TestInjectorOnlyFromContainerTests : InjectableOnlyFromContainerTestTemplate<AllInjectorCases>
     {
         protected override Func<AllInjectorCases> MainTestedConstructionMethod => () => new AllInjectorCases(false);
