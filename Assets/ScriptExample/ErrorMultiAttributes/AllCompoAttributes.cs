@@ -6,8 +6,8 @@ namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class AllCompoAttributes : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
-        [NixInjectRootComponent("anyRoot")]
+        [Component]
+        [RootComponent("anyRoot")]
         public Sorcerer Sorcerer;
     }
 }

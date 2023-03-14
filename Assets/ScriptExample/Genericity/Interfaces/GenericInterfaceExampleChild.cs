@@ -5,7 +5,7 @@ namespace ScriptExample.Genericity.Interfaces
 {
     public sealed class GenericInterfaceExampleChild : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("ChildName")]
+        [ComponentFromChildren("ChildName")]
         public IGenericInterface<int> ChildGenericityInterface;
     }
 }

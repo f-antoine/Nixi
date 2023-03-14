@@ -6,10 +6,10 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentSameLevelComponentButDifferent : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Child Child;
 
-        [NixInjectComponent]
+        [Component]
         public Skill Skill;
     }
 }

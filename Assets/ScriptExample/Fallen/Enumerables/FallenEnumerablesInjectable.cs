@@ -6,7 +6,7 @@ namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesInjectable : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public Skill Fallen;
     }
 }

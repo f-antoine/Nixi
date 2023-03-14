@@ -7,7 +7,7 @@ namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesIReadOnlyList : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public IReadOnlyList<Slider> Fallen;
     }
 }

@@ -1,5 +1,6 @@
 using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
@@ -13,11 +14,11 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
     /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
     /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
     /// <para/>In tests, a component is created and you can get it with GetComponent
-    /// <para/><see cref="NixInjectComponentFromParentAttribute">Use NixInjectComponentFromParentAttribute to handle parent only (excluding current gameObject)</see>
-    /// <para/><see cref="NixInjectComponentFromChildrenAttribute">Use NixInjectComponentFromChildrenAttribute to handle children only (excluding current gameObject)</see>
+    /// <para/><see cref="ComponentFromParentsAttribute">Use ComponentFromParentsAttribute to handle parents only (excluding current gameObject)</see>
+    /// <para/><see cref="ComponentFromChildrenAttribute">Use ComponentFromChildrenAttribute to handle children only (excluding current gameObject)</see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class NixInjectComponentAttribute : NixInjectSingleComponentBaseAttribute
+    public class ComponentAttribute : NixInjectSingleComponentBaseAttribute
     {
         /// <summary>
         /// Finds the component that exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute using the corresponding Unity dependency injection method and parameters previously registered
@@ -54,4 +55,22 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
             return componentsFound.Single();
         }
     }
+
+    #region Obsolete version
+    /// <summary>
+    /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component
+    /// (or to target a component that implement an interface type)
+    /// <para/>This one is used to retrieve all the UnityEngine.Component attached on current GameObject with GetComponents
+    /// and get the one that matches the type
+    /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
+    /// <para/>In tests, a component is created and you can get it with GetComponent
+    /// <para/><see cref="NixInjectComponentFromParentAttribute">Use NixInjectComponentFromParentAttribute to handle parents only (excluding current gameObject)</see>
+    /// <para/><see cref="NixInjectComponentFromChildrenAttribute">Use NixInjectComponentFromChildrenAttribute to handle children only (excluding current gameObject)</see>
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+    [Obsolete("Will be replaced with a shorter version : Component")]
+    public sealed class NixInjectComponentAttribute : ComponentAttribute { }
+    #endregion Obsolete version
 }

@@ -5,7 +5,7 @@ namespace ScriptExample.Geometrics.Inheritance
 {
     public sealed class InheritedRectTransformSquareWithImage : AbstractRectTransformSquare
     {
-        [NixInjectComponent]
+        [Component]
         private Image currentBackgroundImage;
     }
 }

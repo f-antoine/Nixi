@@ -8,27 +8,27 @@ namespace ScriptExample.Cargos
 {
     public sealed class Container : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private List<BananaPack> firstBananaPacks = new List<BananaPack>();
         public List<BananaPack> FirstBananaPacks => firstBananaPacks;
 
-        [NixInjectComponents]
+        [Components]
         private List<BananaPack> secondBananaPacks = new List<BananaPack>();
         public List<BananaPack> SecondBananaPacks => secondBananaPacks;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private List<BananaPack> parentBananaPacks = new List<BananaPack>();
         public List<BananaPack> ParentBananaPacks => parentBananaPacks;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private List<BananaPack> childBananaPacks = new List<BananaPack>();
         public List<BananaPack> ChildBananaPacks => childBananaPacks;
 
-        [NixInjectComponent]
+        [Component]
         private Button openCloseButton;
         public Button OpenCloseButton => openCloseButton;
 
-        [NixInjectComponentFromChildren("logoImg")]
+        [ComponentFromChildren("logoImg")]
         private Image logoImg;
         public Image LogoImg => logoImg;
     }

@@ -5,7 +5,7 @@ namespace ScriptExample.Characters.Broken
 {
     public class InfiniteRecursionSorcerer : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         private InfiniteRecursionSorcerer infiniteSorcerer;
     }
 }

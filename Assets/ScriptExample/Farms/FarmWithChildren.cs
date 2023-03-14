@@ -6,22 +6,22 @@ namespace ScriptExample.Farms
 {
     public sealed class FarmWithChildren : MonoBehaviourInjectable
     {
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<Animal> Animals;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<Cat> Cats;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<Animal> AnimalsEnumerable;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<Cat> CatsEnumerable;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public Animal[] AnimalsArray;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public Cat[] CatsArray;
     }
 }

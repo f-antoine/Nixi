@@ -6,13 +6,13 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentWithSameChildListsDifferentsEnumerables : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public List<Child> FirstChildList;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Child> SecondChildList;
 
-        [NixInjectComponents]
+        [Components]
         public Child[] ThirdChildArray;
     }
 }

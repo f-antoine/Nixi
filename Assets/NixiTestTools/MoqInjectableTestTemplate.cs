@@ -1,7 +1,6 @@
-using NixiTestTools.Components;
 using Moq;
 using Nixi.Injections;
-using NixiTestTools;
+using NixiTestTools.Components;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -335,7 +334,7 @@ namespace NixiTestTools
             }
         }
 
-        // TODO3 : Challenger cette notion d'identifier vu qu'on injecte pas le champ, est-ce le meilleur choix ?
+        // TODO3 : Challeng identifier notion because we are not injecting the field, is that the best choice ?
         private MockWithDataContainerBase GetMockContainer<T>(string identifier = "")
         {
             return mockContainers.SingleOrDefault(x => x.TypeRegistered == typeof(T) && x.FieldName == identifier);

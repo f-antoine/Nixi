@@ -7,16 +7,16 @@ namespace ScriptExample.ComponentFromMethodWithoutName
 {
     public sealed class ComponentParentWithoutName : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromParent]
+        [ComponentFromParents]
         public Slider Slider;
 
-        [NixInjectComponentFromParent("")]
+        [ComponentFromParents("")]
         public Slider SliderWithEmptyString;
 
-        [NixInjectComponentFromParent]
+        [ComponentFromParents]
         public IDragHandler SliderInterface;
 
-        [NixInjectComponentFromParent("")]
+        [ComponentFromParents("")]
         public IDragHandler SliderInterfaceWithEmptyString;
     }
 }

@@ -8,21 +8,21 @@ namespace ScriptExample.EnumerableCrashTests
 {
     public sealed class EnumerableCrashTesters : MonoBehaviourInjectable
     {
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private List<Fruit> fruitsChildren;
         public List<Fruit> FruitsChildren => fruitsChildren.ToList();
         public Fruit[] ArrayFruitsChildren => fruitsChildren.ToArray();
         public IEnumerable<Fruit> EnumerableFruitsChildren => fruitsChildren.AsEnumerable();
         public IReadOnlyList<Fruit> ReadOnlyFruitsChildren => fruitsChildren.AsReadOnly();
 
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<Fruit> fruits;
         public List<Fruit> Fruits => fruits.ToList();
         public Fruit[] ArrayFruits => fruits.ToArray();
         public IEnumerable<Fruit> EnumerableFruits => fruits.AsEnumerable();
         public IReadOnlyList<Fruit> ReadOnlyFruits => fruits.ToList().AsReadOnly();
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private Fruit[] fruitsParent;
         public List<Fruit> FruitsParent => fruitsParent.ToList();
         public Fruit[] ArrayFruitsParent => fruitsParent.ToArray();

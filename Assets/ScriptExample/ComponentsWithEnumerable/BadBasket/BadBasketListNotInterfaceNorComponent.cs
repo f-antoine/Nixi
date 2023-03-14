@@ -6,7 +6,7 @@ namespace ScriptExample.ComponentsWithEnumerable.BadBasket
 {
     public sealed class BadBasketListNotInterfaceNorComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private List<int> notFruits;
     }
 }

@@ -8,7 +8,7 @@ namespace ScriptExample.Characters.Broken
     /// </summary>
     public class SorcererWithWrongNixInject : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         public Skill WrongAttributeSkill;
     }
 }

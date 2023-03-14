@@ -5,10 +5,10 @@ namespace ScriptExample.Flowers
 {
     public sealed class DualFlower : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("FlowerField")]
+        [RootComponent("FlowerField")]
         public Flower FlowerField;
 
-        [NixInjectRootComponent("FlowerField", "PerfectFlower")]
+        [RootComponent("FlowerField", "PerfectFlower")]
         public Flower PerfectFlower;
     }
 }

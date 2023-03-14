@@ -1,5 +1,6 @@
 using Nixi.Injections.Attributes.Fields.Abstractions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Nixi.Injections.Attributes.Fields
     /// <para/>In tests, make the field mockable with TestInjector.InjectField 
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class NixInjectFromContainerAttribute : NixInjectBaseAttribute
+    public class FromContainerAttribute : NixInjectBaseAttribute
     {
         /// <summary>
         /// Check if the field decorated by this attribute (derived from NixInjectAbstractBaseAttribute) is valid and fill it
@@ -36,4 +37,17 @@ namespace Nixi.Injections.Attributes.Fields
             }
         }
     }
+
+    #region Obsolete version
+    /// <summary>
+    /// Used to trigger the injection with a classic dependency injection from NixiContainer in an interface field
+    /// in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses container to fill it
+    /// <para/>In tests, make the field mockable with TestInjector.InjectField 
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+    [Obsolete("Will be replaced with a shorter version : FromContainer")]
+    public sealed class NixInjectFromContainerAttribute : FromContainerAttribute { }
+    #endregion Obsolete version
 }

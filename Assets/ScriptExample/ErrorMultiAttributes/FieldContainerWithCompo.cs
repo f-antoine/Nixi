@@ -7,8 +7,8 @@ namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class FieldContainerWithCompo : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
-        [NixInjectComponent]
+        [FromContainer]
+        [Component]
         public Sorcerer Sorcerer;
     }
 }

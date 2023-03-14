@@ -7,8 +7,8 @@ namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class FieldWithCompoFromMethod : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
-        [NixInjectComponentFromChildren("any")]
+        [FromContainer]
+        [ComponentFromChildren("any")]
         public Sorcerer Sorcerer;
     }
 }

@@ -31,22 +31,22 @@ namespace ScriptExample.FieldTests
             throw new KeyNotFoundException($"Test cannot be performed because you try to get field with name {fieldName} and it does not exist");
         }
 
-        [NixInjectFromContainer]
+        [FromContainer]
         private ITestInterface privateParentTestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         protected ITestInterface protectedParentTestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface publicParentTestInterface;
 
-        [NixInjectComponentFromChildren("privateParentSkill")]
+        [ComponentFromChildren("privateParentSkill")]
         private Skill privateParentSkill;
 
-        [NixInjectComponentFromChildren("protectedParentSkill")]
+        [ComponentFromChildren("protectedParentSkill")]
         protected Skill protectedParentSkill;
 
-        [NixInjectComponentFromChildren("publicParentSkill")]
+        [ComponentFromChildren("publicParentSkill")]
         public Skill publicParentSkill;
     }
 }

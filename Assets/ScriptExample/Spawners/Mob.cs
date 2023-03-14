@@ -6,7 +6,7 @@ namespace ScriptExample.Spawners
 {
     public sealed class Mob : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Skill Skill;
     }
 }

@@ -16,7 +16,7 @@ namespace Nixi.Injections.Injectors
         protected Func<FieldInfo, bool> NixInjectFromContainerPredicate =>
             x => x.CustomAttributes.Any(y =>
             {
-                return typeof(NixInjectFromContainerAttribute).IsAssignableFrom(y.AttributeType);
+                return typeof(FromContainerAttribute).IsAssignableFrom(y.AttributeType);
             }
         );
 
@@ -54,7 +54,7 @@ namespace Nixi.Injections.Injectors
         // TODO : Comment
         private void InjectContainerField(FieldInfo containerField)
         {
-            NixInjectFromContainerAttribute injectAttribute = containerField.GetCustomAttribute<NixInjectFromContainerAttribute>();
+            FromContainerAttribute injectAttribute = containerField.GetCustomAttribute<FromContainerAttribute>();
             injectAttribute.CheckIsValidAndBuildDataFromField(containerField);
 
             object resolved = NixiContainer.ResolveMap(containerField.FieldType);
@@ -74,7 +74,7 @@ namespace Nixi.Injections.Injectors
                                                mainInjectable.ToString(), mainInjectable.GetType());
             }
             else if (nbTargetedAttributes == 1
-                     && fieldInfo.GetCustomAttribute<NixInjectFromContainerAttribute>() == null)
+                     && fieldInfo.GetCustomAttribute<FromContainerAttribute>() == null)
             {
                 throw new NixInjectorException($"Cannot inject {fieldInfo.Name} because the single NixiAttribute is not NixInjectFromContainerAttribute " +
                                                $"which is the only one allowed in NixInjectorOnlyFromContainer",

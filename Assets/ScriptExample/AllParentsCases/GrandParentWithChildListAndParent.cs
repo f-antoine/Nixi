@@ -7,10 +7,10 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class GrandParentWithChildListAndParent : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public ParentWithSameChildLists ParentWithSameChildLists;
 
-        [NixInjectComponents]
+        [Components]
         public List<Child> FirstChildList;
     }
 }

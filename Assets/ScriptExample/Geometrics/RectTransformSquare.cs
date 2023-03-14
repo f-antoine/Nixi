@@ -6,7 +6,7 @@ namespace ScriptExample.Geometrics
 {
     public sealed class RectTransformSquare : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public RectTransform RectTransform;
     }
 }

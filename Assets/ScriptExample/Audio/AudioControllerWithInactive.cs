@@ -6,10 +6,10 @@ namespace ScriptExample.Audio
 {
     public sealed class AudioControllerWithInactive : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("SliderMusic", false)]
+        [ComponentFromChildren("SliderMusic", false)]
         public Slider musicSlider;
 
-        [NixInjectComponentFromChildren("SliderSpatialisation", false)]
+        [ComponentFromChildren("SliderSpatialisation", false)]
         public Slider spatialisationSlider;
     }
 }

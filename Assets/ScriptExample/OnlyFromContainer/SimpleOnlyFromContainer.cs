@@ -6,10 +6,10 @@ namespace ScriptExample.OnlyFromContainer
 {
     public sealed class SimpleOnlyFromContainer : OnlyFromContainerInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface TestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         private ITestInterface testInterfacePrivate;
 
         public int ValueToRetrieveFromPrivateInterface => testInterfacePrivate.ValueToRetrieve;

@@ -5,7 +5,7 @@ namespace ScriptExample.Genericity.Classes
 {
     public sealed class GenericClassExampleRootChild : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("rootName", "rootChild")]
+        [RootComponent("rootName", "rootChild")]
         public GenericClass<int> GenericClass;
     }
 }

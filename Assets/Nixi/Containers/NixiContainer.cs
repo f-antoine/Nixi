@@ -219,5 +219,14 @@ namespace Nixi.Containers
             ContainerElement elementToResolve = registrations.SingleOrDefault(x => x.KeyType == keyType);
             registrations.Remove(elementToResolve);
         }
+
+        public static void RegisterIfNotAlreadyRegistered<TInterface, TImplementation>(TImplementation implementation)
+           where TImplementation : class, TInterface, new()
+        {
+            if (!CheckIfMappingRegistered<TInterface>())
+            {
+                MapSingletonWithImplementation<TInterface, TImplementation>(implementation);
+            }
+        }
     }
 }

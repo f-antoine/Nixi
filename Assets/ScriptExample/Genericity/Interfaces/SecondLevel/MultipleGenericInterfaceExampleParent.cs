@@ -5,7 +5,7 @@ namespace ScriptExample.Genericity.Interfaces.SecondLevel
 {
     public sealed class MultipleGenericInterfaceExampleParent : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromParent("ParentName")]
+        [ComponentFromParents("ParentName")]
         public IMultipleGenericInterface<int, string> ParentGenericityInterface;
     }
 }

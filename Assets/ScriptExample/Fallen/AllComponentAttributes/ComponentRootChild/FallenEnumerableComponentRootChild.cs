@@ -6,7 +6,7 @@ namespace ScriptExample.Fallen.AllComponentAttributes.ComponentRootChild
 {
     public sealed class FallenEnumerableComponentRootChild : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("any", "anyChild")]
+        [RootComponent("any", "anyChild")]
         public IEnumerable<EmptyClass> FallenElement;
     }
 }

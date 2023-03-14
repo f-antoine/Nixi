@@ -5,25 +5,25 @@ namespace ScriptExample.AbstractMapping
 {
     public sealed class ExamplesWithAbstractComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public AbstractComponentBase InstanceTransposed;
 
-        [NixInjectComponentFromChildren]
+        [ComponentFromChildren]
         public AbstractComponentBase InstanceTransposedChildren;
 
-        [NixInjectComponentFromChildren("Children")]
+        [ComponentFromChildren("Children")]
         public AbstractComponentBase InstanceTransposedChildrenWithName;
 
-        [NixInjectComponentFromParent]
+        [ComponentFromParents]
         public AbstractComponentBase InstanceTransposedParent;
 
-        [NixInjectComponentFromParent("Parent")]
+        [ComponentFromParents("Parent")]
         public AbstractComponentBase InstanceTransposedParentWithName;
         
-        [NixInjectRootComponent("Root")]
+        [RootComponent("Root")]
         public AbstractComponentBase RootInstanceTransposed;
 
-        [NixInjectRootComponent("Root", "Children")]
+        [RootComponent("Root", "Children")]
         public AbstractComponentBase RootChildrenInstanceTransposed;
     }
 }

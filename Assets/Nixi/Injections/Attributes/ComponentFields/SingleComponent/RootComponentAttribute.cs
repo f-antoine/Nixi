@@ -2,6 +2,7 @@ using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,7 +22,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
     /// <para/>In tests, a component is created and you can get it with GetComponent
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class NixInjectRootComponentAttribute : NixInjectSingleComponentBaseAttribute, IHaveGameObjectNameToFind
+    public class RootComponentAttribute : NixInjectSingleComponentBaseAttribute, IHaveGameObjectNameToFind
     {
         /// <summary>
         /// True if constructor with subGameObjectName is used, it means we are targeting a child gameObject from RootGameObject
@@ -75,7 +76,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
         /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
         /// </summary>
         /// <param name="rootGameObjectName">Method to use on root GameObjects from the current scene to find a GameObject that match GameObjectName</param>
-        public NixInjectRootComponentAttribute(string rootGameObjectName)
+        public RootComponentAttribute(string rootGameObjectName)
         {
             RootGameObjectName = rootGameObjectName;
         }
@@ -93,7 +94,7 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
         /// <param name="rootGameObjectName">Method to use on root GameObjects from the current scene to find a GameObject that match GameObjectName</param>
         /// <param name="subGameObjectName">Name of the GameObject to find in children of root game object with name componentRootName</param>
         /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>
-        public NixInjectRootComponentAttribute(string rootGameObjectName, string subGameObjectName, bool includeInactive = true)
+        public RootComponentAttribute(string rootGameObjectName, string subGameObjectName, bool includeInactive = true)
         {
             RootGameObjectName = rootGameObjectName;
             SubGameObjectName = subGameObjectName;
@@ -240,4 +241,52 @@ namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
             return componentsFound.Single();
         }
     }
+
+    #region Obsolete version
+    /// <summary>
+    /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component
+    /// (or to target a component that implement an interface type)
+    /// <para/>This one retrieves all the root GameObjects of the current scene, then tries to find the one whose name matches
+    /// the values contained in RootGameObjectName
+    /// <para/>If SubGameObjectName is filled, then it executes GetComponentsInChildren method on the RootGameObject found (excluding itself).
+    /// The result is filtered to find the GameObject that has the correct GameObjectType and SubGameObjectName and is used to fill the field
+    /// <para/>If not, the RootGameObject found must match GameObjectType and this is the one used to fill the field
+    /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+    /// <para/>In play mode scene, it uses Unity dependency injection method to get the Component
+    /// <para/>In tests, a component is created and you can get it with GetComponent
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [Obsolete("Will be replaced with a shorter version : RootComponent")]
+    public sealed class NixInjectRootComponentAttribute : RootComponentAttribute
+    {
+        /// <summary>
+        /// Attribute used to represent an Unity dependency injection on a single UnityEngine.Component
+        /// (or to target a component that implement an interface type)
+        /// <para/>This one retrieves all the root GameObjects of the current scene, then tries to find the one whose name matches
+        /// the values contained in RootGameObjectName.
+        /// <para/>The RootGameObject found must match GameObjectType and this is the one used to fill the field
+        /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+        /// </summary>
+        /// <param name="rootGameObjectName">Method to use on root GameObjects from the current scene to find a GameObject that match GameObjectName</param>
+        public NixInjectRootComponentAttribute(string rootGameObjectName)
+            : base(rootGameObjectName) { }
+
+        /// <summary>
+        /// Attribute used to represent an Unity dependency injection on a single UnityEngine.Component
+        /// (or to target a component that implement an interface type)
+        /// <para/>This one retrieves all the root GameObjects of the current scene, then tries to find the one whose name matches
+        /// the values contained in RootGameObjectName
+        /// <para/>If SubGameObjectName is filled, then it executes GetComponentsInChildren method on the RootGameObject found (excluding itself).
+        /// The result is filtered to find the GameObject that has the correct GameObjectType and SubGameObjectName and is used to fill the field
+        /// <para/>If not, the RootGameObject found must match GameObjectType and this is the one used to fill the field
+        /// <para/>This attribute must be used on a field in a class derived from MonoBehaviourInjectable
+        /// </summary>
+        /// <param name="rootGameObjectName">Method to use on root GameObjects from the current scene to find a GameObject that match GameObjectName</param>
+        /// <param name="subGameObjectName">Name of the GameObject to find in children of root game object with name componentRootName</param>
+        /// <param name="includeInactive">Define if method calls with Unity dependency injection way include inactive GameObject in the search or not</param>
+        public NixInjectRootComponentAttribute(string rootGameObjectName, string subGameObjectName, bool includeInactive = true)
+            : base(rootGameObjectName, subGameObjectName, includeInactive) { }
+    }
+    #endregion Obsolete version
 }

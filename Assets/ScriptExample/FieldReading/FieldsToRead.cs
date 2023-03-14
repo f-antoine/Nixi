@@ -18,25 +18,25 @@ namespace ScriptExample.FieldReading
         [SerializeField]
         public int SecondInt;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface FirstInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface SecondInterface;
 
-        [NixInjectComponent]
+        [Component]
         public Sorcerer Sorcerer;
 
         [SerializeField]
         public string SingleString = "";
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ISecondTestInterface SingleSecondTestInterface;
 
         [SerializeField]
         public Fruit SingleFruit;
 
-        [NixInjectComponent]
+        [Component]
         public IFruit SingleIFruit;
 
         [SerializeField]

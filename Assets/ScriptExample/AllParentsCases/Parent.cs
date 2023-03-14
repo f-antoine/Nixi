@@ -5,10 +5,10 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class Parent : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Child FirstChild;
 
-        [NixInjectComponent]
+        [Component]
         public Child SecondChild;
     }
 }

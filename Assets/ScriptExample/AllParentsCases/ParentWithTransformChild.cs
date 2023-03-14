@@ -6,10 +6,10 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentWithTransformChild : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Transform FirstTransform;
 
-        [NixInjectComponent]
+        [Component]
         public Transform SecondTransform;
     }
 }

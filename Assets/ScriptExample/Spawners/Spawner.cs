@@ -42,48 +42,48 @@ namespace ScriptExample.Spawners
         }
 
         // To simplify, in real world we should use NixInjectTestMock and pass prefab by drag & drop
-        [NixInjectComponent]
+        [Component]
         private Mob mobPrefab;
         public Mob MobPrefab => mobPrefab;
 
         #region Current
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private List<Mob> mobListParent;
         public List<Mob> MobListParent => mobListParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private IEnumerable<Mob> mobEnumerableParent;
         public IEnumerable<Mob> MobEnumerableParent => mobEnumerableParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private Mob[] mobArrayParent;
         public Mob[] MobArrayParent => mobArrayParent;
         #endregion Current
 
         #region Current
-        [NixInjectComponents]
+        [Components]
         private List<Mob> mobList;
         public List<Mob> MobList => mobList;
 
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<Mob> mobEnumerable;
         public IEnumerable<Mob> MobEnumerable => mobEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         private Mob[] mobArray;
         public Mob[] MobArray => mobArray;
         #endregion Current
 
         #region Children
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private List<Mob> mobListChildren;
         public List<Mob> MobListChildren => mobListChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private IEnumerable<Mob> mobEnumerableChildren;
         public IEnumerable<Mob> MobEnumerableChildren => mobEnumerableChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private Mob[] mobArrayChildren;
         public Mob[] MobArrayChildren => mobArrayChildren;
         #endregion Children

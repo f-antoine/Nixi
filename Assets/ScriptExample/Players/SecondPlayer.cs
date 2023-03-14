@@ -8,13 +8,13 @@ namespace ScriptExample.Players
 {
     public sealed class SecondPlayer : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         public IBrokenTestInterface FirstBrokenInterfacePlayer;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public IBrokenTestInterface SecondBrokenInterfacePlayer;
 
-        [NixInjectComponent]
+        [Component]
         public BrokenSorcerer BrokenSorcerer;
     }
 }

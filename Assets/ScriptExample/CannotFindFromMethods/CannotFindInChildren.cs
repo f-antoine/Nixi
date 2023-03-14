@@ -6,7 +6,7 @@ namespace ScriptExample.CannotFindFromMethods
 {
     public sealed class CannotFindInChildren : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("CurrentName")]
+        [ComponentFromChildren("CurrentName")]
         public Skill SkillInChildren;
     }
 }

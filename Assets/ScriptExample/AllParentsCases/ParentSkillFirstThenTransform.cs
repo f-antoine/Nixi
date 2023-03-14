@@ -7,10 +7,10 @@ namespace ScriptExample.AllParentsCases
 {
     public sealed class ParentSkillFirstThenTransform : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Skill ASkill;
 
-        [NixInjectComponent]
+        [Component]
         public Transform ZTransform;
     }
 }

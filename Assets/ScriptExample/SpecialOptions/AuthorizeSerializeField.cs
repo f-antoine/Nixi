@@ -14,7 +14,7 @@ namespace ScriptExample.SpecialOptions
         };
 
         [SerializeField]
-        [NixInjectComponent]
+        [Component]
         public Slider Slider;
     }
 }

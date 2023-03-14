@@ -7,11 +7,11 @@ namespace ScriptExample.Characters
 {
     public class Character : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         private Skill attackSkill;
         public Skill AttackSkill => attackSkill;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         private ITestInterface testInterface;
         public ITestInterface TestInterface => testInterface;
     }

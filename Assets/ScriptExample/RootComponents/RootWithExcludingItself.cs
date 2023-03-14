@@ -6,10 +6,10 @@ namespace ScriptExample.RootComponents
 {
     public sealed class RootWithExcludingItself : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("CurrentLevel")]
+        [RootComponent("CurrentLevel")]
         public Image CurrentImage;
 
-        [NixInjectRootComponent("CurrentLevel", "ChildLevel")]
+        [RootComponent("CurrentLevel", "ChildLevel")]
         public Image ChildImage;
     }
 }

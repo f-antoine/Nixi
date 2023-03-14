@@ -7,13 +7,13 @@ namespace ScriptExample.OnlyFromContainer.TestInjector
 {
     public sealed class AllInjectorCases : OnlyFromContainerInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface TestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public IFruit FirstFruit;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public IFruit SecondFruit;
 
         public AllInjectorCases(bool autoInject = true)

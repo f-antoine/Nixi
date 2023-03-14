@@ -6,7 +6,7 @@ namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesNonComponentEnumerable : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<int> Fallen;
     }
 }

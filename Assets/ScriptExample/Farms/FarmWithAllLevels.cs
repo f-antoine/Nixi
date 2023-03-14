@@ -7,60 +7,60 @@ namespace ScriptExample.Farms
     public sealed class FarmWithAllLevels : MonoBehaviourInjectable
     {
         // Children
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<Animal> AnimalsChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<Cat> CatsChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<Animal> AnimalsEnumerableChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<Cat> CatsEnumerableChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public Animal[] AnimalsArrayChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public Cat[] CatsArrayChildren;
         
         // Current
-        [NixInjectComponents]
+        [Components]
         public List<Animal> Animals;
 
-        [NixInjectComponents]
+        [Components]
         public List<Cat> Cats;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Animal> AnimalsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Cat> CatsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         public Animal[] AnimalsArray;
 
-        [NixInjectComponents]
+        [Components]
         public Cat[] CatsArray;
 
         // Parent
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public List<Animal> AnimalsParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public List<Cat> CatsParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public IEnumerable<Animal> AnimalsEnumerableParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public IEnumerable<Cat> CatsEnumerableParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public Animal[] AnimalsArrayParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public Cat[] CatsArrayParent;
     }
 }

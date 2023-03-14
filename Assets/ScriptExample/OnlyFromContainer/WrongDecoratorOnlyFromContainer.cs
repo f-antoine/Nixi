@@ -6,7 +6,7 @@ namespace ScriptExample.OnlyFromContainer
 {
     public sealed class WrongDecoratorOnlyFromContainer : OnlyFromContainerInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public ITestInterface TestInterface;
 
         public WrongDecoratorOnlyFromContainer(bool autoInject = true)

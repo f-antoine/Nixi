@@ -9,7 +9,7 @@ namespace ScriptExample.Geometrics.Inheritance
     /// </summary>
     public abstract class AbstractRectTransformSquare : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         protected RectTransform buttonRectangle;
     }
 }

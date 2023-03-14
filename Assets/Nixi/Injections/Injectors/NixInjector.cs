@@ -107,7 +107,7 @@ namespace Nixi.Injections.Injectors
             {
                 NixInjectBaseAttribute injectAttribute = nonComponentField.GetCustomAttribute<NixInjectBaseAttribute>();
 
-                if (injectAttribute is NixInjectFromContainerAttribute)
+                if (injectAttribute is FromContainerAttribute)
                 {
                     InjectField(nonComponentField);
                 }

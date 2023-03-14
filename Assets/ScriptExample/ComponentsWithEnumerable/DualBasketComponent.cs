@@ -6,11 +6,11 @@ namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class DualBasketComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private List<Fruit> fruitsList;
         public List<Fruit> FruitsList => fruitsList;
 
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<Fruit> fruitsEnumerable;
         public IEnumerable<Fruit> FruitsEnumerable => fruitsEnumerable;
     }

@@ -48,7 +48,7 @@ namespace NixiTestTools
         {
             foreach (FieldInfo containerField in containerFields)
             {
-                NixInjectFromContainerAttribute injectAttribute = containerField.GetCustomAttribute<NixInjectFromContainerAttribute>();
+                FromContainerAttribute injectAttribute = containerField.GetCustomAttribute<FromContainerAttribute>();
                 injectAttribute.CheckIsValidAndBuildDataFromField(containerField);
 
                 fieldHandler.AddField(new SimpleFieldInfo { FieldInfo = containerField });

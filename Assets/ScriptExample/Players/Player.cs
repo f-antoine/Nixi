@@ -9,10 +9,10 @@ namespace ScriptExample.Players
 {
     public class Player : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("SorcererGameObjectName")]
+        [ComponentFromChildren("SorcererGameObjectName")]
         public Sorcerer Sorcerer;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ILifeBar LifeBar;
 
         [SerializeField]

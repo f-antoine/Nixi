@@ -6,7 +6,7 @@ namespace ScriptExample.ComponentsWithInterface.BadDucks
 {
     public sealed class BadDuckCompoInChildren : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("any")]
+        [ComponentFromChildren("any")]
         private IList impossibleToInjectFieldFromGetComponent;
         public IList ImpossibleToInjectFieldFromGetComponent => impossibleToInjectFieldFromGetComponent;
     }

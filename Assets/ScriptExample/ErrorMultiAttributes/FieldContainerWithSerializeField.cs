@@ -6,7 +6,7 @@ namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class FieldContainerWithSerializeField : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         public Sorcerer Sorcerer;
     }
 }

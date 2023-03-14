@@ -9,7 +9,7 @@ namespace ScriptExample.Characters.Broken
     /// </summary>
     public class SorcererWithWrongNixInjectComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public ScriptableObject brokenTestSecond;
     }
 }

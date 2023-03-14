@@ -5,7 +5,7 @@ namespace ScriptExample.Genericity.Interfaces.SecondLevel
 {
     public sealed class MultipleGenericInterfaceExampleRoot : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("rootName")]
+        [RootComponent("rootName")]
         public IMultipleGenericInterface<int, string> RootGenericityInterface;
     }
 }

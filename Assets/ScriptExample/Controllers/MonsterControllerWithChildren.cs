@@ -5,7 +5,7 @@ namespace ScriptExample.Controllers
 {
     public sealed class MonsterControllerWithChildren : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("MainRoot", "ChildSorcererController")]
+        [RootComponent("MainRoot", "ChildSorcererController")]
         public SorcererControllerWithChildren ChildSorcererController;
     }
 }

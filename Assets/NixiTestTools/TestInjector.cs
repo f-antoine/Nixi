@@ -322,7 +322,7 @@ namespace NixiTestTools
         {
             NixInjectComponentBaseAttribute baseAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
 
-            if (baseAttribute is NixInjectComponentAttribute)
+            if (baseAttribute is ComponentAttribute)
             {
                 Type typeResolved = componentMappingContainer?.TryResolve(componentField.FieldType);
                 InjectableComponentState state = newInjectableHandler.InjectOrBuildComponentAtTopComponentLevel(componentField, typeResolved);
@@ -332,7 +332,7 @@ namespace NixiTestTools
                 }
                 return true;
             }
-            else if (baseAttribute is NixInjectRootComponentAttribute rootAttribute)
+            else if (baseAttribute is RootComponentAttribute rootAttribute)
             {
                 return CheckAndInjectIfAlreadyInjectedInRootsComponent(newInjectableHandler, componentField, rootAttribute);
             }
@@ -346,7 +346,7 @@ namespace NixiTestTools
         /// <param name="componentField">Component field</param>
         /// <param name="rootAttribute">RootComponent Nixi attribute decorator</param>
         /// <returns>True if injected from instance found</returns>
-        private bool CheckAndInjectIfAlreadyInjectedInRootsComponent(InjectableHandler newInjectableHandler, FieldInfo componentField, NixInjectRootComponentAttribute rootAttribute)
+        private bool CheckAndInjectIfAlreadyInjectedInRootsComponent(InjectableHandler newInjectableHandler, FieldInfo componentField, RootComponentAttribute rootAttribute)
         {
             // Component list on parent if SubGameObjectName (child) is empty, component list on child if not
             IEnumerable<Component> componentsInRootRelation = injectablesContainer.GetComponentsFromRelation(rootAttribute.RootGameObjectName, rootAttribute.SubGameObjectName);
@@ -408,7 +408,7 @@ namespace NixiTestTools
         /// <param name="componentAdded">Component recently created</param>
         private void UpdateRootRelationIfRootComponent(FieldInfo componentField, Component componentAdded)
         {
-            NixInjectRootComponentAttribute rootAttribute = componentField.GetCustomAttribute<NixInjectRootComponentAttribute>();
+            RootComponentAttribute rootAttribute = componentField.GetCustomAttribute<RootComponentAttribute>();
             if (rootAttribute != null)
             {
                 Component existingComponent = injectablesContainer.GetComponentFromRelation(componentField.FieldType, rootAttribute.RootGameObjectName, rootAttribute.SubGameObjectName);

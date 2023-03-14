@@ -5,7 +5,7 @@ namespace ScriptExample.Farms
 {
     public sealed class ParentFarm : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("ChildrenFarm")]
+        [ComponentFromChildren("ChildrenFarm")]
         public Farm Farm;
     }
 }

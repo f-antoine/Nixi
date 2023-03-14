@@ -7,8 +7,8 @@ namespace ScriptExample.OnlyFromContainer
 {
     public sealed class ManyDecoratorErrorOnlyFromContainer : OnlyFromContainerInjectable
     {
-        [NixInjectFromContainer]
-        [NixInjectComponentFromChildren]
+        [FromContainer]
+        [ComponentFromChildren]
         public ITestInterface TestInterface;
 
         public ManyDecoratorErrorOnlyFromContainer(bool autoInject = true)

@@ -5,7 +5,7 @@ namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class AboveFullBasketListExample : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("BelowComponent")]
+        [ComponentFromChildren("BelowComponent")]
         public FullBasketListExample ParentBasket;
     }
 }

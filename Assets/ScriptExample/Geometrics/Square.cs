@@ -6,13 +6,13 @@ namespace ScriptExample.Geometrics
 {
     public sealed class Square : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Transform Transform;
 
-        [NixInjectComponent]
+        [Component]
         public Transform TransformSecond;
 
-        [NixInjectComponent]
+        [Component]
         public RectTransform RectTransform;
     }
 }

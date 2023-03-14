@@ -5,7 +5,7 @@ namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class ParentBasketWithoutCurrentList : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public BasketWithoutCurrentList BasketWithoutCurrentList;
     }
 }

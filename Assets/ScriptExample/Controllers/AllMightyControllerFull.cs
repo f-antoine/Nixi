@@ -5,13 +5,13 @@ namespace ScriptExample.Controllers
 {
     public sealed class AllMightyControllerFull : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromParent("TheFirstChildSorcererController")]
+        [ComponentFromParents("TheFirstChildSorcererController")]
         public SorcererController FirstChildSorcererController;
 
-        [NixInjectComponentFromChildren("TheSecondChildSorcererController")]
+        [ComponentFromChildren("TheSecondChildSorcererController")]
         public SorcererController SecondChildSorcererController;
 
-        [NixInjectRootComponent("MonsterController")]
+        [RootComponent("MonsterController")]
         public MonsterController MonsterController;
     }
 }

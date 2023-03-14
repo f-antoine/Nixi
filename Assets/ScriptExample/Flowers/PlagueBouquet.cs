@@ -5,16 +5,16 @@ namespace ScriptExample.Flowers
 {
     public sealed class PlagueBouquet : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("FlowerField")]
+        [RootComponent("FlowerField")]
         public Flower HealthyFlower;
 
-        [NixInjectRootComponent("FlowerField")]
+        [RootComponent("FlowerField")]
         public PlagueFlower PlagueFlower;
 
-        [NixInjectRootComponent("FlowerField", "SubFlowerField")]
+        [RootComponent("FlowerField", "SubFlowerField")]
         public Flower SubHealthyFlower;
 
-        [NixInjectRootComponent("FlowerField", "SubFlowerField")]
+        [RootComponent("FlowerField", "SubFlowerField")]
         public PlagueFlower SubPlagueFlower;
     }
 }

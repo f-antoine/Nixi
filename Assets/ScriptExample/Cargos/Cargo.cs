@@ -8,23 +8,23 @@ namespace ScriptExample.Cargos
 {
     public sealed class Cargo : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private List<Container> firstContainers = new List<Container>();
         public List<Container> FirstContainers => firstContainers;
 
-        [NixInjectComponents]
+        [Components]
         private List<Container> secondContainers = new List<Container>();
         public List<Container> SecondContainers => secondContainers;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         private List<Container> parentContainers = new List<Container>();
         public List<Container> ParentContainers => parentContainers;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         private List<Container> childContainers = new List<Container>();
         public List<Container> ChildContainers => childContainers;
 
-        [NixInjectComponent]
+        [Component]
         private Transform waterTransform;
         public Transform WaterTransform => waterTransform;
     }

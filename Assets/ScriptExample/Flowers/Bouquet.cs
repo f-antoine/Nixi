@@ -9,25 +9,25 @@ namespace ScriptExample.Flowers
     public sealed class Bouquet : MonoBehaviourInjectable
     {
 		// First flower, used as reference for all component root instance tests
-		[NixInjectComponent]
+		[Component]
 		public DualFlower ReferentialFlower;
 
-		[NixInjectComponentFromChildren("ChildFlower")]
+		[ComponentFromChildren("ChildFlower")]
 		public DualFlower ChildFlower;
 
-		[NixInjectComponentFromParent("ParentFlower")]
+		[ComponentFromParents("ParentFlower")]
 		public DualFlower ParentFlower;
 
-		[NixInjectRootComponent("RootIsolatedFlower")]
+		[RootComponent("RootIsolatedFlower")]
 		public DualFlower RootIsolatedFlower;
 
-		[NixInjectRootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
+		[RootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
 		public DualFlower SubRootIsolatedFlower;
 
-		[NixInjectRootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
+		[RootComponent("RootIsolatedFlower", "SubRootIsolatedFlower")]
 		public Image Image;
 
-		[NixInjectComponents]
+		[Components]
 		public List<DualFlower> FlowersRemaining;
 	}
 }
