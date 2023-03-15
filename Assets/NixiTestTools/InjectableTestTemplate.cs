@@ -60,7 +60,7 @@ namespace NixiTestTools
         /// </summary>
         [SetUp]
         public virtual void InitTests()
-        {
+        { 
             MainTested = new GameObject().AddComponent<T>();
 
             MainInjector = new TestInjector(MainTested, InstanceName, ComponentMappingContainer);

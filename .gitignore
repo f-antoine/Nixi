@@ -66,3 +66,7 @@ crashlytics-build.properties
 /DLL/DLLUpdater/*
 /DLL/ScriptExample
 /DLL/Tests/
+
+# Experimental stuff
+/DLL/*Experimental*
+/Assets/Experimental*
