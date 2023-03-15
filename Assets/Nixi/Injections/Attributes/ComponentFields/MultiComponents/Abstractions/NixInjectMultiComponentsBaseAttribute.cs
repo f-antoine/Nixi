@@ -1,5 +1,4 @@
 using Nixi.Injections.Attributes.ComponentFields.Abstractions;
-using Nixi.Injections.Attributes.ComponentFields.Enums;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

@@ -1,6 +1,5 @@
 using Moq;
 using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields.Enums;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.AllParentsCases;

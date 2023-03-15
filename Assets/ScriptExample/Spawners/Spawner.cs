@@ -1,5 +1,4 @@
 using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields.Enums;
 using System.Collections.Generic;
 
 namespace ScriptExample.Spawners

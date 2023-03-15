@@ -1,5 +1,4 @@
 using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields.Enums;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

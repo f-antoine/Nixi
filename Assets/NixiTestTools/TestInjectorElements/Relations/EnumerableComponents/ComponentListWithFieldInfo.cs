@@ -1,4 +1,4 @@
-using Nixi.Injections.Attributes.ComponentFields.Enums;
+using Nixi.Injections;
 using NixiTestTools.TestInjectorElements.Relations.Fields;
 using System;
 using System.Collections.Generic;

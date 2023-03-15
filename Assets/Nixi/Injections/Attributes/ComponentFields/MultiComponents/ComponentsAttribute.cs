@@ -1,4 +1,3 @@
-using Nixi.Injections.Attributes.ComponentFields.Enums;
 using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
 using System;
 using System.Collections.Generic;
