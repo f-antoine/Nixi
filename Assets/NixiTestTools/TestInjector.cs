@@ -3,7 +3,6 @@ using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Attributes.ComponentFields.Enums;
 using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
 using Nixi.Injections.Attributes.Fields.Abstractions;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements;

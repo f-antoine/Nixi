@@ -1,3 +1,4 @@
+using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
+namespace Nixi.Injections
 {
     /// <summary>
     /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component

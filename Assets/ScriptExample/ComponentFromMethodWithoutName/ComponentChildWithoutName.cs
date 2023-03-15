@@ -1,5 +1,4 @@
 using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 

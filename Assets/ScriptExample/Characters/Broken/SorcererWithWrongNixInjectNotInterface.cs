@@ -1,5 +1,4 @@
 using Nixi.Injections;
-using Nixi.Injections.Attributes.Fields;
 
 namespace ScriptExample.Characters.Broken
 {

@@ -1,4 +1,4 @@
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
+using Nixi.Injections;
 using UnityEngine.UI;
 
 namespace ScriptExample.Geometrics.Inheritance

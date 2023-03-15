@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents
+namespace Nixi.Injections
 {
     // TODO : Check tests diff
     /// <summary>

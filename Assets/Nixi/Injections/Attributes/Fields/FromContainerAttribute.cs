@@ -1,10 +1,11 @@
+using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.Fields.Abstractions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.Fields
+namespace Nixi.Injections
 {
     /// <summary>
     /// Used to trigger the injection with a classic dependency injection from NixiContainer in an interface field

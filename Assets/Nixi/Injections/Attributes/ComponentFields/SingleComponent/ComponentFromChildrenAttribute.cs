@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent
+namespace Nixi.Injections
 {
     /// <summary>
     /// Attribute used to represent an Unity dependency injection to get a single UnityEngine.Component

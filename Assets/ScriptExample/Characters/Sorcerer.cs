@@ -1,4 +1,4 @@
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
+using Nixi.Injections;
 using ScriptExample.Characters.ScriptableObjects;
 using UnityEngine;
 

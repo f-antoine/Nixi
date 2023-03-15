@@ -1,5 +1,4 @@
-using Nixi.Injections.Attributes.ComponentFields.SingleComponent;
-using Nixi.Injections.Attributes.Fields;
+using Nixi.Injections;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 

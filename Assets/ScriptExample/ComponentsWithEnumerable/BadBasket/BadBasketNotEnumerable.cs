@@ -1,5 +1,4 @@
 using Nixi.Injections;
-using Nixi.Injections.Attributes.ComponentFields.MultiComponents;
 
 namespace ScriptExample.ComponentsWithEnumerable.BadBasket
 {

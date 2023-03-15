@@ -2,7 +2,7 @@ using Nixi.Containers;
 using Nixi.Injections.Attributes;
 using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
-using Nixi.Injections.Attributes.Fields;
+using Nixi.Injections;
 using Nixi.Injections.Attributes.Fields.Abstractions;
 using System.Collections.Generic;
 using System.Globalization;
