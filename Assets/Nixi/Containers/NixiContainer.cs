@@ -58,6 +58,7 @@ namespace Nixi.Containers
             }
         }
 
+        // TODO : test overrideImplementation
         /// <summary>
         /// Map an interface type with an implementation type and register its instance from implementationToRegister parameter,
         /// this is done with a singleton approach (return the same instance at each resolve call or create it if never called)
@@ -65,9 +66,15 @@ namespace Nixi.Containers
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
         /// <param name="implementationToRegister">Implementation to register</param>
-        public static void MapSingletonWithImplementation<TInterface, TImplementation>(TImplementation implementationToRegister)
+        /// <param name="overrideImplementation">If true, the implementation will be overriden</param>
+        public static void MapSingletonWithImplementation<TInterface, TImplementation>(TImplementation implementationToRegister, bool overrideImplementation = false)
             where TImplementation : class, TInterface
         {
+            if (overrideImplementation)
+            {
+                RemoveMap<TInterface>();
+            }
+
             SingleContainerElement newMapping = Map<TInterface, TImplementation, SingleContainerElement>();
             newMapping.Instance = implementationToRegister;
         }
@@ -218,47 +225,6 @@ namespace Nixi.Containers
         {
             ContainerElement elementToResolve = registrations.SingleOrDefault(x => x.KeyType == keyType);
             registrations.Remove(elementToResolve);
-        }
-
-        // TODO : Check if all tests ok + docs
-        public static void RegisterSingletonIfNotAlreadyRegistered<TInterface, TImplementation>(TImplementation implementation)
-           where TImplementation : class, TInterface, new()
-        {
-            if (!CheckIfMappingRegistered<TInterface>())
-            {
-                MapSingletonWithImplementation<TInterface, TImplementation>(implementation);
-            }
-            // TODO : Check if forced with a parameter ?
-            else if (ResolveSingletonImplementation(typeof(TInterface)) == null) // This case can happen if we reload a scene
-            {
-                RemoveMap<TInterface>();
-                MapSingletonWithImplementation<TInterface, TImplementation>(implementation);
-            }
-        }
-
-        // TODO : Tests ?
-        /// <summary>
-        /// Return an instance that match the key type if the mapping is registered in the container
-        /// <para/> If there is no implementation, null is returned
-        /// <para/> Works only for singletons
-        /// </summary>
-        /// <param name="keyType">Interface key type from where the implementation has to be derived</param>
-        /// <returns>Instance thas was derived from keyType, can be null</returns>
-        /// <exception cref="NixiContainerException">Thrown if keyType is not found in registrations</exception>
-        private static object ResolveSingletonImplementation(Type keyType)
-        {
-            IEnumerable<ContainerElement> elementToResolves = registrations.Where(x => x.KeyType == keyType);
-
-            if (!elementToResolves.Any())
-                throw new NixiContainerException($"Cannot find mapping with the key type {keyType.Name}");
-
-            ContainerElement elementResolved = elementToResolves.Single();
-
-            if (elementResolved is SingleContainerElement singleElementToResolve)
-            {
-                return singleElementToResolve.Instance;
-            }
-            return null;
         }
     }
 }

@@ -211,12 +211,7 @@ namespace NixiTestTools
 
             if (mockBehaviorContainerFound == null)
             {
-                string errorMsg = $"Cannot find Mock with type {typeof(T)}";
-                if (!string.IsNullOrEmpty(identifier))
-                {
-                    errorMsg += $" and with identifier {identifier}";
-                }
-                throw new KeyNotFoundException(errorMsg);
+                return null;
             }
 
             return mockBehaviorContainerFound.Mock as Mock<T>;

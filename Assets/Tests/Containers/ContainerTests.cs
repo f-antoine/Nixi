@@ -129,6 +129,31 @@ namespace Tests.Containers
         }
 
         [Test]
+        public void ContainerShould_OverrideWhenWithRegisterSingletonWithADifferentInstancePassed()
+        {
+            NixiContainer.MapSingletonWithImplementation<ITestInterface, TestImplementation>(new TestImplementation
+            {
+                ValueToRetrieve = 14
+            });
+
+            // Retrieve singleton first time
+            ITestInterface instance = NixiContainer.ResolveMap<ITestInterface>();
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.ValueToRetrieve, Is.EqualTo(14));
+
+            // Override
+            NixiContainer.MapSingletonWithImplementation<ITestInterface, TestImplementation>(new TestImplementation
+            {
+                ValueToRetrieve = 9
+            }, true);
+
+            // Retrieve singleton overriden second time
+            instance = NixiContainer.ResolveMap<ITestInterface>();
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.ValueToRetrieve, Is.EqualTo(9));
+        }
+
+        [Test]
         public void ContainerShouldNotRegisterTwice_WhenSingletonAlreadyRegisteredWithInstancePassed()
         {
             TestImplementation implementation = new TestImplementation();
@@ -176,88 +201,6 @@ namespace Tests.Containers
         public void CheckIfRegistered_ShouldThrowExceptionWhenNotInterface()
         {
             Assert.Throws<NixiContainerException>(() => NixiContainer.CheckIfMappingRegistered<TestImplementation>());
-        }
-
-        [Test]
-        public void RegisterIfNotAlreadyRegistered_ShouldRegister()
-        {
-            Assert.False(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-
-            // Map
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
-            {
-                ValueToRetrieve = 4
-            });
-
-            // Checks
-            Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-            ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
-            Assert.AreEqual(4, testInterface.ValueToRetrieve);
-        }
-
-        [Test]
-        public void RegisterIfNotAlreadyRegistered_ShouldNotChangeImplementationRegistered()
-        {
-            // Map
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
-            {
-                ValueToRetrieve = 4
-            });
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
-            {
-                ValueToRetrieve = 8
-            });
-
-            // Checks
-            Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-            ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
-            Assert.AreEqual(4, testInterface.ValueToRetrieve);
-        }
-
-        [Test]
-        public void RegisterIfNotAlreadyRegistered_ShouldChangeImplementationRegistered_IfUnMapped()
-        {
-            // Map
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
-            {
-                ValueToRetrieve = 4
-            });
-
-            // Remove
-            NixiContainer.RemoveMap<ITestInterface>();
-
-            // ReMap
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
-            {
-                ValueToRetrieve = 8
-            });
-
-            // Checks
-            Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-            ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
-            Assert.AreEqual(8, testInterface.ValueToRetrieve);
-        }
-
-        [Test]
-        public void RegisterAlreadyRegisteredWithNullImplement_ShouldRegisterNewImplementation()
-        {
-            Assert.False(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-
-            // Map with null
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(null);
-
-            // Map with implementation
-            TestImplementation testImplementation = new TestImplementation
-            {
-                ValueToRetrieve = 4
-            };
-
-            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(testImplementation);
-
-            // Checks
-            Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
-            ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
-            Assert.AreEqual(4, testInterface.ValueToRetrieve);
         }
 
         #region Container with parameters
