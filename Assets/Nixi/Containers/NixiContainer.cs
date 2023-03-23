@@ -220,13 +220,45 @@ namespace Nixi.Containers
             registrations.Remove(elementToResolve);
         }
 
-        public static void RegisterIfNotAlreadyRegistered<TInterface, TImplementation>(TImplementation implementation)
+        // TODO : Check if all tests ok + docs
+        public static void RegisterSingletonIfNotAlreadyRegistered<TInterface, TImplementation>(TImplementation implementation)
            where TImplementation : class, TInterface, new()
         {
             if (!CheckIfMappingRegistered<TInterface>())
             {
                 MapSingletonWithImplementation<TInterface, TImplementation>(implementation);
             }
+            // TODO : Check if forced with a parameter ?
+            else if (ResolveSingletonImplementation(typeof(TInterface)) == null) // This case can happen if we reload a scene
+            {
+                RemoveMap<TInterface>();
+                MapSingletonWithImplementation<TInterface, TImplementation>(implementation);
+            }
+        }
+
+        // TODO : Tests ?
+        /// <summary>
+        /// Return an instance that match the key type if the mapping is registered in the container
+        /// <para/> If there is no implementation, null is returned
+        /// <para/> Works only for singletons
+        /// </summary>
+        /// <param name="keyType">Interface key type from where the implementation has to be derived</param>
+        /// <returns>Instance thas was derived from keyType, can be null</returns>
+        /// <exception cref="NixiContainerException">Thrown if keyType is not found in registrations</exception>
+        private static object ResolveSingletonImplementation(Type keyType)
+        {
+            IEnumerable<ContainerElement> elementToResolves = registrations.Where(x => x.KeyType == keyType);
+
+            if (!elementToResolves.Any())
+                throw new NixiContainerException($"Cannot find mapping with the key type {keyType.Name}");
+
+            ContainerElement elementResolved = elementToResolves.Single();
+
+            if (elementResolved is SingleContainerElement singleElementToResolve)
+            {
+                return singleElementToResolve.Instance;
+            }
+            return null;
         }
     }
 }

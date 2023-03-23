@@ -4,7 +4,10 @@ using ScriptExample.Characters;
 using ScriptExample.ComponentsWithInterface;
 using ScriptExample.Containers;
 using ScriptExample.ContainersWithParameters;
+using System;
 using Tests.Builders;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace Tests.Containers
 {
@@ -181,7 +184,7 @@ namespace Tests.Containers
             Assert.False(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
 
             // Map
-            NixiContainer.RegisterIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
             {
                 ValueToRetrieve = 4
             });
@@ -196,11 +199,11 @@ namespace Tests.Containers
         public void RegisterIfNotAlreadyRegistered_ShouldNotChangeImplementationRegistered()
         {
             // Map
-            NixiContainer.RegisterIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
             {
                 ValueToRetrieve = 4
             });
-            NixiContainer.RegisterIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
             {
                 ValueToRetrieve = 8
             });
@@ -215,7 +218,7 @@ namespace Tests.Containers
         public void RegisterIfNotAlreadyRegistered_ShouldChangeImplementationRegistered_IfUnMapped()
         {
             // Map
-            NixiContainer.RegisterIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
             {
                 ValueToRetrieve = 4
             });
@@ -224,7 +227,7 @@ namespace Tests.Containers
             NixiContainer.RemoveMap<ITestInterface>();
 
             // ReMap
-            NixiContainer.RegisterIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(new TestImplementation
             {
                 ValueToRetrieve = 8
             });
@@ -233,6 +236,28 @@ namespace Tests.Containers
             Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
             ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
             Assert.AreEqual(8, testInterface.ValueToRetrieve);
+        }
+
+        [Test]
+        public void RegisterAlreadyRegisteredWithNullImplement_ShouldRegisterNewImplementation()
+        {
+            Assert.False(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
+
+            // Map with null
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(null);
+
+            // Map with implementation
+            TestImplementation testImplementation = new TestImplementation
+            {
+                ValueToRetrieve = 4
+            };
+
+            NixiContainer.RegisterSingletonIfNotAlreadyRegistered<ITestInterface, TestImplementation>(testImplementation);
+
+            // Checks
+            Assert.True(NixiContainer.CheckIfMappingRegistered<ITestInterface>());
+            ITestInterface testInterface = NixiContainer.ResolveMap<ITestInterface>();
+            Assert.AreEqual(4, testInterface.ValueToRetrieve);
         }
 
         #region Container with parameters
