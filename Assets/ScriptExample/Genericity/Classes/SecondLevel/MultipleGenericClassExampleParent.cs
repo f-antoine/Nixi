@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Genericity.Classes.SecondLevel
 {
     public sealed class MultipleGenericClassExampleParent : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromParent("ParentName")]
+        [ComponentFromParents("ParentName")]
         public MultipleGenericClass<int, string> GenericClass;
     }
 }

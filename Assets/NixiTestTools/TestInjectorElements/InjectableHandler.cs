@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements.Relations.Components;
 using NixiTestTools.TestInjectorElements.Relations.EnumerableComponents;
@@ -67,7 +67,7 @@ namespace NixiTestTools.TestInjectorElements
         /// <param name="componentWithFieldInfo">Component with its fieldInfo</param>
         internal void AddComponentField(ComponentWithFieldInfo componentWithFieldInfo)
         {
-            if (componentWithFieldInfo.FieldInfo.GetCustomAttribute<NixInjectComponentAttribute>() != null)
+            if (componentWithFieldInfo.FieldInfo.GetCustomAttribute<ComponentAttribute>() != null)
             {
                 ComponentRelationHandler.AddRelation(componentWithFieldInfo.Component);
             }   

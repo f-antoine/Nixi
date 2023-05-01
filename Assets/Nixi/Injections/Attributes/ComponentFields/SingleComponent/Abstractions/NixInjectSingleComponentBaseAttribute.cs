@@ -1,8 +1,8 @@
-﻿using Nixi.Injections.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.ComponentFields.SingleComponent.Abstractions
+namespace Nixi.Injections.Attributes.ComponentFields.SingleComponent.Abstractions
 {
     /// <summary>
     /// Base attribute used to represent an Unity dependency injection to get a single UnityEngine.Component
@@ -24,7 +24,7 @@ namespace Nixi.Injections.ComponentFields.SingleComponent.Abstractions
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, " +
                                                  $"because it is a generic type while using decorator {GetType().Name}, " +
-                                                 $"it is only possible with NixInjectComponentsAttribute on an IEnumerable, List or array");
+                                                 $"it is only possible with NixInjectComponentsAttribute on an IEnumerable, List or array", componentField.FieldType, componentField.Name);
             }
 
             if (!typeof(Component).IsAssignableFrom(componentField.FieldType)
@@ -32,7 +32,7 @@ namespace Nixi.Injections.ComponentFields.SingleComponent.Abstractions
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type " +
                                                  $"{componentField.FieldType.Name}, because it not a component or an interface while using " +
-                                                 $"decorator {GetType().Name}");
+                                                 $"decorator {GetType().Name}", componentField.FieldType, componentField.Name);
             }
         }
     }

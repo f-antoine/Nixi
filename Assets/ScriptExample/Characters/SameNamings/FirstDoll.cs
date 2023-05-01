@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Characters.SameNamings
 {
     public sealed class FirstDoll : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("ChildDoll")]
+        [ComponentFromChildren("ChildDoll")]
         public SecondDoll ChildDoll;
     }
 }

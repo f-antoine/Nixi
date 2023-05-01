@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Genericity.Interfaces
 {
     public sealed class GenericInterfaceExample : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public IGenericInterface<int> GenericityInterface;
     }
 }

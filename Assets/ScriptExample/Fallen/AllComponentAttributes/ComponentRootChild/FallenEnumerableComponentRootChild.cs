@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections.Generic;
 
-namespace ScriptExample.Fallen.AllComponentAttributes
+namespace ScriptExample.Fallen.AllComponentAttributes.ComponentRootChild
 {
     public sealed class FallenEnumerableComponentRootChild : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("any", "anyChild")]
+        [RootComponent("any", "anyChild")]
         public IEnumerable<EmptyClass> FallenElement;
     }
 }

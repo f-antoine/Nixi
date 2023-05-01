@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Controllers
 {
     public sealed class SorcererController : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("MonsterController")]
+        [RootComponent("MonsterController")]
         public MonsterController MonsterController;
     }
 }

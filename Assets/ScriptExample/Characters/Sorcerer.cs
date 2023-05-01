@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Characters.ScriptableObjects;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ namespace ScriptExample.Characters
 {
     public sealed class Sorcerer : Character
     {
-        [NixInjectComponentFromChildren("SorcererChildGameObjectName")]
+        [ComponentFromChildren("SorcererChildGameObjectName")]
         private Skill magicSkill;
         public Skill MagicSkill => magicSkill;
 

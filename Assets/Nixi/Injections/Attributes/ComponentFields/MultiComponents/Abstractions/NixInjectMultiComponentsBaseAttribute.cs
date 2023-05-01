@@ -1,11 +1,12 @@
-﻿using Nixi.Injections.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
+namespace Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions
 {
+    // TODO : Check tests diff
     /// <summary>
     /// Attribute used to represent an Unity dependency injection to get an enumerable of UnityEngine.Component
     /// (or to target multiple components that implement an interface type)
@@ -32,19 +33,17 @@ namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
         /// Define which Unity dependency injection method has to be called in order to get the components at the targeted level (current, child, parent)
         /// <para/><see cref="GameObjectLevel">Look at GameObjectLevel for more information about levels</see>
         /// </summary>
-        protected abstract Func<MonoBehaviourInjectable, IEnumerable<Component>> MethodToGetComponents { get; }
+        protected abstract Func<Component, IEnumerable<Component>> MethodToGetComponents { get; }
 
         /// <summary>
         /// Find all the components which exactly matches criteria of a derived attribute from NixInjectComponentBaseAttribute 
-        /// using the corresponding Unity dependency injection method
+        /// using the corresponding Unity dependency injection method and parameters previously registered
         /// </summary>
-        /// <param name="injectable">Instance of the MonoBehaviourInjectable</param>
-        /// <param name="componentField">Component field to fill based on componentField.FieldType to find</param>
         /// <returns>Components which exactly matches criteria of a NixInjectComponent injection using the corresponding
         /// Unity dependency injection method</returns>
-        public override object GetComponentResult(MonoBehaviourInjectable injectable, FieldInfo componentField)
+        protected override object GetComponentResultFromParameters()
         {
-            return MethodToGetComponents(injectable);
+            return MethodToGetComponents(Target);
         }
 
         /// <summary>
@@ -58,17 +57,17 @@ namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
                 && !CheckIfGenericEnumerableOrList(componentField))
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type {componentField.FieldType.Name}, " +
-                                                 $"because it is not an array or IEnumerable/List type while using decorator {GetType().Name}");
+                                                 $"because it is not an array or IEnumerable/List type while using decorator {GetType().Name}", componentField.FieldType, componentField.Name);
             }
 
-            EnumerableType = GetEnumerableType(componentField);
+            SetEnumerableType(componentField.FieldType);
 
             if (!typeof(Component).IsAssignableFrom(EnumerableType)
                 && !EnumerableType.IsInterface)
             {
                 throw new NixiAttributeException($"Cannot inject component field with name {componentField.Name} and type " +
                                                  $"{componentField.FieldType.Name}, because enumerable type is not a component or an " +
-                                                 $"interface while using decorator {GetType().Name}");
+                                                 $"interface while using decorator {GetType().Name}", componentField.FieldType, componentField.Name);
             }
         }
 
@@ -92,14 +91,18 @@ namespace Nixi.Injections.ComponentFields.MultiComponents.Abstractions
         /// If field.FieldType is is an IEnumerable or a list, it returns its single generic type,
         /// if this is an array it returns element type
         /// </summary>
-        /// <param name="field">Field to check</param>
+        /// <param name="fieldType">Field type to check</param>
         /// <returns>Generic type of the enumerable if exists</returns>
-        private static Type GetEnumerableType(FieldInfo field)
+        public void SetEnumerableType(Type fieldType)
         {
-            if (field.FieldType.IsArray)
-                return field.FieldType.GetElementType();
-
-            return field.FieldType.GetGenericArguments()[0];
+            if (fieldType.IsArray)
+            {
+                EnumerableType = fieldType.GetElementType();
+            }
+            else
+            {
+                EnumerableType = fieldType.GetGenericArguments()[0];
+            }
         }
     }
 }

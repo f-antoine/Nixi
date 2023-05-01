@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Containers.Player
+namespace ScriptExample.Containers.Player
 {
     public class LifeBar : ILifeBar
     {

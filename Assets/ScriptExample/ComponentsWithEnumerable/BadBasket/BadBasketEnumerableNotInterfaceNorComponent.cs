@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections.Generic;
 
 namespace ScriptExample.ComponentsWithEnumerable.BadBasket
 {
     public sealed class BadBasketEnumerableNotInterfaceNorComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<int> notFruits;
     }
 }

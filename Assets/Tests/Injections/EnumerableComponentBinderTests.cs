@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injectors;
+using Nixi.Injections.Injectors;
 using NUnit.Framework;
 using ScriptExample.Genericity.Classes;
 using ScriptExample.Genericity.Classes.SecondLevel;

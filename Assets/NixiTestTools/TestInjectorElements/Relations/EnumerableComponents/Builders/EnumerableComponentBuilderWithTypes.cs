@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

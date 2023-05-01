@@ -1,26 +1,26 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections.Generic;
 
 namespace ScriptExample.Farms
 {
     public sealed class Farm : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public List<Animal> Animals;
 
-        [NixInjectComponents]
+        [Components]
         public List<Cat> Cats;
         
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Animal> AnimalsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Cat> CatsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         public Animal[] AnimalsArray;
 
-        [NixInjectComponents]
+        [Components]
         public Cat[] CatsArray;
     }
 }

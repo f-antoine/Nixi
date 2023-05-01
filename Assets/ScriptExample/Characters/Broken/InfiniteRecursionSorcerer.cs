@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Characters.Broken
 {
     public class InfiniteRecursionSorcerer : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         private InfiniteRecursionSorcerer infiniteSorcerer;
     }
 }

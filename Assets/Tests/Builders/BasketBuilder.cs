@@ -1,4 +1,4 @@
-﻿using ScriptExample.ComponentsWithEnumerable;
+using ScriptExample.ComponentsWithEnumerable;
 using UnityEngine;
 
 namespace Tests.Builders

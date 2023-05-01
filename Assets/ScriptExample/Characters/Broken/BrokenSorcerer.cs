@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Containers.Broken;
 
 namespace ScriptExample.Characters.Broken
@@ -8,11 +8,11 @@ namespace ScriptExample.Characters.Broken
     /// </summary>
     public class BrokenSorcerer : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
+        [FromContainer]
         private IBrokenTestInterface brokenTestInterface;
         public IBrokenTestInterface BrokenTestInterface => brokenTestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         private IBrokenTestInterface brokenTestInterfaceSecond;
         public IBrokenTestInterface BrokenTestInterfaceSecond => brokenTestInterfaceSecond;
     }

@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Genericity.Interfaces
 {
     public sealed class GenericInterfaceExampleRootChild : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("rootName", "rootChild")]
+        [RootComponent("rootName", "rootChild")]
         public IGenericInterface<int> RootChildGenericityInterface;
     }
 }

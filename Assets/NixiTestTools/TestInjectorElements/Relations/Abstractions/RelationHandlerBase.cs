@@ -1,4 +1,4 @@
-﻿using NixiTestTools.TestInjectorElements.Relations.Fields;
+using NixiTestTools.TestInjectorElements.Relations.Fields;
 using System.Collections.Generic;
 
 namespace NixiTestTools.TestInjectorElements.Relations.Abstractions

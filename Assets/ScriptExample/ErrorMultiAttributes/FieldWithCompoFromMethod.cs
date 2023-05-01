@@ -1,12 +1,12 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Characters;
 
 namespace ScriptExample.ErrorMultiAttributes
 {
     public sealed class FieldWithCompoFromMethod : MonoBehaviourInjectable
     {
-        [NixInjectFromContainer]
-        [NixInjectComponentFromChildren("any")]
+        [FromContainer]
+        [ComponentFromChildren("any")]
         public Sorcerer Sorcerer;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Characters;
 using ScriptExample.Containers.Player;
 using UnityEngine;
@@ -7,10 +7,10 @@ namespace ScriptExample.Players
 {
     public class Player : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("SorcererGameObjectName")]
+        [ComponentFromChildren("SorcererGameObjectName")]
         public Sorcerer Sorcerer;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ILifeBar LifeBar;
 
         [SerializeField]

@@ -1,4 +1,4 @@
-﻿namespace ScriptExample.Containers
+namespace ScriptExample.Containers
 {
     public class TestImplementation : ITestInterface
     {

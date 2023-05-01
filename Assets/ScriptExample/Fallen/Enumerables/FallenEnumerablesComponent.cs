@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using UnityEngine.UI;
 
 namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesComponent : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public Slider Fallen;
     }
 }

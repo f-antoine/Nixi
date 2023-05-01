@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using UnityEngine;
 
 namespace ScriptExample.Geometrics
 {
     public sealed class RectTransformSquare : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public RectTransform RectTransform;
     }
 }

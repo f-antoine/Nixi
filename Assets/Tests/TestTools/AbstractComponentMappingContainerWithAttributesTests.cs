@@ -1,4 +1,4 @@
-﻿using NixiTestTools;
+using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.AbstractMapping;
 using System.Collections.Generic;
@@ -7,13 +7,10 @@ namespace Tests.TestTools
 {
     internal sealed class AbstractComponentMappingContainerWithAttributesTests : InjectableTestTemplate<ExamplesWithAbstractComponent>
     {
-        protected override bool SetTemplateWithConstructor => false;
-
-        [SetUp]
-        public void InitTests()
+        public override void InitTests()
         {
             AddAbstractComponentMapping<AbstractComponentBase, ImplementationFromAbstract>();
-            ResetTemplate();
+            base.InitTests();
         }
 
         [Test]

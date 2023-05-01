@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using UnityEngine;
 
 namespace ScriptExample.ScriptableObjectToInject

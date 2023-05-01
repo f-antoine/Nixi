@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Controllers
 {
@@ -12,10 +12,10 @@ namespace ScriptExample.Controllers
 
     public sealed class AllMightyWithChildren : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("SorcererController", "FirstSorcerer")]
+        [RootComponent("SorcererController", "FirstSorcerer")]
         public SorcererController FirstSorcerer;
 
-        [NixInjectRootComponent("SorcererController", "SecondSorcerer")]
+        [RootComponent("SorcererController", "SecondSorcerer")]
         public SorcererController SecondSorcerer;
     }
 }

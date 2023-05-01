@@ -1,4 +1,4 @@
-﻿using NixiTestTools;
+using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
 
@@ -13,14 +13,14 @@ namespace Tests.TestTools.InjectableTestTemplateCases
             Assert.NotNull(MainInjector);
             Assert.NotNull(MainTested.AttackSkill); // Check injected
             int instanceId = MainTested.GetInstanceID();
-            int InjectorHash = MainInjector.GetHashCode();
+            int injectorHash = MainInjector.GetHashCode();
             int attackSkillId = MainTested.AttackSkill.GetInstanceID();
 
             // Refill with other values
-            ResetTemplate();
+            InitTests();
 
             Assert.AreNotEqual(instanceId, MainTested.GetInstanceID());
-            Assert.AreNotEqual(InjectorHash, MainInjector.GetHashCode());
+            Assert.AreNotEqual(injectorHash, MainInjector.GetHashCode());
             Assert.AreNotEqual(attackSkillId, MainTested.AttackSkill.GetInstanceID()); // Check re-injected
         }
     }

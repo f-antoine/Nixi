@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters;
@@ -9,7 +9,6 @@ using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
 using ScriptExample.Containers.Player;
 using ScriptExample.Game;
-using ScriptExample.GameHost;
 using ScriptExample.Players;
 using UnityEngine;
 
@@ -17,12 +16,6 @@ namespace Tests.Injections
 {
     internal sealed class RecursiveInjectionTests : InjectableTestTemplate<GameHost>
     {
-        [SetUp]
-        public void InitTests()
-        {
-            ResetTemplate();
-        }
-
         [Test]
         public void RecursiveInjectionTests_ShouldGetGameObjectAtTwoLevels()
         {

@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections;
 
 namespace ScriptExample.ComponentsWithInterface.BadDucks
 {
     public sealed class BadDuckCompo : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         private IList impossibleToInjectFieldFromGetComponent;
         public IList ImpossibleToInjectFieldFromGetComponent => impossibleToInjectFieldFromGetComponent;
     }

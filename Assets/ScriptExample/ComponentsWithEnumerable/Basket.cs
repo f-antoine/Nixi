@@ -1,23 +1,23 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections.Generic;
 
 namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class Basket : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         private List<Fruit> fruitsList;
         public List<Fruit> FruitsList => fruitsList;
 
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<Fruit> fruitsEnumerable;
         public IEnumerable<Fruit> FruitsEnumerable => fruitsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         private List<IFruit> iFruitsList;
         public List<IFruit> IFruitsList => iFruitsList;
 
-        [NixInjectComponents]
+        [Components]
         private IEnumerable<IFruit> iFruitsEnumerable;
         public IEnumerable<IFruit> IFruitsEnumerable => iFruitsEnumerable;
     }

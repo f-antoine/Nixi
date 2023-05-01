@@ -1,11 +1,11 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Containers;
 
 namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesInterface : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public ITestInterface Fallen;
     }
 }

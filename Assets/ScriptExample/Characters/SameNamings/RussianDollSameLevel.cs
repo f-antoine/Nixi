@@ -1,13 +1,13 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Characters.SameNamings
 {
     public sealed class RussianDollSameLevel : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("Doll", "ChildDoll")]
+        [RootComponent("Doll", "ChildDoll")]
         public FirstDoll Doll;
 
-        [NixInjectRootComponent("Doll", "ChildDoll")]
+        [RootComponent("Doll", "ChildDoll")]
         public FirstDoll SecondDoll;
     }
 }

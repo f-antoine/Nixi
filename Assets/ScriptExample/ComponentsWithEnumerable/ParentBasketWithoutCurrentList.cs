@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.ComponentsWithEnumerable
 {
     public sealed class ParentBasketWithoutCurrentList : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public BasketWithoutCurrentList BasketWithoutCurrentList;
     }
 }

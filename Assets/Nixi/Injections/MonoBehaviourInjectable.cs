@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injectors;
+using Nixi.Injections.Injectors;
 using UnityEngine;
 
 namespace Nixi.Injections

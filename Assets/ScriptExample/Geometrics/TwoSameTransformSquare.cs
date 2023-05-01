@@ -1,14 +1,14 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using UnityEngine;
 
 namespace ScriptExample.Geometrics
 {
     public sealed class TwoSameTransformSquare : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         public Transform Transform;
 
-        [NixInjectComponent]
+        [Component]
         public Transform SecondTransform;
     }
 }

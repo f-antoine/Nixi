@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Characters;
 using ScriptExample.Containers;
 
@@ -28,22 +28,22 @@ namespace ScriptExample.FieldTests
             return base.GetSkillFieldFromName(fieldName);
         }
 
-        [NixInjectFromContainer]
+        [FromContainer]
         private ITestInterface privateChildTestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         protected ITestInterface protectedChildTestInterface;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ITestInterface publicChildTestInterface;
 
-        [NixInjectComponentFromChildren("privateChildSkill")]
+        [ComponentFromChildren("privateChildSkill")]
         private Skill privateChildSkill;
 
-        [NixInjectComponentFromChildren("protectedChildSkill")]
+        [ComponentFromChildren("protectedChildSkill")]
         protected Skill protectedChildSkill;
 
-        [NixInjectComponentFromChildren("publicChildSkill")]
+        [ComponentFromChildren("publicChildSkill")]
         public Skill publicChildSkill;
     }
 }

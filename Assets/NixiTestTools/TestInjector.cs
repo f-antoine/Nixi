@@ -1,9 +1,11 @@
-﻿using Nixi.Injections;
-using Nixi.Injections.Abstractions;
-using Nixi.Injections.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections;
+using Nixi.Injections.Attributes;
+using Nixi.Injections.Attributes.ComponentFields.Abstractions;
+using Nixi.Injections.Attributes.ComponentFields.MultiComponents.Abstractions;
+using Nixi.Injections.Attributes.Fields.Abstractions;
 using Nixi.Injections.Injectors;
 using NixiTestTools.TestInjectorElements;
-using NixiTestTools.TestInjectorElements.Relations.Components;
+using NixiTestTools.TestInjectorElements.Relations.EnumerableComponents;
 using NixiTestTools.TestInjectorElements.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using UnityEngine;
 
 namespace NixiTestTools
 {
+    // TODO : Check if this must be derived from NixInjectorMonoBehaviour
     /// <summary>
     /// Test way to handle all injections of fields decorated with Nixi attributes from a class derived from MonoBehaviourInjectable during 
     /// test execution
@@ -33,7 +36,7 @@ namespace NixiTestTools
     /// will be stored into the InjectablesContainer.
     /// <para/>This is done recursively.
     /// </summary>
-    public sealed class TestInjector : NixInjectorBase
+    public sealed class TestInjector : NixInjector
     {
         /// <summary>
         /// Container to handle TestInjector instances, it is used to inject fields or GetComponent from fields/root instantiated during the tests injections
@@ -171,6 +174,7 @@ namespace NixiTestTools
             }
         }
 
+        // TODO : Check to merge InjectFields (TestInjector, and other ?)
         /// <summary>
         /// Registers all Non-Component fields (decorated with attributes derived from NixInjectBaseAttribute or with UnityEngine.SerializeField)
         /// into fieldInjectionHandler to expose them as mockable
@@ -316,7 +320,7 @@ namespace NixiTestTools
         {
             NixInjectComponentBaseAttribute baseAttribute = componentField.GetCustomAttribute<NixInjectComponentBaseAttribute>();
 
-            if (baseAttribute is NixInjectComponentAttribute)
+            if (baseAttribute is ComponentAttribute)
             {
                 Type typeResolved = componentMappingContainer?.TryResolve(componentField.FieldType);
                 InjectableComponentState state = newInjectableHandler.InjectOrBuildComponentAtTopComponentLevel(componentField, typeResolved);
@@ -326,7 +330,7 @@ namespace NixiTestTools
                 }
                 return true;
             }
-            else if (baseAttribute is NixInjectRootComponentAttribute rootAttribute)
+            else if (baseAttribute is RootComponentAttribute rootAttribute)
             {
                 return CheckAndInjectIfAlreadyInjectedInRootsComponent(newInjectableHandler, componentField, rootAttribute);
             }
@@ -340,7 +344,7 @@ namespace NixiTestTools
         /// <param name="componentField">Component field</param>
         /// <param name="rootAttribute">RootComponent Nixi attribute decorator</param>
         /// <returns>True if injected from instance found</returns>
-        private bool CheckAndInjectIfAlreadyInjectedInRootsComponent(InjectableHandler newInjectableHandler, FieldInfo componentField, NixInjectRootComponentAttribute rootAttribute)
+        private bool CheckAndInjectIfAlreadyInjectedInRootsComponent(InjectableHandler newInjectableHandler, FieldInfo componentField, RootComponentAttribute rootAttribute)
         {
             // Component list on parent if SubGameObjectName (child) is empty, component list on child if not
             IEnumerable<Component> componentsInRootRelation = injectablesContainer.GetComponentsFromRelation(rootAttribute.RootGameObjectName, rootAttribute.SubGameObjectName);
@@ -402,7 +406,7 @@ namespace NixiTestTools
         /// <param name="componentAdded">Component recently created</param>
         private void UpdateRootRelationIfRootComponent(FieldInfo componentField, Component componentAdded)
         {
-            NixInjectRootComponentAttribute rootAttribute = componentField.GetCustomAttribute<NixInjectRootComponentAttribute>();
+            RootComponentAttribute rootAttribute = componentField.GetCustomAttribute<RootComponentAttribute>();
             if (rootAttribute != null)
             {
                 Component existingComponent = injectablesContainer.GetComponentFromRelation(componentField.FieldType, rootAttribute.RootGameObjectName, rootAttribute.SubGameObjectName);
@@ -472,7 +476,7 @@ namespace NixiTestTools
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjectorException($"Cannot ReadExposedField because {e.Message}", mainInjectable);
+                throw new TestInjectorException($"Cannot ReadField because {e.Message}", mainInjectable);
             }
         }
 
@@ -494,7 +498,7 @@ namespace NixiTestTools
             }
             catch (InjectablesContainerException e)
             {
-                throw new TestInjectorException($"Cannot ReadExposedField because {e.Message}", mainInjectable);
+                throw new TestInjectorException($"Cannot ReadField because {e.Message}", mainInjectable);
             }
         }
 
@@ -590,7 +594,6 @@ namespace NixiTestTools
         #endregion Field injection/reading and Get Component
 
         #region EnumerableComponent
-
         #region Generic
         /// <summary>
         /// Init an enumerable component field and fill it with "nbAdded" components instantiated that match type of T 

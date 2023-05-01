@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.ComponentsWithInterface;

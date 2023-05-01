@@ -1,14 +1,14 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using UnityEngine.UI;
 
 namespace ScriptExample.Audio
 {
     public sealed class UnderGroundAudioControllerWithInactive : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromParent("SliderMusic", false)]
+        [ComponentFromParents("SliderMusic", false)]
         public Slider musicSlider;
 
-        [NixInjectComponentFromParent("SliderSpatialisation", false)]
+        [ComponentFromParents("SliderSpatialisation", false)]
         public Slider spatialisationSlider;
     }
 }

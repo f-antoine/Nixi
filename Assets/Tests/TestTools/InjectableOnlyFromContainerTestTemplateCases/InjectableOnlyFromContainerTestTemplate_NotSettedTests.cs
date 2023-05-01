@@ -1,12 +1,15 @@
-﻿using NixiTestTools;
+using NixiTestTools;
 using NUnit.Framework;
-using ScriptExample.Characters;
+using ScriptExample.OnlyFromContainer.TestInjector;
+using System;
 
-namespace Tests.TestTools.InjectableTestTemplateCases
+namespace Tests.TestTools.InjectableOnlyFromContainerTestTemplateCases
 {
-    internal sealed class InjectableTestTemplate_NotSettedTests : InjectableTestTemplate<Sorcerer>
+    internal sealed class InjectableOnlyFromContainerTestTemplate_NotSettedTests : InjectableOnlyFromContainerTestTemplate<AllInjectorCases>
     {
         protected override bool SetTemplateWithConstructor => false;
+
+        protected override Func<AllInjectorCases> MainTestedConstructionMethod => () => new AllInjectorCases(false);
 
         [Test]
         public void Constructor_ShouldNot_LoadMainTestedAndMainInjector()
@@ -19,7 +22,6 @@ namespace Tests.TestTools.InjectableTestTemplateCases
 
             Assert.NotNull(MainTested);
             Assert.NotNull(MainInjector);
-            Assert.NotNull(MainTested.AttackSkill); // Check injected
         }
     }
 }

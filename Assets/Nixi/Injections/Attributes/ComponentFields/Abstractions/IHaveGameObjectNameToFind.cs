@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Abstractions
+namespace Nixi.Injections.Attributes.ComponentFields.Abstractions
 {
     /// <summary>
     /// This interface means that the class derived from NixInjectComponentBaseAttribute has a gameObject name 

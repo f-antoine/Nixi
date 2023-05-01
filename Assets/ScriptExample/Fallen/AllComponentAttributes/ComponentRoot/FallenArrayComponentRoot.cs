@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
-namespace ScriptExample.Fallen.AllComponentAttributes
+namespace ScriptExample.Fallen.AllComponentAttributes.ComponentRoot
 {
     public sealed class FallenArrayComponentRoot : MonoBehaviourInjectable
     {
-        [NixInjectRootComponent("any")]
+        [RootComponent("any")]
         public EmptyClass[] FallenElement;
     }
 }

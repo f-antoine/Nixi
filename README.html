@@ -70,7 +70,7 @@
 <li>From a simple IOC container (NixiContainer) filled in advance from a class that takes priority over the others.</li>
 </ul>
 <p>The Nixi attributes are intended to be used during <strong>play mode scene</strong> and can also be reused in tests to follow the evolution of these fields and/or mock where it is useful, including non-public fields.</p>
-<p>These reuses and accesses during testing are intended to simulate and verify Unity context (GetComponent, GetComponentInChildren, etc.), as well as to simulate interfaces that have been decorated for injection from NixiContainer (or decorated with SerializeField). This is only allowed for these cases, no others.</p>
+<p>These reuses and accesses during testing are intended to simulate and verify Unity context (GetComponent, GetComponentInChildren, etc.), as well as to mock interfaces that have been decorated for the injections from NixiContainer or to mock any field decorated with SerializeField. This is only allowed for these cases, no others.</p>
 <h1 id="license">License</h1>
 <p>Nixi is an open source project under the MIT license.</p>
 <p>See the <a href="License.html"><strong>License.md</strong></a> file for more information.</p>

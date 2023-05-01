@@ -1,10 +1,10 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.Fallen.Enumerables
 {
     public sealed class FallenEnumerablesEmptyClass : MonoBehaviourInjectable
     {
-        [NixInjectComponents]
+        [Components]
         public EmptyClass Fallen;
     }
 }

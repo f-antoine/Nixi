@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using Nixi.Injections.Injectors;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +13,7 @@ namespace ScriptExample.SpecialOptions
         };
 
         [SerializeField]
-        [NixInjectComponent]
+        [Component]
         public Slider Slider;
     }
 }

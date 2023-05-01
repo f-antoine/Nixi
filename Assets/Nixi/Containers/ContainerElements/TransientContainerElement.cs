@@ -1,4 +1,4 @@
-﻿namespace Nixi.Containers.ContainerElements
+namespace Nixi.Containers.ContainerElements
 {
     /// <summary>
     /// Represents a container element, this is intended to associate in a one way direction a KeyType with a ValueType

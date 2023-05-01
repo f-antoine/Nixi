@@ -1,4 +1,4 @@
-﻿using Nixi.Containers.ContainerElements;
+using Nixi.Containers.ContainerElements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +58,7 @@ namespace Nixi.Containers
             }
         }
 
+        // TODO : test overrideImplementation
         /// <summary>
         /// Map an interface type with an implementation type and register its instance from implementationToRegister parameter,
         /// this is done with a singleton approach (return the same instance at each resolve call or create it if never called)
@@ -65,9 +66,15 @@ namespace Nixi.Containers
         /// <typeparam name="TInterface">Interface key type</typeparam>
         /// <typeparam name="TImplementation">Implementation value type</typeparam>
         /// <param name="implementationToRegister">Implementation to register</param>
-        public static void MapSingletonWithImplementation<TInterface, TImplementation>(TImplementation implementationToRegister)
+        /// <param name="overrideImplementation">If true, the implementation will be overriden</param>
+        public static void MapSingletonWithImplementation<TInterface, TImplementation>(TImplementation implementationToRegister, bool overrideImplementation = false)
             where TImplementation : class, TInterface
         {
+            if (overrideImplementation)
+            {
+                RemoveMap<TInterface>();
+            }
+
             SingleContainerElement newMapping = Map<TInterface, TImplementation, SingleContainerElement>();
             newMapping.Instance = implementationToRegister;
         }

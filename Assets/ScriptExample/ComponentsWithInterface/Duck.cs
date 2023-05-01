@@ -1,26 +1,26 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 
 namespace ScriptExample.ComponentsWithInterface
 {
     public sealed class Duck : MonoBehaviourInjectable
     {
-        [NixInjectComponent]
+        [Component]
         private IFlyBehavior wings;
         public IFlyBehavior Wings => wings;
 
-        [NixInjectComponentFromChildren("Pocket")]
+        [ComponentFromChildren("Pocket")]
         private IDuckObjectContainer pocket;
         public IDuckObjectContainer Pocket => pocket;
 
-        [NixInjectComponentFromParent("DuckCompany")]
+        [ComponentFromParents("DuckCompany")]
         private IDuckObjectContainer duckCompanyBackPack;
         public IDuckObjectContainer DuckCompanyBackPack => duckCompanyBackPack;
 
-        [NixInjectRootComponent("FirstLake")]
+        [RootComponent("FirstLake")]
         private ILakeProperty firstLake;
         public ILakeProperty FirstLake => firstLake;
 
-        [NixInjectRootComponent("Sky", "SecondLake")]
+        [RootComponent("Sky", "SecondLake")]
         private ILakeProperty secondLake;
         public ILakeProperty SecondLake => secondLake;
     }

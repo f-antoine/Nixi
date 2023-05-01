@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Nixi.Injections;
 using NixiTestTools;
 using NUnit.Framework;
@@ -7,7 +7,11 @@ using ScriptExample.Cargos;
 using ScriptExample.Characters;
 using ScriptExample.Characters.ScriptableObjects;
 using ScriptExample.ComponentsWithEnumerable;
-using ScriptExample.Fallen.AllComponentAttributes;
+using ScriptExample.Fallen.AllComponentAttributes.Component;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentChild;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentParent;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentRoot;
+using ScriptExample.Fallen.AllComponentAttributes.ComponentRootChild;
 using ScriptExample.Fallen.Enumerables;
 using ScriptExample.Farms;
 using ScriptExample.PlayerGroups;
@@ -825,24 +829,24 @@ namespace Tests.TestTools
 
             Exception exception = Assert.Throws<TestInjectorException>(() => Injector.CheckAndInjectAll());
 
-            StringAssert.Contains("using decorator NixInjectComponentsAttribute", exception.Message);
+            StringAssert.Contains("using decorator ComponentsAttribute", exception.Message);
         }
 
-        [TestCase(typeof(FallenArrayComponent), "NixInjectComponentAttribute")]
-        [TestCase(typeof(FallenEnumerableComponent), "NixInjectComponentAttribute")]
-        [TestCase(typeof(FallenListComponent), "NixInjectComponentAttribute")]
-        [TestCase(typeof(FallenArrayComponentChild), "NixInjectComponentFromChildrenAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentChild), "NixInjectComponentFromChildrenAttribute")]
-        [TestCase(typeof(FallenListComponentChild), "NixInjectComponentFromChildrenAttribute")]
-        [TestCase(typeof(FallenArrayComponentParent), "NixInjectComponentFromParentAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentParent), "NixInjectComponentFromParentAttribute")]
-        [TestCase(typeof(FallenListComponentParent), "NixInjectComponentFromParentAttribute")]
-        [TestCase(typeof(FallenArrayComponentRoot), "NixInjectRootComponentAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentRoot), "NixInjectRootComponentAttribute")]
-        [TestCase(typeof(FallenListComponentRoot), "NixInjectRootComponentAttribute")]
-        [TestCase(typeof(FallenArrayComponentRootChild), "NixInjectRootComponentAttribute")]
-        [TestCase(typeof(FallenEnumerableComponentRootChild), "NixInjectRootComponentAttribute")]
-        [TestCase(typeof(FallenListComponentRootChild), "NixInjectRootComponentAttribute")]
+        [TestCase(typeof(FallenArrayComponent), "ComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponent), "ComponentAttribute")]
+        [TestCase(typeof(FallenListComponent), "ComponentAttribute")]
+        [TestCase(typeof(FallenArrayComponentChild), "ComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentChild), "ComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenListComponentChild), "ComponentFromChildrenAttribute")]
+        [TestCase(typeof(FallenArrayComponentParent), "ComponentFromParentsAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentParent), "ComponentFromParentsAttribute")]
+        [TestCase(typeof(FallenListComponentParent), "ComponentFromParentsAttribute")]
+        [TestCase(typeof(FallenArrayComponentRoot), "RootComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentRoot), "RootComponentAttribute")]
+        [TestCase(typeof(FallenListComponentRoot), "RootComponentAttribute")]
+        [TestCase(typeof(FallenArrayComponentRootChild), "RootComponentAttribute")]
+        [TestCase(typeof(FallenEnumerableComponentRootChild), "RootComponentAttribute")]
+        [TestCase(typeof(FallenListComponentRootChild), "RootComponentAttribute")]
         public void TestInjector_InjectAnyComponentWhichIsNotListDecorator_OnWrongEnumerableFieldType_ShouldThrowException(Type injectableTypeToBuild, string attributeName)
         {
             Component component = InjectableBuilderWithExpliciteType.Create().Build(injectableTypeToBuild);

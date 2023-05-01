@@ -1,4 +1,4 @@
-﻿namespace Nixi.Injections.Injectors
+namespace Nixi.Injections.Injectors
 {
     /// <summary>
     /// Options available to parameterized the injections

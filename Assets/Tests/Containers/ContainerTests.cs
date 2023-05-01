@@ -1,10 +1,13 @@
-﻿using Nixi.Containers;
+using Nixi.Containers;
 using NUnit.Framework;
 using ScriptExample.Characters;
 using ScriptExample.ComponentsWithInterface;
 using ScriptExample.Containers;
 using ScriptExample.ContainersWithParameters;
+using System;
 using Tests.Builders;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace Tests.Containers
 {
@@ -123,6 +126,31 @@ namespace Tests.Containers
             Assert.That(instance.ValueToRetrieve, Is.EqualTo(8));
             Assert.That(sameInstance.ValueToRetrieve, Is.EqualTo(8));
             Assert.That(implementation.ValueToRetrieve, Is.EqualTo(8));
+        }
+
+        [Test]
+        public void ContainerShould_OverrideWhenWithRegisterSingletonWithADifferentInstancePassed()
+        {
+            NixiContainer.MapSingletonWithImplementation<ITestInterface, TestImplementation>(new TestImplementation
+            {
+                ValueToRetrieve = 14
+            });
+
+            // Retrieve singleton first time
+            ITestInterface instance = NixiContainer.ResolveMap<ITestInterface>();
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.ValueToRetrieve, Is.EqualTo(14));
+
+            // Override
+            NixiContainer.MapSingletonWithImplementation<ITestInterface, TestImplementation>(new TestImplementation
+            {
+                ValueToRetrieve = 9
+            }, true);
+
+            // Retrieve singleton overriden second time
+            instance = NixiContainer.ResolveMap<ITestInterface>();
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.ValueToRetrieve, Is.EqualTo(9));
         }
 
         [Test]

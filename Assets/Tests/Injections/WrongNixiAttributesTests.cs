@@ -1,4 +1,4 @@
-﻿using Nixi.Injections.Injectors;
+using Nixi.Injections.Injectors;
 using NixiTestTools;
 using NUnit.Framework;
 using ScriptExample.Characters.Broken;

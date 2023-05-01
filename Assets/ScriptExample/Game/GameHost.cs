@@ -1,27 +1,26 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using ScriptExample.Containers.Broken;
 using ScriptExample.Containers.GameHost;
-using ScriptExample.Game;
 using ScriptExample.Players;
 using UnityEngine;
 
-namespace ScriptExample.GameHost
+namespace ScriptExample.Game
 {
     public class GameHost : MonoBehaviourInjectable
     {
-        [NixInjectComponentFromChildren("PlayerGameObjectName")]
+        [ComponentFromChildren("PlayerGameObjectName")]
         public Player Player;
 
-        [NixInjectComponentFromChildren("SecondPlayerGameObjectName")]
+        [ComponentFromChildren("SecondPlayerGameObjectName")]
         public SecondPlayer SecondPlayer;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public ISettings Settings;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public IBrokenTestInterface FirstBrokenInterfaceGameHost;
 
-        [NixInjectFromContainer]
+        [FromContainer]
         public IBrokenTestInterface SecondBrokenInterfaceGameHost;
 
         [SerializeField]

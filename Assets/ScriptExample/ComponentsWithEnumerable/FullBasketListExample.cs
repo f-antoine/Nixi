@@ -1,4 +1,4 @@
-﻿using Nixi.Injections;
+using Nixi.Injections;
 using System.Collections.Generic;
 
 namespace ScriptExample.ComponentsWithEnumerable
@@ -6,42 +6,42 @@ namespace ScriptExample.ComponentsWithEnumerable
     public sealed class FullBasketListExample : MonoBehaviourInjectable
     {
         // Parents
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public List<Fruit> FruitsListParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public IEnumerable<Fruit> FruitsEnumerableParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public List<IFruit> IFruitsListParent;
 
-        [NixInjectComponentsFromParent]
+        [ComponentsFromParents]
         public IEnumerable<IFruit> IFruitsEnumerableParent;
 
         // Current
-        [NixInjectComponents]
+        [Components]
         public List<Fruit> FruitsList;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<Fruit> FruitsEnumerable;
 
-        [NixInjectComponents]
+        [Components]
         public List<IFruit> IFruitsList;
 
-        [NixInjectComponents]
+        [Components]
         public IEnumerable<IFruit> IFruitsEnumerable;
 
         // Children
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<Fruit> FruitsListChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<Fruit> FruitsEnumerableChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public List<IFruit> IFruitsListChildren;
 
-        [NixInjectComponentsFromChildren]
+        [ComponentsFromChildren]
         public IEnumerable<IFruit> IFruitsEnumerableChildren;
     }
 }
